@@ -1,0 +1,5 @@
+https://depot.galaxyproject.org/singularity/fastqc%3A0.11.9--0
+https://depot.galaxyproject.org/singularity/multiqc%3A1.9--py_1
+https://depot.galaxyproject.org/singularity/trim-galore%3A0.6.7--hdfd78af_0
+https://depot.galaxyproject.org/singularity/unicycler%3A0.5.0--py39h2add14b_1
+https://depot.galaxyproject.org/singularity/quast%3A5.0.2--1

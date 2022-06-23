@@ -3,6 +3,9 @@ include { MULTIQC_PRE; MULTIQC_POST } from "${params.module_dir}/MULTIQC.nf"
 include { TRIM } from "${params.module_dir}/TRIM.nf"
 include { UNICYCLER } from "${params.module_dir}/UNICYCLER.nf"
 include { QUAST } from "${params.module_dir}/QUAST.nf"
+// include { BWA } from "${params.module_dir}/BWA.nf"
+// include { SAMTOOLS } from "${params.module_dir}/SAMTOOLS.nf"
+// include { BEDTOOLS } from "${params.module_dir}/BEDTOOLS.nf"
 
 workflow ASSEMBLY {
         // Channel
@@ -19,5 +22,15 @@ workflow ASSEMBLY {
 
 	// Assembly
 	UNICYCLER(TRIM.out.trim_reads)
-	QUAST(UNICYCLER.out.quast_ch)
+	QUAST(UNICYCLER.out.quast_ch.collect())
+
+	// Generate channel
+	TRIM.out.trim_reads
+		.join(UNICYCLER.out.assembly_ch, by: 0)
+		.view()
+
+	// Coverage calculation
+	// BWA(mapping_ch)
+	// SAMTOOLS(BWA.out.ch)
+	// BEDTOOLS(SAMTOOLS.out.ch)
 }

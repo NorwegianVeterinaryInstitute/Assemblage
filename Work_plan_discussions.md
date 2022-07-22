@@ -68,6 +68,8 @@ Hybrid assemblies - in term - issues to discuss
 - coverage 
 
 
+Guide to bacterial genome assembly, created by Ryan Wick:
+https://github.com/rrwick/Trycycler/wiki/Guide-to-bacterial-genome-assembly
 
 
 ![[GITS_WORK/Assemblage/Work_plan_discussions 2022-07-21_14.15.31.excalidraw]]

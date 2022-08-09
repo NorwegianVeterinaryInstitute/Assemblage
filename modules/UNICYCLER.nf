@@ -1,6 +1,6 @@
 process UNICYCLER {
-        publishDir "${params.out_dir}/results/unicycler/", pattern: "*.fasta", mode: "copy"
-        publishDir "${params.out_dir}/results/unicycler/", pattern: "*unicycler.log", mode: "copy"
+        publishDir "${params.out_dir}/02_ASSEMBLY/01_unicycler/", pattern: "*.fasta", mode: "copy"
+        publishDir "${params.out_dir}/02_ASSEMBLY/01_unicycler/", pattern: "*unicycler.log", mode: "copy"
 
         tag "$datasetID"
 	label 'bigmem'

@@ -1,6 +1,6 @@
 process KRAKEN {
-	publishDir "${params.out_dir}/results/02_kraken_reports", pattern: "*kr2.out", mode: "copy"
-	publishDir "${params.out_dir}/results/02_kraken_reports", pattern: "*kr2.report", mode: "copy"
+	publishDir "${params.out_dir}/01_QC/04_kraken_reports", pattern: "*kr2.out", mode: "copy"
+	publishDir "${params.out_dir}/01_QC/04_kraken_reports", pattern: "*kr2.report", mode: "copy"
 	
         tag "$datasetID"
 

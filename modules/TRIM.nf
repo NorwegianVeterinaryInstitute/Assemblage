@@ -1,6 +1,6 @@
 process TRIM {
-	publishDir "${params.out_dir}/results/01_trimmed_reads/", pattern: "*val_{1,2}.fq.gz", mode: "copy"
-	publishDir "${params.out_dir}/reports/01_trimming_reports/", pattern: "*trimming_report.txt", mode: "copy"
+	publishDir "${params.out_dir}/01_QC/01_trimmed_reads/", pattern: "*val_{1,2}.fq.gz", mode: "copy"
+	publishDir "${params.out_dir}/01_QC/02_trimming_reports/", pattern: "*trimming_report.txt", mode: "copy"
 
         tag "$datasetID"
 

@@ -1,6 +1,8 @@
 log.info "=================================================="
 log.info "                    ASSEMBLAGE                    "
 log.info "=================================================="
+log.info "Track: $params.track                              "
+log.info "=================================================="
 
 nextflow.enable.dsl=2
 
@@ -14,6 +16,6 @@ workflow {
 	}
 
 	if (params.track == "assembly") {
-	ASSEMBLY()
+		ASSEMBLY()
 	}
 }

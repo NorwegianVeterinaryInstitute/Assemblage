@@ -15,12 +15,11 @@ workflow ASSEMBLY {
 	QUAST(UNICYCLER.out.quast_ch.collect())
 
 	// Generate channel
-	params.reads
-		.join(UNICYCLER.out.assembly_ch, by: 0)
-		.view()
+	reads_ch.join(UNICYCLER.out.assembly_ch, by: 0)
+		.set { mapping_ch }
 
 	// Coverage calculation
-	// BWA(mapping_ch)
+	BWA(mapping_ch)
 	// SAMTOOLS(BWA.out.ch)
 	// BEDTOOLS(SAMTOOLS.out.ch)
 }

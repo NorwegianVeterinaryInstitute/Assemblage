@@ -1,5 +1,5 @@
 process QUAST {
-        publishDir "${params.out_dir}/02_ASSEMBLY/02_quast_report", pattern: "transposed_report.tsv", mode: "copy", saveAs: {"Quast_report.tsv"}
+        publishDir "${params.out_dir}/02_ASSEMBLY/05_quast_report", pattern: "transposed_report.tsv", mode: "copy", saveAs: {"Quast_report.tsv"}
 
         input:
         file("*")

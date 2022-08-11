@@ -5,7 +5,6 @@ process SAMTOOLS {
         tuple val(datasetID), file(bam)
 
         output:
-        file("*")
 	tuple val(datasetID), path("*mapped_sorted.bam"), emit: bam_ch
 
         """

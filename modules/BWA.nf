@@ -1,5 +1,5 @@
 process BWA {
-        publishDir "${params.out_dir}/02_ASSEMBLY/03_mapping/", pattern: "*.bam", mode: "copy"
+        publishDir "${params.out_dir}/02_ASSEMBLY/03_mapping/", pattern: "${datasetID}.bam", mode: "copy"
 
         tag "$datasetID"
         label 'bigmem'
@@ -9,7 +9,7 @@ process BWA {
 
         output:
         file("*")
-        path "*.bam", emit: samtools_ch
+        tuple val(datasetID), path("${datasetID}.bam"), emit: samtools_ch
 
         """
 	bwa index $ref

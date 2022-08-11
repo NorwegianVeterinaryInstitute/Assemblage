@@ -9,6 +9,6 @@ process SAMTOOLS {
 
         """
 	samtools sort $bam -o ${datasetID}_mapped_sorted.bam
+	samtools index ${datasetID}_mapped_sorted.bam
         """
 }
-

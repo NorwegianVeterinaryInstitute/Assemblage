@@ -1,5 +1,5 @@
 process BWA {
-        publishDir "${params.out_dir}/02_ASSEMBLY/03_mapping/", pattern: "${datasetID}.bam", mode: "copy"
+        publishDir "${params.out_dir}/02_ASSEMBLY/02_mapping/", pattern: "${datasetID}.bam", mode: "copy"
 
         tag "$datasetID"
         label 'bigmem'

@@ -1,5 +1,5 @@
 process BEDTOOLS {
-	publishDir "${params.out_dir}/02_ASSEMBLY/04_coverage_reports", pattern: "*_genomecov.txt", mode: "copy"
+	publishDir "${params.out_dir}/02_ASSEMBLY/03_coverage_reports", pattern: "*_genomecov.txt", mode: "copy"
 
         tag "$datasetID"
 

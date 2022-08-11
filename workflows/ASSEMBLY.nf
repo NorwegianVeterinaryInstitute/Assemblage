@@ -1,8 +1,8 @@
 include { UNICYCLER } from "${params.module_dir}/UNICYCLER.nf"
 include { QUAST } from "${params.module_dir}/QUAST.nf"
-// include { BWA } from "${params.module_dir}/BWA.nf"
-// include { SAMTOOLS } from "${params.module_dir}/SAMTOOLS.nf"
-// include { BEDTOOLS } from "${params.module_dir}/BEDTOOLS.nf"
+include { BWA } from "${params.module_dir}/BWA.nf"
+include { SAMTOOLS } from "${params.module_dir}/SAMTOOLS.nf"
+include { BEDTOOLS } from "${params.module_dir}/BEDTOOLS.nf"
 
 workflow ASSEMBLY {
         // Channel
@@ -20,6 +20,6 @@ workflow ASSEMBLY {
 
 	// Coverage calculation
 	BWA(mapping_ch)
-	// SAMTOOLS(BWA.out.ch)
-	// BEDTOOLS(SAMTOOLS.out.ch)
+	SAMTOOLS(BWA.out.samtools_ch)
+	BEDTOOLS(SAMTOOLS.out.bam_ch)
 }

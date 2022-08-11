@@ -1,5 +1,5 @@
 process PILON {
-	publishDir "${params.out_dir}/02_ASSEMBLY/05_polished_genomes", pattern: "${datasetID}_pilon.fasta", mode: "copy"
+	publishDir "${params.out_dir}/02_ASSEMBLY/04_polished_genomes", pattern: "${datasetID}_pilon.fasta", mode: "copy"
 
         tag "$datasetID"
 
@@ -7,10 +7,10 @@ process PILON {
         tuple val(datasetID), file(fasta), file(bam)
 
         output:
-	file("${datasetID}_pilon.fasta")
+	path("${datasetID}_pilon.fasta"), emit: quast_ch
 
         """
 	export _JAVA_OPTIONS="-Xms512M -Xmx2G"
-	pilon --threads $task.cpus --genome $fasta --bam $bam --output ${datasetID}_pilon --changes --vcfqe
+	pilon --genome $fasta --bam $bam --output ${datasetID}_pilon --changes --vcfqe
         """
 }

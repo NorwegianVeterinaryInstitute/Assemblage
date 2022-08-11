@@ -1,5 +1,5 @@
 process BWA {
-        publishDir "${params.out_dir}/results/mapping/", pattern: "*.bam", mode: "copy"
+        publishDir "${params.out_dir}/02_ASSEMBLY/03_mapping/", pattern: "*.bam", mode: "copy"
 
         tag "$datasetID"
         label 'bigmem'
@@ -9,7 +9,7 @@ process BWA {
 
         output:
         file("*")
-        path "*.fasta", emit: quast_ch
+        path "*.bam", emit: samtools_ch
 
         """
 	bwa index $ref

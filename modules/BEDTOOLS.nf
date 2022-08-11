@@ -1,5 +1,5 @@
 process BEDTOOLS {
-	publishDir "${params.out_dir}/reports/coverage_reports", pattern: "*_genomecov.txt", mode: "copy"
+	publishDir "${params.out_dir}/02_ASSEMBLY/04_coverage_reports", pattern: "*_genomecov.txt", mode: "copy"
 
         tag "$datasetID"
 
@@ -8,7 +8,6 @@ process BEDTOOLS {
 
         output:
         file("*")
-	tuple val(datasetID), path("*mapped_sorted.bam"), emit: bam_ch
 
         """
 	bedtools genomecov -ibam $bam -d > ${datasetID}_genomecov.txt

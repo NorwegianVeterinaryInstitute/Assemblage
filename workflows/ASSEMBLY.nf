@@ -1,15 +1,15 @@
-include { UNICYCLER }	from "${params.module_dir}/UNICYCLER.nf"
-include { QUAST }	from "${params.module_dir}/QUAST.nf"
-include { BWA }		from "${params.module_dir}/BWA.nf"
-include { SAMTOOLS }	from "${params.module_dir}/SAMTOOLS.nf"
-include { BEDTOOLS }	from "${params.module_dir}/BEDTOOLS.nf"
-include { PILON }	from "${params.module_dir}/PILON.nf"
+include { UNICYCLER }	from "../modules/UNICYCLER.nf"
+include { QUAST     }	from "../modules/QUAST.nf"
+include { BWA       }	from "../modules/BWA.nf"
+include { SAMTOOLS  }	from "../modules/SAMTOOLS.nf"
+include { BEDTOOLS  }	from "../modules/BEDTOOLS.nf"
 
 workflow ASSEMBLY {
         // Channel
-        Channel
-                .fromFilePairs(params.reads, flat: true, checkIfExists: true)
-                .set { reads_ch }
+	reads_ch = Channel
+                .fromPath(params.input, checkIfExists: true)
+                .splitCsv(header:true, sep:",")
+                .map { file -> tuple(sample, file(it.R1, checkIfExists: true), file(it.R2, checkIfExists: true)) }
 
 	// Assembly
 	UNICYCLER(reads_ch)
@@ -23,10 +23,6 @@ workflow ASSEMBLY {
 	SAMTOOLS(BWA.out.samtools_ch)
 	BEDTOOLS(SAMTOOLS.out.bam_ch)
 
-	UNICYCLER.out.assembly_ch.join(SAMTOOLS.out.bam_ch, by: 0)
-		.set { pilon_ch }
-	
-	// Polishing and QC
-	PILON(pilon_ch)
-	QUAST(PILON.out.quast_ch.collect())
+	// QC
+	QUAST(UNICYCLER.out.quast_ch.collect())
 }

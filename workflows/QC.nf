@@ -1,13 +1,14 @@
-include { FASTQC; FASTQC as FASTQC_POST } from "${params.module_dir}/FASTQC.nf"
-include { MULTIQC_PRE; MULTIQC_POST } from "${params.module_dir}/MULTIQC.nf"
-include { KRAKEN } from "$params.module_dir/KRAKEN.nf"
-include { TRIM } from "${params.module_dir}/TRIM.nf"
+include { FASTQC; FASTQC as FASTQC_POST } from "../modules/FASTQC.nf"
+include { MULTIQC_PRE; MULTIQC_POST     } from "../modules/MULTIQC.nf"
+include { KRAKEN                        } from "../modules/KRAKEN.nf"
+include { TRIM                          } from "../modules/TRIM.nf"
 
 workflow QC {
         // Channel
-        Channel
-                .fromFilePairs(params.reads, flat: true, checkIfExists: true)
-                .set { reads_ch }
+	reads_ch = Channel
+		.fromPath(params.input, checkIfExists: true)
+		.splitCsv(header:true, sep:",")
+		.map { [it.sample, file(it.R1, checkIfExists: true), file(it.R2, checkIfExists: true)] }
 
         // QC
         FASTQC(reads_ch)

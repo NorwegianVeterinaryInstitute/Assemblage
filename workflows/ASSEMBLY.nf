@@ -9,7 +9,7 @@ workflow ASSEMBLY {
 	reads_ch = Channel
                 .fromPath(params.input, checkIfExists: true)
                 .splitCsv(header:true, sep:",")
-                .map { file -> tuple(sample, file(it.R1, checkIfExists: true), file(it.R2, checkIfExists: true)) }
+                .map { [it.sample, file(it.R1, checkIfExists: true), file(it.R2, checkIfExists: true)] }
 
 	// Assembly
 	UNICYCLER(reads_ch)

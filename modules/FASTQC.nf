@@ -1,5 +1,6 @@
 process FASTQC {
-        tag "$datasetID"
+	conda (params.enable_conda ? 'bioconda::fastqc=0.12.1' : null)
+	container 'quay.io/biocontainers/fastqc:0.12.1--hdfd78af_0'
 
         input:
         tuple val(datasetID), file(R1), file(R2)

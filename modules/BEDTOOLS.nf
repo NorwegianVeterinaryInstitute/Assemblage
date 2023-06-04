@@ -1,7 +1,6 @@
 process BEDTOOLS {
-	publishDir "${params.out_dir}/02_ASSEMBLY/03_coverage_reports", pattern: "*_genomecov.txt", mode: "copy"
-
-        tag "$datasetID"
+	conda (params.enable_conda ? 'bioconda::bedtools=2.31.0' : null)
+	container 'quay.io/biocontainers/bedtools:2.31.0--h468198e_0'
 
         input:
         tuple val(datasetID), file(bam)

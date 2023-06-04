@@ -1,5 +1,6 @@
 process MULTIQC_PRE {
-        publishDir "${params.out_dir}/01_QC/03_multiqc_reports", pattern: "*html", mode: "copy", saveAs: {"MultiQC_pre_trimming_report.html"}
+	conda (params.enable_conda ? 'bioconda::multiqc=1.14' : null)
+	container 'quay.io/biocontainers/multiqc:1.14--pyhdfd78af_0'
 
         input:
         file("*")
@@ -13,7 +14,8 @@ process MULTIQC_PRE {
 }
 
 process MULTIQC_POST {
-        publishDir "${params.out_dir}/01_QC/03_multiqc_reports", pattern: "*html", mode: "copy", saveAs: {"MultiQC_post_trimming_report.html"}
+	conda (params.enable_conda ? 'bioconda::multiqc=1.14' : null)
+        container 'quay.io/biocontainers/multiqc:1.14--pyhdfd78af_0'
 
         input:
         file("*")

@@ -1,8 +1,6 @@
 process KRAKEN {
-	publishDir "${params.out_dir}/01_QC/04_kraken_reports", pattern: "*kr2.out", mode: "copy"
-	publishDir "${params.out_dir}/01_QC/04_kraken_reports", pattern: "*kr2.report", mode: "copy"
-	
-        tag "$datasetID"
+	conda (params.enable_conda ? 'bioconda::kraken2=2.1.2' : null)
+	container 'quay.io/biocontainers/kraken2:2.1.2--pl5321h4ac6f70_4'
 
         input:
         tuple val(datasetID), file(R1), file(R2)

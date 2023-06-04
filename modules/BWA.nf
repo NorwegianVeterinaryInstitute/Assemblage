@@ -1,8 +1,8 @@
 process BWA {
-        publishDir "${params.out_dir}/02_ASSEMBLY/02_mapping/", pattern: "${datasetID}.bam", mode: "copy"
+	conda (params.enable_conda ? 'bioconda::bwa=0.7.8' : null)
+	container 'quay.io/biocontainers/bwa:0.7.8--he4a0461_9'
 
-        tag "$datasetID"
-        label 'bigmem'
+        label 'process_high_memory_time'
 
         input:
         tuple val(datasetID), file(R1), file(R2), file(ref)

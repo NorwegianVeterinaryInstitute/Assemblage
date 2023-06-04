@@ -1,5 +1,6 @@
 process SAMTOOLS {
-        tag "$datasetID"
+	conda (params.enable_conda ? 'bioconda::samtools=1.3.1' : null)
+	container 'quay.io/biocontainers/samtools:1.3.1--h0cf4675_11'
 
         input:
         tuple val(datasetID), file(bam)

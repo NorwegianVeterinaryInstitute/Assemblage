@@ -1,8 +1,6 @@
 process TRIM {
-	publishDir "${params.out_dir}/01_QC/01_trimmed_reads/", pattern: "*val_{1,2}.fq.gz", mode: "copy"
-	publishDir "${params.out_dir}/01_QC/02_trimming_reports/", pattern: "*trimming_report.txt", mode: "copy"
-
-        tag "$datasetID"
+	conda (params.enable_conda ? 'bioconda::trim-galore=0.6.10' : null)
+	container 'quay.io/biocontainers/trim-galore:0.6.10--hdfd78af_0'
 
         input:
         tuple val(datasetID), file(R1), file(R2)
@@ -13,6 +11,6 @@ process TRIM {
 
         script:
         """
-        trim_galore -o . --paired --quality $params.phred_score -e $params.error_rate --length $params.minlength -trim1 $R1 $R2 &> ${datasetID}_trimgalore.log
+        trim_galore -o . --paired --quality $params.phred_score -e $params.error_rate --length $params.minlength $R1 $R2 &> ${datasetID}_trimgalore.log
         """
 }

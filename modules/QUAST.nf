@@ -1,5 +1,6 @@
 process QUAST {
-        publishDir "${params.out_dir}/02_ASSEMBLY/05_quast_report", pattern: "transposed_report.tsv", mode: "copy", saveAs: {"Quast_report.tsv"}
+	conda (params.enable_conda ? 'bioconda::quast=5.2.0' : null)
+	container 'quay.io/biocontainers/quast:5.2.0--py39pl5321h4e691d4_3'
 
         input:
         file("*")

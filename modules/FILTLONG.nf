@@ -9,6 +9,6 @@ process FILTLONG {
         file("*")
 
         """
-	filtlong --min_length $params.min_length --keep_percent $params.keep_percent $reads
+	filtlong --min_length $params.min_read_length --keep_percent $params.keep_percent $reads
 	"""
 }

@@ -7,8 +7,9 @@ log.info "=================================================="
 nextflow.enable.dsl=2
 
 // Workflows
-include { ASSEMBLY } from "${params.workflow_dir}/ASSEMBLY.nf"
-include { QC } from "${params.workflow_dir}/QC.nf"
+include { QC               } from "./workflows/QC.nf"
+include { ASSEMBLY         } from "./workflows/ASSEMBLY.nf"
+include { HYBRID_ASSEMBLY  } from "./workflows/HYBRID_ASSEMBLY.nf"
 
 workflow {
 	if (params.track == "qc") {
@@ -17,6 +18,10 @@ workflow {
 
 	if (params.track == "assembly") {
 		ASSEMBLY()
+	}
+
+	if (params.track == "hybrid") {
+		HYBRID_ASSEMBLY()
 	}
 }
 

@@ -7,7 +7,7 @@ process MEDAKA {
 
         output:
         file("*")
-	tuple val(datasetID) file("consensus.fasta"), emit: medaka_ch
+	tuple val(datasetID), file("consensus.fasta"), emit: medaka_ch
 
         """
 	medaka_consensus -i $np_reads -d $assembly -m $params.basecalling_model -t $task.cpus -o .

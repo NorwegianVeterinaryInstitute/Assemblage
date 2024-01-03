@@ -7,21 +7,26 @@ log.info "=================================================="
 nextflow.enable.dsl=2
 
 // Workflows
-include { QC               } from "./workflows/QC.nf"
-include { ASSEMBLY         } from "./workflows/ASSEMBLY.nf"
-include { HYBRID_ASSEMBLY  } from "./workflows/HYBRID_ASSEMBLY.nf"
+include { QC                 } from "./workflows/QC.nf"
+include { DRAFT_ASSEMBLY     } from "./workflows/DRAFT_ASSEMBLY.nf"
+include { HYBRID_ASSEMBLY    } from "./workflows/HYBRID_ASSEMBLY.nf"
+include { LONG_READ_ASSEMBLY } from "./workflows/LONG_READ_ASSEMBLY.nf"
 
 workflow {
 	if (params.track == "qc") {
 		QC()
 	}
 
-	if (params.track == "assembly") {
-		ASSEMBLY()
+	if (params.track == "draft") {
+		DRAFT_ASSEMBLY()
 	}
 
 	if (params.track == "hybrid") {
 		HYBRID_ASSEMBLY()
+	}
+
+	if (params.track == "long") {
+		LONG_READ_ASSEMBLY()
 	}
 }
 

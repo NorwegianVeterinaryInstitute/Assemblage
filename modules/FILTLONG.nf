@@ -7,8 +7,9 @@ process FILTLONG {
 
         output:
         file("*")
+	tuple val(datasetID), file("*_filtered.fastq.gz"), emit: filtlong_ch
 
         """
-	filtlong --min_length $params.min_read_length --keep_percent $params.keep_percent $reads
+	filtlong --min_length $params.min_read_length --keep_percent $params.keep_percent $reads | gzip > ${datasetID}_filtered.fastq.gz
 	"""
 }

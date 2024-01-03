@@ -15,6 +15,7 @@ process UNICYCLER {
         """
         unicycler -1 $R1 -2 $R2 -o . --verbosity 2 --keep 2 --mode $params.mode --threads $task.cpus --min_fasta_length $params.min_fasta_length --depth_filter $params.depth_filter
         mv assembly.fasta ${datasetID}.fasta
+	sed -i 's/ /_/g' ${datasetID}.fasta
         mv unicycler.log ${datasetID}_unicycler.log
 	"""
 }
@@ -36,6 +37,7 @@ process UNICYCLER_HYBRID {
         """
 	unicycler -1 $R1 -2 $R2 -l $longreads  -o . --verbosity 2 --keep 2 --mode $params.mode --threads $task.cpus --min_fasta_length $params.min_fasta_length --depth_filter $params.depth_filter
         mv assembly.fasta ${datasetID}.fasta
+	sed -i 's/ /_/g' ${datasetID}.fasta
         mv unicycler.log ${datasetID}_unicycler.log
         """
 }

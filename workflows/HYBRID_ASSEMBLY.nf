@@ -4,9 +4,7 @@ include { QUAST            }	from "../modules/QUAST.nf"
 include { BWA              }	from "../modules/BWA.nf"
 include { SAMTOOLS         }	from "../modules/SAMTOOLS.nf"
 include { BEDTOOLS         }	from "../modules/BEDTOOLS.nf"
-include { MEDAKA           }	from "../modules/MEDAKA.nf"
 include { POLYPOLISH       }	from "../modules/POLYPOLISH.nf"
-// include { POLCA            }	from "../modules/POLCA.nf"
 
 workflow HYBRID_ASSEMBLY {
         // Channel
@@ -41,13 +39,9 @@ workflow HYBRID_ASSEMBLY {
 	QUAST(UNICYCLER_HYBRID.out.quast_ch.collect())
 
 	// Polishing
-	nanopore_ch.join(UNICYCLER_HYBRID.out.assembly_ch, by: 0)
-		.set { polishing_ch }
-	
-	MEDAKA(polishing_ch)
-	
-	illumina_ch.join(MEDAKA.out.medaka_ch, by: 0)
-		.set { polypolish_ch  }
+	UNICYCLER_HYBRID.out.assembly_ch
+		.join(BWA.out.bwa_polypolish_ch, by: 0)
+		.set { polypolish_ch }
 
 	POLYPOLISH(polypolish_ch)
 }

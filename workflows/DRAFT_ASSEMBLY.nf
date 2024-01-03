@@ -4,7 +4,7 @@ include { BWA       }	from "../modules/BWA.nf"
 include { SAMTOOLS  }	from "../modules/SAMTOOLS.nf"
 include { BEDTOOLS  }	from "../modules/BEDTOOLS.nf"
 
-workflow ASSEMBLY {
+workflow DRAFT_ASSEMBLY {
         // Channel
 	reads_ch = Channel
                 .fromPath(params.input, checkIfExists: true)

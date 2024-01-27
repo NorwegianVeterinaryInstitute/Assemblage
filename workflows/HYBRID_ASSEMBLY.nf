@@ -9,16 +9,19 @@ include { POLYPOLISH       }	from "../modules/POLYPOLISH.nf"
 
 workflow HYBRID_ASSEMBLY {
         // Channel
-	nanopore_ch = Channel
+	def input_criteria = multiMapCriteria {
+	    id, R1, R2, NP ->
+	        shortreads: R1 != 'NA' ? tuple(tuple(id, [R1, R2])) : null
+		longreads: NP != 'NA' ? tuple(id, NP) : null
+	}
+
+	input_ch = Channel
 		.fromPath(params.input, checkIfExists: true)
 		.splitCsv(header:true, sep:",")
-		.map { [it.sample, file(it.NP, checkIfExists: true)] }
+		.multiMap(input_criteria)
+		.view()
 
-        illumina_ch = Channel
-                .fromPath(params.input, checkIfExists: true)
-                .splitCsv(header:true, sep:",")
-                .map { [it.sample, file(it.R1, checkIfExists: true), file(it.R2, checkIfExists: true)] }
-
+/*
 	// Long read filtering
 	FILTLONG(nanopore_ch)
 
@@ -50,4 +53,5 @@ workflow HYBRID_ASSEMBLY {
 		.set { polypolish_ch }
 
 	POLYPOLISH(polypolish_ch)
+*/
 }

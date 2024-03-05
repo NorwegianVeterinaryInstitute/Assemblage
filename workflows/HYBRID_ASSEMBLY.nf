@@ -1,5 +1,5 @@
 include { FILTLONG         }	from "../modules/FILTLONG.nf"
-include { UNICYCLER_HYBRID }	from "../modules/UNICYCLER.nf"
+include { UNICYCLER        }	from "../modules/UNICYCLER.nf"
 include { QUAST            }	from "../modules/QUAST.nf"
 include { BWA              }	from "../modules/BWA.nf"
 include { SAMTOOLS         }	from "../modules/SAMTOOLS.nf"
@@ -9,28 +9,37 @@ include { POLYPOLISH       }	from "../modules/POLYPOLISH.nf"
 
 workflow HYBRID_ASSEMBLY {
         // Channel
-	def input_criteria = multiMapCriteria {
-	    id, R1, R2, NP ->
-	        shortreads: R1 != 'NA' ? tuple(tuple(id, [R1, R2])) : null
-		longreads: NP != 'NA' ? tuple(id, NP) : null
+
+	def criteria = multiMapCriteria {
+            id, R1, R2, NP ->
+                shortreads: R1 != 'NA' ? tuple(tuple(id, [R1, R2])) : null
+                longreads: NP != 'NA' ? tuple(id, NP) : null
 	}
 
-	input_ch = Channel
-		.fromPath(params.input, checkIfExists: true)
-		.splitCsv(header:true, sep:",")
-		.multiMap(input_criteria)
-		.view()
+	Channel
+	    .fromPath(params.input, checkIfExists: true)
+	    .splitCsv(header:true, sep:",")
+	    .map { row -> [row.id, row.R1, row.R2, row.NP] }
+	    .multiMap (criteria)
+	    .set { input_ch }
 
-/*
-	// Long read filtering
-	FILTLONG(nanopore_ch)
+	input_ch
+            .shortreads
+            .filter{ it != null }
+            .set { shortreads_ch }
+    
+        input_ch
+            .longreads
+            .filter{ it != null }
+            .set { longreads_ch }
 
-	illumina_ch.join(FILTLONG.out.filtlong_ch, by: 0)
-		.set { assembly_ch  }
+	shortreads_ch.join(longreads_ch, by: 0)
+                     .set { assembly_ch }
 
 	// Assembly
-	UNICYCLER_HYBRID(assembly_ch)
+	UNICYCLER(assembly_ch)
 
+/*
 	// Coverage calculation
 	illumina_ch.join(UNICYCLER_HYBRID.out.assembly_ch, by: 0)
 		.set { mapping_ch }

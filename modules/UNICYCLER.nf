@@ -14,17 +14,17 @@ process UNICYCLER {
 
 	script:
 	def args = task.ext.args ?: ''
-        if (params.assembly_track == 'short'){
+        if (params.track == 'short'){
             input_reads = "-1 ${shortreads[0]} -2 ${shortreads[1]}"
-        } else (params.assembly_track == 'hybrid'){
+        } else if (params.track == 'hybrid'){
             input_reads = "-1 ${shortreads[0]} -2 ${shortreads[1]} -l $longreads"
         }
         """
         unicycler \\
 		--threads $task.cpus \\
 		$args \\
-		$short_reads \\
-		$long_reads
+		$input_reads \\
+		--out .
 
         mv assembly.fasta ${datasetID}.fasta
 	sed -i 's/ /_/g' ${datasetID}.fasta

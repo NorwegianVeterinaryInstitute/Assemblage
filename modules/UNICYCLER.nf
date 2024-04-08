@@ -5,7 +5,7 @@ process UNICYCLER {
 	label 'process_high_memory_time'
 
         input:
-        tuple val(datasetID), path(shortreads), path(longreads)
+        tuple val(datasetID), path(R1), path(R2)
 
         output:
         file("*")
@@ -14,16 +14,12 @@ process UNICYCLER {
 
 	script:
 	def args = task.ext.args ?: ''
-        if (params.track == 'short'){
-            input_reads = "-1 ${shortreads[0]} -2 ${shortreads[1]}"
-        } else if (params.track == 'hybrid'){
-            input_reads = "-1 ${shortreads[0]} -2 ${shortreads[1]} -l $longreads"
-        }
+
         """
         unicycler \\
 		--threads $task.cpus \\
 		$args \\
-		$input_reads \\
+		-1 $R1 -2 $R2 \\
 		--out .
 
         mv assembly.fasta ${datasetID}.fasta

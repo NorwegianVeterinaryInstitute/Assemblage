@@ -9,30 +9,24 @@ if (option == "illumina") {
     pattern <- args[3]
 
     if (grepl("/$", path) == FALSE) {
-        path <- paste0(path, "/")
+       path <- paste0(path, "/")
     }
 
     files <- list.files(path = path,
                         pattern = pattern)
 
-    filenames <- sub(pattern, "", files)
+    files_path <- paste0(path, files)
 
+    filenames <- unique(sub(pattern, "", files))
     df <- data.frame(sample = filenames)
-    df$path <- paste0(path, files)
-    df$read <- ifelse(grepl("_R1.fastq.gz", df$path), "R1", "R2")
+    forward <- grep("_R1_", files_path, value = TRUE)
+    reverse <- grep("_R2_", files_path, value = TRUE)
 
-    samplesheet <- reshape(
-      data = df,
-      direction = "wide",
-      v.names = "path",
-      idvar = "sample",
-      timevar = "read"
-    )
-
-    names(samplesheet) <- c("sample","R1","R2")
+    df$R1 <- forward
+    df$R2 <- reverse
 
     write.table(
-      x = samplesheet,
+      x = df,
       file = "samplesheet.csv",
       quote = FALSE,
       row.names = FALSE,

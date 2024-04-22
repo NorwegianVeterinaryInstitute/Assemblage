@@ -1,0 +1,230 @@
+---
+title: "Assemblage quality control report"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    mathjax: null
+    code_folding: "hide"
+    toc: true
+    toc_float:
+      collapsed: false
+params:
+  quast_report:
+    value: x
+  kraken_report:
+    value: x
+  coverage_report:
+    value: x
+  genome_size_val:
+    value: x
+  species_name:
+    value: x
+---
+
+```{r, message=FALSE, warning=FALSE}
+library(dplyr)
+library(tidyr)
+library(readr)
+library(funtools)
+library(ggplot2)
+library(kableExtra)
+library(ggpubr)
+library(formattable)
+library(sparkline)
+```
+
+
+# QUAST assembly quality check
+
+QUAST is used to run general quality control on assemblies by investigating total size, N50, %GC, number of contigs, and other parameters. 
+```{r, message=FALSE, warning=FALSE, dpi=600, fig.width=10, fig.height=6, fig.cap="Figure 3: QUAST assembly general statistics."}
+quast_data <- read_delim(
+  params$quast_report,
+  delim = "\t"
+  ) %>%
+  select(Assembly, `# contigs`, `Total length`, `GC (%)`, N50)
+
+# Generate data frame in long format from the data, used for plotting
+plot_data <- quast_data %>%
+  # Rename columns with 'rename' from dplyr
+  rename("Number of contigs" = `# contigs`,
+         "Total length of assembly" = `Total length`,
+         "Percent GC" = `GC (%)`,
+         "Assembly N50" = N50) %>%
+  # Gather all columns except Assembly, and generate long format
+  # with 'pivot_longer' from tidyr
+  pivot_longer(cols = -Assembly,
+               names_to = "key",
+               values_to = "value")
+
+# Specify a color palette for the plotting, one HEX color code for
+# each variable plotted
+palette <- c("Assembly N50" = "#fdbf6f",
+             "Total length of assembly" = "#a6cee3",
+             "Percent GC" = "#fb9a99",
+             "Number of contigs" = "#b2df8a")
+
+# Adjust options to plot full numbers in the plot, not scientific 
+# notation (i.e. 10e+10 etc.)
+options(scipen = 999)
+
+# Plot data with 'ggplot' from ggplot2
+# Specify x and y axes data inside 'aes'
+p <- ggplot(plot_data, aes(key, value, fill = key)) +
+  # Plot a violin plot with given data
+  geom_violin(trim = FALSE) +
+  # Plot a boxplot over the violin plot
+  geom_boxplot(width = 0.05,
+               fill = "white") +
+  # Specify a minimal theme of the plot
+  theme_minimal() +
+  # Adjust the theme with specific options
+  theme(axis.title = element_blank(),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        # Remove legend
+        legend.position = "none") +
+  # Specify the color palette used
+  scale_fill_manual(values = palette) +
+  # Create sub-plots within the plot with their own axes
+  facet_wrap(~key, nrow = 2, scales = "free")
+
+axis_text_size <- 6
+axis_title_size <- 8
+dot_size <- 1
+
+# Generate dotplots
+p1 <- quast_data %>%
+  ggplot(aes(N50, `Total length`)) +
+  geom_point(size = dot_size) +
+  labs(x = "Assembly N50",
+       y = "Total length of assembly") +
+  theme_bw() +
+  theme(axis.title = element_text(size = axis_title_size),
+        axis.text = element_text(size = axis_text_size))
+
+p2 <- quast_data %>%
+  ggplot(aes(N50, `# contigs`)) +
+  geom_point(size = dot_size) +
+  labs(x = "Assembly N50",
+       y = "Number of contigs") +
+  theme_bw() +
+  theme(axis.title = element_text(size = axis_title_size),
+        axis.text = element_text(size = axis_text_size))
+
+p3 <- quast_data %>%
+  ggplot(aes(`# contigs`, `Total length`)) +
+  geom_point(size = dot_size) +
+  labs(x = "Number of contigs",
+       y = "Total length of assembly") +
+  theme_bw() +
+  theme(axis.title = element_text(size = axis_title_size),
+        axis.text = element_text(size = axis_text_size))
+
+p4 <- quast_data %>%
+  ggplot(aes(`GC (%)`, `Total length`)) +
+  geom_point(size = dot_size) +
+  labs(x = "Percent GC",
+       y = "Total length of assembly") +
+  theme_bw() +
+  theme(axis.title = element_text(size = axis_title_size),
+        axis.text = element_text(size = axis_text_size))
+
+# Combine and arrange the plots with 'ggarrange' from ggpubr
+p_a <- ggarrange(p1, p2, p3, p4, nrow = 2, ncol = 2)
+
+# Finally, combine both plots into one
+ggarrange(p, p_a, nrow = 1, labels = c("A","B"))
+```
+
+## Genome size check
+
+```{r}
+genome_size <- as.numeric(params$genome_size_val)
+
+test <- quast_data %>%
+  mutate(test = ifelse(
+    `Total length` > genome_size * 1.2 | `Total length` < genome_size * 0.8,
+    FALSE,
+    TRUE
+  )) %>%
+  filter(test == FALSE)
+
+if (nrow(test) == 0) {
+  "All genomes are within set genome size limits."
+} else {
+  test %>%
+    select(-test) %>%
+    kbl(escape = FALSE, caption = "List of genomes outside of genome size limits.") %>%
+    # Specify the look of the table
+    kable_paper("hover", full_width = TRUE)
+}
+
+
+  
+```
+
+
+# Kraken contamination check
+Kraken2 is a tool that maps reads to a database of a myriad of bacterial species, and gives the percent of reads that mapped to each taxonomic level. The tool is useful when looking for potential contamination in sequenced samples.
+
+```{r, message=FALSE, warning=FALSE, dpi=600, fig.width=10, fig.height=5, fig.cap="Figure 1: Top species hits in the Kraken database (>0.1% of fragments)"}
+
+kraken_data <- read_delim(
+  params$kraken_report,
+  delim = "\t",
+  col_names = TRUE
+) %>%
+  mutate(perc_fragments = as.numeric(perc_fragments)) %>%
+  filter(rank_code == "S",
+         perc_fragments > 0.1) %>%
+  select(ref, scientific_name, perc_fragments) %>%
+  rename("Sample" = ref)
+
+contaminants <- filter(kraken_data, scientific_name != params$species_name)
+
+ggplot(kraken_data, aes(reorder(scientific_name, -perc_fragments), perc_fragments)) +
+  stat_boxplot(geom = "errorbar", width = 0.4) +
+  geom_boxplot(fill = "grey80") +
+  labs(x = "Species",
+       y = "Percent fragments") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.3))
+
+```
+
+```{r, message=FALSE, warning=FALSE, dpi=600, fig.width=10, fig.height=5, fig.cap="Figure 2: Top species hits in the Kraken database (>0.1% of fragments), excluding S. mitis."}
+ggplot(contaminants, aes(reorder(scientific_name, -perc_fragments), perc_fragments)) +
+  stat_boxplot(geom = "errorbar", width = 0.4) +
+  geom_boxplot(fill = "grey80") +
+  labs(x = "Species",
+       y = "Percent fragments") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.3))
+```
+
+<br>
+
+<br>
+
+# Coverage calculation
+Coverage calculation is used to calculate how many reads are each base in the assembly is covered by. Assemblies with a very low coverage depth means that each nucleotide has low confidence, and the assembly should be treated with caution.
+
+```{r, message=FALSE, warning=FALSE}
+sparkline(0)
+
+read_delim(
+  params$coverage_report,
+  delim = "\t",
+  col_names = TRUE
+  ) %>%
+  kbl(escape = FALSE, caption = "Actual coverage statistics for all assemblies.") %>%
+  # Specify the look of the table
+  kable_paper("hover", full_width = TRUE) %>%
+  # Adjust the first column text
+  column_spec(1, bold = TRUE, color = "grey") %>%
+  column_spec(5, width = "4cm") %>%
+  # Add a scroll box
+  scroll_box(height = "400px")
+
+```

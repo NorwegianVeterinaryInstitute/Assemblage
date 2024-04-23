@@ -25,7 +25,6 @@ params:
 library(dplyr)
 library(tidyr)
 library(readr)
-library(funtools)
 library(ggplot2)
 library(kableExtra)
 library(ggpubr)
@@ -37,7 +36,7 @@ library(sparkline)
 # QUAST assembly quality check
 
 QUAST is used to run general quality control on assemblies by investigating total size, N50, %GC, number of contigs, and other parameters. 
-```{r, message=FALSE, warning=FALSE, dpi=600, fig.width=10, fig.height=6, fig.cap="Figure 3: QUAST assembly general statistics."}
+```{r, message=FALSE, warning=FALSE, dpi=600, fig.width=10, fig.height=6, fig.cap="Figure 1: QUAST assembly general statistics."}
 quast_data <- read_delim(
   params$quast_report,
   delim = "\t"
@@ -168,7 +167,7 @@ if (nrow(test) == 0) {
 # Kraken contamination check
 Kraken2 is a tool that maps reads to a database of a myriad of bacterial species, and gives the percent of reads that mapped to each taxonomic level. The tool is useful when looking for potential contamination in sequenced samples.
 
-```{r, message=FALSE, warning=FALSE, dpi=600, fig.width=10, fig.height=5, fig.cap="Figure 1: Top species hits in the Kraken database (>0.1% of fragments)"}
+```{r, message=FALSE, warning=FALSE, dpi=600, fig.width=10, fig.height=5, fig.cap="Figure 2: Top species hits in the Kraken database (>0.1% of fragments)"}
 
 kraken_data <- read_delim(
   params$kraken_report,
@@ -193,7 +192,7 @@ ggplot(kraken_data, aes(reorder(scientific_name, -perc_fragments), perc_fragment
 
 ```
 
-```{r, message=FALSE, warning=FALSE, dpi=600, fig.width=10, fig.height=5, fig.cap="Figure 2: Top species hits in the Kraken database (>0.1% of fragments), excluding S. mitis."}
+```{r, message=FALSE, warning=FALSE, dpi=600, fig.width=10, fig.height=5, fig.cap="Figure 3: Top species hits in the Kraken database (>0.1% of fragments), excluding S. mitis."}
 ggplot(contaminants, aes(reorder(scientific_name, -perc_fragments), perc_fragments)) +
   stat_boxplot(geom = "errorbar", width = 0.4) +
   geom_boxplot(fill = "grey80") +

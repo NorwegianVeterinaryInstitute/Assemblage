@@ -1,6 +1,6 @@
-process MERGE_REPORTS {
+process MERGE_KRAKEN_REPORTS {
         conda (params.enable_conda ? './assets/r_env.yml' : null)
-        container 'evezeyl/r_docker:latest'
+        container 'evezeyl/r_assemblage:latest'
 
         input:
         path(reports)
@@ -8,10 +8,26 @@ process MERGE_REPORTS {
         output:
         path "*"
 	path "kraken_reports.txt", emit: kraken_report
-	path "coverage_reports.txt", emit: coverage_report
 
         script:
         """
-        Rscript $baseDir/bin/merge_data.R
+        Rscript $baseDir/bin/merge_kraken_data.R
+        """
+}
+
+process MERGE_COV_REPORTS {
+        conda (params.enable_conda ? './assets/r_env.yml' : null)
+        container 'evezeyl/r_assemblage:latest'
+
+        input:
+        path(reports)
+
+        output:
+        path "*"
+        path "coverage_reports.txt", emit: coverage_report
+
+        script:
+        """
+        Rscript $baseDir/bin/merge_cov_data.R
         """
 }

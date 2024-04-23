@@ -7,6 +7,7 @@ process BEDTOOLS {
 
         output:
         file("*")
+	path "*genomecov.txt", emit: cov_report_ch
 
         """
 	bedtools genomecov -ibam $bam -d > ${datasetID}_genomecov.txt

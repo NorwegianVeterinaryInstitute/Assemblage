@@ -9,9 +9,10 @@ process KRAKEN {
 
         output:
         file("*")
+	path "*kr2.report", emit: report_ch
 
         script:
         """
-	kraken2 --db $params.kraken_db --paired $R1 $R2 --threads $task.cpus --output ${datasetID}.kr2.out --report ${datasetID}kr2.report --use-names
+	kraken2 --db $params.kraken_db --paired $R1 $R2 --threads $task.cpus --output ${datasetID}.kr2.out --report ${datasetID}.kr2.report --use-names
         """
 }

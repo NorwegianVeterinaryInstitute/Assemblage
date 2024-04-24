@@ -180,8 +180,6 @@ kraken_data <- read_delim(
   select(ref, scientific_name, perc_fragments) %>%
   rename("Sample" = ref)
 
-contaminants <- filter(kraken_data, scientific_name != params$species_name)
-
 ggplot(kraken_data, aes(reorder(scientific_name, -perc_fragments), perc_fragments)) +
   stat_boxplot(geom = "errorbar", width = 0.4) +
   geom_boxplot(fill = "grey80") +
@@ -190,16 +188,6 @@ ggplot(kraken_data, aes(reorder(scientific_name, -perc_fragments), perc_fragment
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.3))
 
-```
-
-```{r, message=FALSE, warning=FALSE, dpi=600, fig.width=10, fig.height=5, fig.cap="Figure 3: Top species hits in the Kraken database (>0.1% of fragments), excluding S. mitis."}
-ggplot(contaminants, aes(reorder(scientific_name, -perc_fragments), perc_fragments)) +
-  stat_boxplot(geom = "errorbar", width = 0.4) +
-  geom_boxplot(fill = "grey80") +
-  labs(x = "Species",
-       y = "Percent fragments") +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.3))
 ```
 
 <br>

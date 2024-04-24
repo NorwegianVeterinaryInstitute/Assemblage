@@ -10,7 +10,7 @@ if (workflow == "draft") {
     rmarkdown::render(
       input  = 'report_draft_assembly.Rmd',
       params = list(
-        quast_report = "Quast_report.tsv",
+        quast_report = "transposed_report.tsv",
         kraken_report = "kraken_reports.txt",
         coverage_report = "coverage_reports.txt",
         genome_size_val = genome_size,

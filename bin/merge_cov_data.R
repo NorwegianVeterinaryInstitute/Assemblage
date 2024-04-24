@@ -47,7 +47,8 @@ coverage_reports <- get_data(
          `Median coverage`,
          `Mean percent coverage`,
          Coverage) %>%
-  rename("Assembly" = sample)
+  rename("Assembly" = sample) %>%
+  mutate(Coverage = gsub("\n", "", Coverage))
 
 write.table(
   coverage_reports,

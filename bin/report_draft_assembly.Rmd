@@ -36,7 +36,7 @@ library(sparkline)
 # QUAST assembly quality check
 
 QUAST is used to run general quality control on assemblies by investigating total size, N50, %GC, number of contigs, and other parameters. 
-```{r, message=FALSE, warning=FALSE, dpi=600, fig.width=10, fig.height=6, fig.cap="Figure 1: QUAST assembly general statistics."}
+```{r, message=FALSE, warning=FALSE, dpi=600, fig.width=10, fig.height=6, fig.cap="Figure 1: QUAST assembly general statistics. A: Box- and violin plots summarising the data across all genomes. B: Dotplot of genomes comparing two metrics at a time."}
 quast_data <- read_delim(
   params$quast_report,
   delim = "\t"
@@ -137,6 +137,9 @@ ggarrange(p, p_a, nrow = 1, labels = c("A","B"))
 ```
 
 ## Genome size check
+
+Here, the expected genome size is compared to the actual genome size,
+and deviations (+/- 20%) is reported.
 
 ```{r}
 genome_size <- as.numeric(params$genome_size_val)

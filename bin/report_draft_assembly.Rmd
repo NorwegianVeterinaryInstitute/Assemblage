@@ -17,8 +17,6 @@ params:
     value: x
   genome_size_val:
     value: x
-  species_name:
-    value: x
 ---
 
 ```{r, message=FALSE, warning=FALSE}

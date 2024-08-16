@@ -12,7 +12,7 @@ if (workflow == "draft") {
         quast_report = "transposed_report.tsv",
         kraken_report = "kraken_reports.txt",
         coverage_report = "coverage_reports.txt",
-        genome_size_val = genome_size,
+        genome_size_val = genome_size
       )
     )
 }

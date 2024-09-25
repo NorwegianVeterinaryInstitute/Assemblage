@@ -3,6 +3,8 @@
 args <- commandArgs(trailingOnly = TRUE)
 
 option <- args[1]
+r1 <- args[4]
+r2 <- args[5]
 
 if (option == "illumina") {
     path <- args[2]
@@ -19,8 +21,8 @@ if (option == "illumina") {
 
     filenames <- unique(sub(pattern, "", files))
     df <- data.frame(sample = filenames)
-    forward <- grep("_R1_", files_path, value = TRUE)
-    reverse <- grep("_R2_", files_path, value = TRUE)
+    forward <- grep(r1, files_path, value = TRUE)
+    reverse <- grep(r2, files_path, value = TRUE)
 
     df$R1 <- forward
     df$R2 <- reverse

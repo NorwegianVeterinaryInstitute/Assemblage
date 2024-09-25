@@ -15,6 +15,6 @@ process REPORT_DRAFT {
         script:
         """
         cp $baseDir/bin/report_draft_assembly.Rmd .
-        Rscript $baseDir/bin/gen_report.R "draft" $params.genome_size $params.species_name
+        Rscript $baseDir/bin/gen_report.R "draft" $params.genome_size
         """
 }

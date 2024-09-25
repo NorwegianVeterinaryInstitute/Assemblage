@@ -17,13 +17,20 @@ workflow DRAFT_ASSEMBLY {
 	Channel
             .fromPath(params.input, checkIfExists: true)
             .splitCsv(header:true, sep:",")
-            .map { tuple(it.id, file(it.R1, checkIfExists: true), file(it.R2, checkIfExists: true)) }
+            .map { tuple(it.sample, file(it.R1, checkIfExists: true), file(it.R2, checkIfExists: true)) }
             .set { input_ch }
+
+	Channel
+	    .fromPath(params.kraken_db, checkIfExists: true)
+	    .set { db_ch }
+
+	input_ch.combine(db_ch)
+	    .set { kraken2_input_ch }
 
 	// QC
         FASTQC(input_ch)
         MULTIQC_PRE(FASTQC.out.fastqc_reports.collect())
-        KRAKEN(input_ch)
+        KRAKEN(kraken2_input_ch)
 	MERGE_KRAKEN_REPORTS(KRAKEN.out.report_ch.collect())
         TRIM(input_ch)
 	RASUSA(TRIM.out.trim_reads)

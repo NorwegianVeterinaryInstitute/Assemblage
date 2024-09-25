@@ -19,6 +19,8 @@ process MERGE_COV_REPORTS {
         conda (params.enable_conda ? './assets/r_env.yml' : null)
         container 'evezeyl/r_assemblage:latest'
 
+	label 'process_high_memory'
+
         input:
         path(reports)
 

@@ -3,8 +3,11 @@ include { UNICYCLER_HYBRID }	from "../modules/UNICYCLER.nf"
 include { QUAST            }	from "../modules/QUAST.nf"
 include { BWA              }	from "../modules/BWA.nf"
 include { SAMTOOLS         }	from "../modules/SAMTOOLS.nf"
+include { SAMTOOLS_NP      }    from "../modules/SAMTOOLS.nf"
 include { BEDTOOLS         }	from "../modules/BEDTOOLS.nf"
+include { BEDTOOLS_NP      }    from "../modules/BEDTOOLS.nf"
 include { POLYPOLISH       }	from "../modules/POLYPOLISH.nf"
+include { MINIMAP2         }	from "../modules/MINIMAP.nf"
 
 workflow HYBRID_ASSEMBLY {
         // Channel
@@ -40,15 +43,21 @@ workflow HYBRID_ASSEMBLY {
 	illumina_ch.join(UNICYCLER_HYBRID.out.assemblies_ch, by: 0)
 		.set { mapping_ch }
 
+	nanopore_ch.join(UNICYCLER_HYBRID.out.assemblies_ch, by: 0)
+		.set { np_mapping_ch }
+
 	BWA(mapping_ch)
+	MINIMAP2(np_mapping_ch)
 	SAMTOOLS(BWA.out.samtools_ch)
+	SAMTOOLS_NP(MINIMAP2.out.samtools_np_ch)
 	BEDTOOLS(SAMTOOLS.out.bam_ch)
+	BEDTOOLS_NP(SAMTOOLS_NP.out.bam_np_ch)
 
 	// QC
 	QUAST(UNICYCLER_HYBRID.out.quast_ch.collect())
 
 	// Polishing
-	nanopore_ch.join(UNICYCLER_HYBRID.out.assemblies_ch, by: 0)
+	UNICYCLER_HYBRID.out.assemblies_ch
 		.join(BWA.out.bwa_polypolish_ch, by: 0)
 		.set { polypolish_ch }
 

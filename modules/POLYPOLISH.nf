@@ -1,6 +1,6 @@
 process POLYPOLISH {
-	conda (params.enable_conda ? 'bioconda::polypolish=0.5.0' : null)
-	container 'quay.io/biocontainers/polypolish:0.5.0--hdbdd923_4'
+	conda (params.enable_conda ? 'bioconda::polypolish=0.6.0' : null)
+	container 'quay.io/biocontainers/polypolish:0.6.0--h4c94732_1'
 
         input:
         tuple val(datasetID), file(assembly), file(alignment1), file(alignment2)

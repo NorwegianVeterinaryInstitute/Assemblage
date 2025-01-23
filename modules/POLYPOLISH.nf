@@ -9,7 +9,7 @@ process POLYPOLISH {
         file("*")
 
         """
-	polypolish_insert_filter.py --in1 $alignment1 --in2 $alignment2 --out1 filtered_1.sam --out2 filtered_2.sam
-	polypolish $assembly filtered_1.sam filtered_2.sam > ${datasetID}_filtered.fasta
+	polypolish filter --in1 $alignment1 --in2 $alignment2 --out1 filtered_1.sam --out2 filtered_2.sam
+	polypolish polish $assembly filtered_1.sam filtered_2.sam | sed 's/ polypolish//' > ${datasetID}_polished.fasta
 	"""
 }

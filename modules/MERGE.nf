@@ -83,6 +83,7 @@ process MERGE_QUAST_REPORTS {
 
         output:
         path "*"
+	path "quast_comparison_report.txt", emit: r_quast_ch
 
         script:
         """

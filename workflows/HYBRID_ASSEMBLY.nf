@@ -1,6 +1,6 @@
 include { FILTLONG                   } from "../modules/FILTLONG.nf"
 include { UNICYCLER_HYBRID           } from "../modules/UNICYCLER.nf"
-include { QUAST                      } from "../modules/QUAST.nf"
+include { QUAST_COMPARE              } from "../modules/QUAST.nf"
 include { BWA                        } from "../modules/BWA.nf"
 include { SAMTOOLS                   } from "../modules/SAMTOOLS.nf"
 include { SAMTOOLS_NP                } from "../modules/SAMTOOLS.nf"
@@ -62,9 +62,6 @@ workflow HYBRID_ASSEMBLY {
 	// Completeness
 	MERGE_COMPLETENESS_REPORTS(UNICYCLER_HYBRID.out.r_contig_names_ch.collect())
 
-	// QC
-	QUAST(UNICYCLER_HYBRID.out.quast_ch.collect())
-
 	// Polishing
 	UNICYCLER_HYBRID.out.assemblies_ch
 		.join(BWA.out.bwa_polypolish_ch, by: 0)
@@ -77,9 +74,10 @@ workflow HYBRID_ASSEMBLY {
 		.set { quast_compare_ch }
 
 	QUAST_COMPARE(quast_compare_ch)
+	MERGE_QUAST_REPORTS(QUAST_COMPARE.out.quast_compare_ch.collect())
 
 	// Reporting
-	REPORT_HYBRID(QUAST.out.R_quast,
+	REPORT_HYBRID(MERGE_QUAST_REPORTS.out.r_quast_ch,
 		      MERGE_COMPLETENESS_REPORTS.out.completeness_report,
 		      MERGE_COV_REPORTS.out.coverage_report,
 		      MERGE_NP_COV_REPORTS.out.np_coverage_report)

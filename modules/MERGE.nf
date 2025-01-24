@@ -45,7 +45,7 @@ process MERGE_NP_COV_REPORTS {
 
         output:
         path "*"
-        path "coverage_reports.txt", emit: np_coverage_report
+        path "*coverage_reports.txt", emit: np_coverage_report
 
         script:
         """

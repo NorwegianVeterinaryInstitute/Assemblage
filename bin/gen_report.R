@@ -16,3 +16,15 @@ if (workflow == "draft") {
       )
     )
 }
+
+if (workflow == "hybrid") {
+    rmarkdown::render(
+      input  = 'report_hybrid_assembly.Rmd',
+      params = list(
+        quast_report = "transposed_report.tsv",
+	completeness_report = "completeness_reports.txt",
+        coverage_report = "coverage_reports.txt",
+	np_coverage_report = "np_coverage_reports.txt"
+      )
+    )
+}

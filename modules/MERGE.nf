@@ -71,3 +71,21 @@ process MERGE_COMPLETENESS_REPORTS {
         Rscript $baseDir/bin/merge_completeness_data.R
         """
 }
+
+process MERGE_QUAST_REPORTS {
+        conda (params.enable_conda ? './assets/r_env.yml' : null)
+        container 'evezeyl/r_assemblage:latest'
+
+        label 'process_high_memory'
+
+        input:
+        path(reports)
+
+        output:
+        path "*"
+
+        script:
+        """
+        Rscript $baseDir/bin/merge_quast_data.R
+        """
+}

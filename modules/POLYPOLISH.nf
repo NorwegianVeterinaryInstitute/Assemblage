@@ -3,10 +3,11 @@ process POLYPOLISH {
 	container 'quay.io/biocontainers/polypolish:0.6.0--h4c94732_1'
 
         input:
-        tuple val(datasetID), file(assembly), file(alignment1), file(alignment2)
+        tuple val(datasetID), path(assembly), path(alignment1), path(alignment2)
 
         output:
         file("*")
+	tuple val(datasetID), path {"*_polished.fasta"}, emit: polished_assemblies_ch
 
         """
 	polypolish filter --in1 $alignment1 --in2 $alignment2 --out1 filtered_1.sam --out2 filtered_2.sam

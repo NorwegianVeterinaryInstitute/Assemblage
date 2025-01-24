@@ -18,3 +18,25 @@ process REPORT_DRAFT {
         Rscript $baseDir/bin/gen_report.R "draft" $params.genome_size
         """
 }
+
+process REPORT_HYBRID {
+        conda (params.enable_conda ? './assets/r_env.yml' : null)
+        container 'evezeyl/r_assemblage:latest'
+
+        label 'process_short'
+
+        input:
+        file(quast_report)
+        file(completeness_report)
+        file(coverage_report)
+	file(np_coverage_report)
+
+        output:
+        file("*")
+
+        script:
+        """
+        cp $baseDir/bin/report_hybrid_assembly.Rmd .
+        Rscript $baseDir/bin/gen_report.R "hybrid" 10
+        """
+}

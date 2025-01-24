@@ -1,15 +1,16 @@
-include { FILTLONG             } from "../modules/FILTLONG.nf"
-include { UNICYCLER_HYBRID     } from "../modules/UNICYCLER.nf"
-include { QUAST                } from "../modules/QUAST.nf"
-include { BWA                  } from "../modules/BWA.nf"
-include { SAMTOOLS             } from "../modules/SAMTOOLS.nf"
-include { SAMTOOLS_NP          } from "../modules/SAMTOOLS.nf"
-include { BEDTOOLS             } from "../modules/BEDTOOLS.nf"
-include { BEDTOOLS_NP          } from "../modules/BEDTOOLS.nf"
-include { POLYPOLISH           } from "../modules/POLYPOLISH.nf"
-include { MINIMAP2             } from "../modules/MINIMAP.nf"
-include { MERGE_COV_REPORTS    } from "../modules/MERGE.nf"
-include { MERGE_NP_COV_REPORTS } from "../modules/MERGE.nf"
+include { FILTLONG                   } from "../modules/FILTLONG.nf"
+include { UNICYCLER_HYBRID           } from "../modules/UNICYCLER.nf"
+include { QUAST                      } from "../modules/QUAST.nf"
+include { BWA                        } from "../modules/BWA.nf"
+include { SAMTOOLS                   } from "../modules/SAMTOOLS.nf"
+include { SAMTOOLS_NP                } from "../modules/SAMTOOLS.nf"
+include { BEDTOOLS                   } from "../modules/BEDTOOLS.nf"
+include { BEDTOOLS_NP                } from "../modules/BEDTOOLS.nf"
+include { POLYPOLISH                 } from "../modules/POLYPOLISH.nf"
+include { MINIMAP2                   } from "../modules/MINIMAP.nf"
+include { MERGE_COV_REPORTS          } from "../modules/MERGE.nf"
+include { MERGE_NP_COV_REPORTS       } from "../modules/MERGE.nf"
+include { MERGE_COMPLETENESS_REPORTS } from "../modules/MERGE.nf"
 
 workflow HYBRID_ASSEMBLY {
         // Channel
@@ -56,6 +57,9 @@ workflow HYBRID_ASSEMBLY {
 	BEDTOOLS_NP(SAMTOOLS_NP.out.bam_np_ch)
 	MERGE_COV_REPORTS(BEDTOOLS.out.cov_report_ch.collect())
 	MERGE_NP_COV_REPORTS(BEDTOOLS_NP.out.np_cov_report_ch.collect())
+
+	// Completeness
+	MERGE_COMPLETENESS_REPORTS(UNICYCLER_HYBRID.out.r_contig_names_ch.collect())
 
 	// QC
 	QUAST(UNICYCLER_HYBRID.out.quast_ch.collect())

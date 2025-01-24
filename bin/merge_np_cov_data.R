@@ -19,12 +19,13 @@ calc_cov <- function(df) {
     summarise(reference = unique(reference),
               cov_perc = round(sum(test)/max(pos)*100, 2),
               mean_reads_per_base = round(mean(reads_no_unmapped, na.rm = TRUE), 2),
+              mean_reads_per_base = ifelse(is.na(mean_reads_per_base), 0, mean_reads_per_base),
               median_reads_per_base = median(reads_no_unmapped, na.rm = TRUE),
               sd_reads_per_base = round(sd(reads_no_unmapped, na.rm = TRUE), 2)) %>%
     ungroup() %>%
-    mutate(mean_cov = round(mean(mean_reads_per_base),2),
-           median_cov = median(median_reads_per_base),
-           mean_perc_cov = round(mean(cov_perc),2),
+    mutate(mean_cov = round(mean(mean_reads_per_base, na.rm = TRUE),2),
+           median_cov = median(median_reads_per_base[which(!is.na(median_reads_per_base))]),
+           mean_perc_cov = round(mean(cov_perc, na.rm = TRUE),2),
            Coverage = spk_chr(mean_reads_per_base, width = 180, height = 25))
 }
 

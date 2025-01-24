@@ -3,14 +3,14 @@
 library(impoRt)
 library(dplyr)
 library(formattable)
+library(tidyr)
 
-# Import and merge completeness from contig names
 completeness_report <- get_data(
   filepath = ".",
   pattern = "contig_names.txt",
   delim = "\t",
   col_names = FALSE
-) %>%
+  ) %>%
   mutate(complete = ifelse(
     grepl("circular=true",X1), "circular", "non_circular"
   )) %>%

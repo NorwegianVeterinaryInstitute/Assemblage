@@ -38,7 +38,8 @@ if (option == "illumina") {
 } else if (option == "hybrid") {
     path1 <- args[2]
     path2 <- args[3]
-    pattern <- args[4]
+    pattern1 <- args[4]
+    pattern2 <- args[5]
 
     if (grepl("/$", path1) == FALSE) {
       path1 <- paste0(path1, "/")
@@ -49,20 +50,20 @@ if (option == "illumina") {
     }
 
     files <- list.files(path = path1,
-                        pattern = pattern)
+                        pattern = pattern1)
 
     np_files <- list.files(path = path2,
-                           pattern = ".fastq.gz")
+                           pattern = pattern2)
 
-    filenames <- sub(pattern, "", files)
-    filenames_np <- sub(".fastq.gz", "", np_files)
+    filenames <- sub(pattern1, "", files)
+    filenames_np <- sub(pattern2, "", np_files)
 
     df <- data.frame(sample = filenames)
     df$path <- paste0(path1, files)
-    df$read <- ifelse(grepl("_R1.fastq.gz", df$path), "R1", "R2")
+    df$read <- ifelse(grepl("_R1", df$path), "R1", "R2")
 
     df_np <- data.frame(sample = filenames_np,
-                        NP = paste0(path2, np_files))
+                        np = paste0(path2, np_files))
 
     il_samplesheet <- reshape(
       data = df,
@@ -79,7 +80,7 @@ if (option == "illumina") {
       all = TRUE
     )
 
-    names(samplesheet) <- c("sample","R1","R2","NP")
+    names(samplesheet) <- c("sample","R1","R2","np")
 
     write.table(
       x         = samplesheet,

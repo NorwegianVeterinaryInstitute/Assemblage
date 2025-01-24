@@ -49,6 +49,25 @@ process MERGE_NP_COV_REPORTS {
 
         script:
         """
-        Rscript $baseDir/bin/merge_cov_data.R
+        Rscript $baseDir/bin/merge_np_cov_data.R
+        """
+}
+
+process MERGE_COMPLETENESS_REPORTS {
+        conda (params.enable_conda ? './assets/r_env.yml' : null)
+        container 'evezeyl/r_assemblage:latest'
+
+        label 'process_high_memory'
+
+        input:
+        path(reports)
+
+        output:
+        path "*"
+        path "completeness_reports.txt", emit: completeness_report
+
+        script:
+        """
+        Rscript $baseDir/bin/merge_completeness_data.R
         """
 }

@@ -11,6 +11,7 @@ include { MINIMAP2                   } from "../modules/MINIMAP.nf"
 include { MERGE_COV_REPORTS          } from "../modules/MERGE.nf"
 include { MERGE_NP_COV_REPORTS       } from "../modules/MERGE.nf"
 include { MERGE_COMPLETENESS_REPORTS } from "../modules/MERGE.nf"
+include { REPORT_HYBRID              } from "../modules/REPORT.nf"
 
 workflow HYBRID_ASSEMBLY {
         // Channel
@@ -70,4 +71,10 @@ workflow HYBRID_ASSEMBLY {
 		.set { polypolish_ch }
 
 	POLYPOLISH(polypolish_ch)
+
+	// Reporting
+	REPORT_HYBRID(QUAST.out.r_quast,
+		      MERGE_COMPLETENESS_REPORTS.out.completeness_report,
+		      MERGE_COV_REPORTS.out.coverage_report,
+		      MERGE_NP_COV_REPORTS.out.np_coverage_report)
 }

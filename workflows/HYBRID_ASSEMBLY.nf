@@ -72,6 +72,12 @@ workflow HYBRID_ASSEMBLY {
 
 	POLYPOLISH(polypolish_ch)
 
+	UNICYCLER_HYBRID.out.assemblies_ch
+		.join(POLYPOLISH.out.polished_assemblies_ch, by: 0)
+		.set { quast_compare_ch }
+
+	QUAST_COMPARE(quast_compare_ch)
+
 	// Reporting
 	REPORT_HYBRID(QUAST.out.R_quast,
 		      MERGE_COMPLETENESS_REPORTS.out.completeness_report,

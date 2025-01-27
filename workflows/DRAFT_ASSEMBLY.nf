@@ -17,7 +17,7 @@ workflow DRAFT_ASSEMBLY {
 	Channel
             .fromPath(params.input, checkIfExists: true)
             .splitCsv(header:true, sep:",")
-            .map { tuple(it.sample, file(it.R1, checkIfExists: true), file(it.R2, checkIfExists: true)) }
+            .map { tuple(it.id, file(it.R1, checkIfExists: true), file(it.R2, checkIfExists: true)) }
             .set { input_ch }
 
 	Channel
@@ -46,7 +46,7 @@ workflow DRAFT_ASSEMBLY {
 
 	// Coverage calculation
 	BWA(mapping_ch)
-	SAMTOOLS(BWA.out.samtools_ch)
+	SAMTOOLS(BWA.out.samtools_bwa_ch)
 	BEDTOOLS(SAMTOOLS.out.bam_ch)
 	MERGE_COV_REPORTS(BEDTOOLS.out.cov_report_ch.collect())
 

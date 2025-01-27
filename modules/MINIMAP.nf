@@ -9,8 +9,9 @@ process MINIMAP2 {
 
         output:
         file("*")
-        tuple val(datasetID), path("${datasetID}_aln.sam"), emit: samtools_np_ch
+        tuple val(datasetID), path("${datasetID}_aln.sam"), val("nanopore"), emit: samtools_np_ch
 
+	script:
         """
 	minimap2 -ax map-ont $ref $NP > ${datasetID}_aln.sam
         """

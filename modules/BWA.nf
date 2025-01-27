@@ -8,10 +8,11 @@ process BWA {
         tuple val(datasetID), file(R1), file(R2), file(ref)
 
         output:
-        file("*")
-        tuple val(datasetID), path("${datasetID}.bam"), emit: samtools_ch
+        file("*.bam")
+        tuple val(datasetID), path("${datasetID}.bam"), val("illumina"), emit: samtools_bwa_ch
 	tuple val(datasetID), path("${datasetID}_alignments1.sam"), path("${datasetID}_alignments2.sam"), emit: bwa_polypolish_ch
 
+	script:
         """
 	bwa index $ref
 	bwa mem -t $task.cpus $ref $R1 $R2 > ${datasetID}.bam
@@ -19,4 +20,3 @@ process BWA {
 	bwa mem -t $task.cpus -a $ref $R2 > ${datasetID}_alignments2.sam
         """
 }
-

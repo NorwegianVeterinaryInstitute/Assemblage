@@ -42,7 +42,8 @@ workflow HYBRID_ASSEMBLY {
 	illumina_ch.join(UNICYCLER_HYBRID.out.assemblies_ch, by: 0)
 		.set { mapping_ch }
 
-	nanopore_ch.join(UNICYCLER_HYBRID.out.assemblies_ch, by: 0)
+	FILTLONG.out.filtlong_ch
+	        .join(UNICYCLER_HYBRID.out.assemblies_ch, by: 0)
 		.set { np_mapping_ch }
 
 	BWA(mapping_ch)

@@ -52,6 +52,7 @@ workflow HYBRID_ASSEMBLY {
 		.concat(MINIMAP2.out.samtools_np_ch)
 		.set { samtools_ch }
 
+
 	SAMTOOLS(samtools_ch)
 	BEDTOOLS(SAMTOOLS.out.bam_ch)
 
@@ -78,4 +79,5 @@ workflow HYBRID_ASSEMBLY {
 		      MERGE_REPORTS.out.completeness_report_ch,
 		      MERGE_REPORTS.out.il_coverage_report_ch,
 		      MERGE_REPORTS.out.np_coverage_report_ch)
+
 }

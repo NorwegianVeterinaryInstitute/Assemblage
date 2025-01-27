@@ -58,7 +58,7 @@ if (option == "illumina") {
     filenames <- sub(pattern1, "", files)
     filenames_np <- sub(pattern2, "", np_files)
 
-    df <- data.frame(sample = filenames)
+    df <- data.frame(id = filenames)
     df$path <- paste0(path1, files)
     df$read <- ifelse(grepl("_R1", df$path), "R1", "R2")
 
@@ -69,18 +69,18 @@ if (option == "illumina") {
       data = df,
       direction = "wide",
       v.names = "path",
-      idvar = "sample",
+      idvar = "id",
       timevar = "read"
     )
 
     samplesheet <- merge(
       x = il_samplesheet,
       y = df_np,
-      by = "sample",
+      by = "id",
       all = TRUE
     )
 
-    names(samplesheet) <- c("sample","R1","R2","np")
+    names(samplesheet) <- c("id","R1","R2","np")
 
     write.table(
       x         = samplesheet,

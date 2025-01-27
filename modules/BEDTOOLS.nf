@@ -10,13 +10,12 @@ process BEDTOOLS {
 	path "*genomecov.txt", emit: cov_report_ch
 
 	script:
-	if (seq == "illumina") {
+	if( seq == "illumina" )
 	    """
 	    bedtools genomecov -ibam $bam -d > ${datasetID}_il_genomecov.txt
 	    """
-	} else {
+	else if( seq == "nanopore")
 	    """
 	    bedtools genomecov -ibam $bam -d > ${datasetID}_np_genomecov.txt
 	    """
-	}
 }

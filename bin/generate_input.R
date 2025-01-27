@@ -62,7 +62,7 @@ if (option == "illumina") {
     df$path <- paste0(path1, files)
     df$read <- ifelse(grepl("_R1", df$path), "R1", "R2")
 
-    df_np <- data.frame(sample = filenames_np,
+    df_np <- data.frame(id = filenames_np,
                         np = paste0(path2, np_files))
 
     il_samplesheet <- reshape(

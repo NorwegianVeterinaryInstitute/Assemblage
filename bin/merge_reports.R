@@ -35,7 +35,13 @@ completeness_report <- get_data(
   ) %>%
   select(-non_circular) %>%
   mutate(`Percent circularized contigs` = color_bar(color = "#80b1d3")(percent),
-         `Completeness of genome` = color_tile("#fb8072","#b3de69")(completeness)) %>%
+         `Completeness of genome` = cell_spec(
+           completeness,
+           color = "white",
+           bold = TRUE,
+           background = ifelse(completeness == "Complete", "#b3de69", "#fb8072"
+          )
+  ) %>%
   rename(
     "Circularized contigs" = circular,
     "Total number of contigs" = total,

@@ -144,7 +144,7 @@ coverage_reports <- get_data(
   bind_rows(.id = "sample") %>%
   group_by(sample) %>%
   summarise_all(list(func_paste)) %>%
-  mutate(sample = sub("np__genomecov.txt", "", sample),
+  mutate(sample = sub("_np_genomecov.txt", "", sample),
          `Mean coverage` = color_bar(color = "#d9d9d9")(mean_cov),
          `Median coverage` = color_bar(color = "#ccebc5")(median_cov),
          `Mean percent coverage` = color_bar(color = "#fccde5")(mean_perc_cov)) %>%

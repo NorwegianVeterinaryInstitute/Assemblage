@@ -44,6 +44,7 @@ process MERGE_REPORTS {
         path(quast_reports)
 	path(completeness_reports)
 	path(coverage_reports)
+	path(kraken_reports)
 
         output:
         path "*"

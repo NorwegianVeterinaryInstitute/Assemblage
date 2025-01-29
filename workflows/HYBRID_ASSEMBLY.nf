@@ -56,7 +56,8 @@ workflow HYBRID_ASSEMBLY {
 	UNICYCLER_HYBRID(assembly_ch)
 
 	// Coverage calculation
-	illumina_ch.join(UNICYCLER_HYBRID.out.assemblies_ch, by: 0)
+	RASUSA.out.subsampled_reads
+	        .join(UNICYCLER_HYBRID.out.assemblies_ch, by: 0)
 		.set { mapping_ch }
 
 	FILTLONG.out.filtlong_ch
@@ -97,6 +98,7 @@ workflow HYBRID_ASSEMBLY {
 	REPORT_HYBRID(MERGE_REPORTS.out.quast_report_ch,
 		      MERGE_REPORTS.out.completeness_report_ch,
 		      MERGE_REPORTS.out.il_coverage_report_ch,
-		      MERGE_REPORTS.out.np_coverage_report_ch)
+		      MERGE_REPORTS.out.np_coverage_report_ch,
+	              MERGE_REPORTS.out.kraken_report_ch)
 
 }

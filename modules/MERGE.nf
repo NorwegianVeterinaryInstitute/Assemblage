@@ -52,6 +52,7 @@ process MERGE_REPORTS {
 	path "completeness_reports.txt", emit: completeness_report_ch
 	path "il_coverage_reports.txt", emit: il_coverage_report_ch
         path "np_coverage_reports.txt", emit: np_coverage_report_ch
+        path "kraken_reports.txt", emit: kraken_report_ch
 
         script:
         """

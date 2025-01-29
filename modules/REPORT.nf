@@ -30,6 +30,7 @@ process REPORT_HYBRID {
         file(completeness_report)
         file(coverage_report)
 	file(np_coverage_report)
+	file(kraken_report)
 
         output:
         file("*")

@@ -1,3 +1,7 @@
+include { FASTQC           } from "../modules/FASTQC.nf"
+include { MULTIQC_PRE      } from "../modules/MULTIQC.nf"
+include { KRAKEN           } from "../modules/KRAKEN.nf"
+include { RASUSA           } from "../modules/RASUSA.nf"
 include { FILTLONG         } from "../modules/FILTLONG.nf"
 include { UNICYCLER_HYBRID } from "../modules/UNICYCLER.nf"
 include { QUAST_COMPARE    } from "../modules/QUAST.nf"
@@ -29,10 +33,23 @@ workflow HYBRID_ASSEMBLY {
                 }
                 .set { nanopore_ch }
 
+	Channel
+            .fromPath(params.kraken_db, checkIfExists: true)
+            .set { db_ch }
+
+        illumina_ch.combine(db_ch)
+            .set { kraken2_input_ch }
+
+	// Quality control
+	FASTQC(illumina_ch)
+        MULTIQC_PRE(FASTQC.out.fastqc_reports.collect())
+        KRAKEN(kraken2_input_ch)
+        RASUSA(illumina_ch)
+
 	// Read filtering
 	FILTLONG(nanopore_ch)
 
-	illumina_ch.join(FILTLONG.out.filtlong_ch, by: 0)
+	RASUSA.out.subsampled_reads.join(FILTLONG.out.filtlong_ch, by: 0)
 		.set { assembly_ch }
 
 	// Assembly
@@ -73,7 +90,8 @@ workflow HYBRID_ASSEMBLY {
 	// Merge reports
 	MERGE_REPORTS(QUAST_COMPARE.out.quast_compare_ch.collect(),
 		      UNICYCLER_HYBRID.out.r_contig_names_ch.collect(),
-		      BEDTOOLS.out.cov_report_ch.collect())
+		      BEDTOOLS.out.cov_report_ch.collect(),
+                      KRAKEN.out.report_ch.collect())
 
 	// Reporting
 	REPORT_HYBRID(MERGE_REPORTS.out.quast_report_ch,

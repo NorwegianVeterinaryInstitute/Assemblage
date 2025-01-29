@@ -17,6 +17,8 @@ params:
     value: x
   np_coverage_report:
     value: x
+  kraken_report:
+    value: x
 ---
 
 ```{r, message=FALSE, warning=FALSE}
@@ -134,6 +136,36 @@ p_a <- ggarrange(p1, p2, p3, p4, nrow = 2, ncol = 2)
 # Finally, combine both plots into one
 ggarrange(p, p_a, nrow = 1, labels = c("A","B"))
 ```
+
+# Kraken contamination check
+Kraken2 is a tool that maps reads to a database of a myriad of bacterial species, and gives the percent of reads that mapped to each taxonomic level. The tool is useful when looking for potential contamination in sequenced samples.
+
+```{r, message=FALSE, warning=FALSE, dpi=600, fig.width=10, fig.height=5, fig.cap="Figure 2: Top species hits in the Kraken database (>0.1% of fragments)"}
+
+kraken_data <- read_delim(
+  params$kraken_report,
+  delim = "\t",
+  col_names = TRUE
+) %>%
+  mutate(perc_fragments = as.numeric(perc_fragments)) %>%
+  filter(rank_code == "S",
+         perc_fragments > 0.1) %>%
+  select(ref, scientific_name, perc_fragments) %>%
+  rename("Sample" = ref)
+
+ggplot(kraken_data, aes(reorder(scientific_name, -perc_fragments), perc_fragments)) +
+  stat_boxplot(geom = "errorbar", width = 0.4) +
+  geom_boxplot(fill = "grey80") +
+  labs(x = "Species",
+       y = "Percent fragments") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.3))
+
+```
+
+<br>
+
+<br>
 
 ## Genome completeness
 Genome completeness is estimated from the number of contigs tagget with `circular = TRUE` by Unicycler. 

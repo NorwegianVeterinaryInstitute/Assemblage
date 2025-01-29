@@ -25,6 +25,7 @@ if (workflow == "hybrid") {
 	completeness_report = "completeness_reports.txt",
         coverage_report = "il_coverage_reports.txt",
 	np_coverage_report = "np_coverage_reports.txt"
+	kraken_report = "kraken_reports.txt"
       )
     )
 }

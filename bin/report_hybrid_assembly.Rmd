@@ -137,6 +137,10 @@ p_a <- ggarrange(p1, p2, p3, p4, nrow = 2, ncol = 2)
 ggarrange(p, p_a, nrow = 1, labels = c("A","B"))
 ```
 
+<br>
+
+<br>
+
 # Kraken contamination check
 Kraken2 is a tool that maps reads to a database of a myriad of bacterial species, and gives the percent of reads that mapped to each taxonomic level. The tool is useful when looking for potential contamination in sequenced samples.
 

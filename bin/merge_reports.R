@@ -6,6 +6,7 @@
 library(impoRt)
 library(dplyr)
 library(formattable)
+library(kableExtra)
 library(tidyr)
 library(sparkline)
 
@@ -41,7 +42,7 @@ completeness_report <- get_data(
            bold = TRUE,
            background = ifelse(completeness == "Complete", "#b3de69", "#fb8072"
           )
-  ) %>%
+  )) %>%
   rename(
     "Circularized contigs" = circular,
     "Total number of contigs" = total,

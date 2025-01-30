@@ -13,7 +13,7 @@ Status: Complete
 ### Hybrid genome assembly
 This track generates assemblies based on both Illumina and Nanopore reads, using hybrid assembly.
 
-Status: Under construction
+Status: Complete
 
 ### Optimized genome assembly
 This track is using the long-read-first assembly method, compares that to a hybrid assembly, and merges all plasmid sequences by the use of trycycler.

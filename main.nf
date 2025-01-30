@@ -10,12 +10,23 @@ nextflow.enable.dsl=2
 include { HYBRID_ASSEMBLY } from "./workflows/HYBRID_ASSEMBLY.nf"
 include { DRAFT_ASSEMBLY  } from "./workflows/DRAFT_ASSEMBLY.nf"
 
+// Subworkflows
+include { ELLIPSIS } from "./subworkflows/ELLIPSIS.nf"
+
 workflow {
 	if (params.track == "hybrid") {
 		HYBRID_ASSEMBLY()
+		
+	    if (params.ellipsis) {
+		ELLIPSIS(HYBRID_ASSEMBLY.out.ellipsis_ch)
+	    }
 	}
 	if (params.track == "draft") {
 		DRAFT_ASSEMBLY()
+
+            if (params.ellipsis) {
+                ELLIPSIS(DRAFT_ASSEMBLY.out.ellipsis_ch)
+            }
 	}
 }
 

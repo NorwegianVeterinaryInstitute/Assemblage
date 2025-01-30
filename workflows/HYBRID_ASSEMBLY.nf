@@ -101,4 +101,6 @@ workflow HYBRID_ASSEMBLY {
 		      MERGE_REPORTS.out.np_coverage_report_ch,
 	              MERGE_REPORTS.out.kraken_report_ch)
 
+	emit:
+	ellipsis_ch = POLYPOLISH.out.polished_assemblies_ch
 }

@@ -58,4 +58,7 @@ workflow DRAFT_ASSEMBLY {
 	REPORT_DRAFT(QUAST.out.R_quast,
 	             MERGE_KRAKEN_REPORTS.out.kraken_report,
 	             MERGE_COV_REPORTS.out.coverage_report)
+
+	emit:
+	ellipsis_ch = UNICYCLER.out.assembly_ch
 }

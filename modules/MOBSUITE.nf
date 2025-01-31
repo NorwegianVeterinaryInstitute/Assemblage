@@ -7,7 +7,7 @@ process MOB_RECON {
 
         output:
         path "*contig_report.txt", emit: mob_contig_report_ch
-	tuple val(datasetID), path("*.fasta"), emit: mob_replicon_ch
+	tuple val(datasetID), path("*plasmid*.fasta"), emit: mob_plasmid_ch
 
         script:
         """

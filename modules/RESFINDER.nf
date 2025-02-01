@@ -9,6 +9,6 @@ process RESFINDER {
         file("*")
 
         """
-	python -m resfinder -o . -s $params.species -l $params.mincov -t $params.identity_threshold --acquired --disinfectant --point --ignore_missing_species -ifa $assembly
+	python -m resfinder -o . -s $params.species -l $params.mincov -t $params.identity_threshold --acquired --db_path_res $params.resfinder_db --ignore_missing_species -ifa $assembly
 	"""
 }

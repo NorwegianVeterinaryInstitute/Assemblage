@@ -17,5 +17,7 @@ workflow ELLIPSIS {
 
 	// Run modules
 	BAKTA(assemblies)
+	RESFINDER(assemblies)
+
 	MOB_RECON(input_ch)
 }

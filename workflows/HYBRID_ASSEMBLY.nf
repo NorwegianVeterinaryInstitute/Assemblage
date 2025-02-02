@@ -14,7 +14,18 @@ include { MERGE_REPORTS    } from "../modules/MERGE.nf"
 include { REPORT_HYBRID    } from "../modules/REPORT.nf"
 
 workflow HYBRID_ASSEMBLY {
+	// Check input parameters
+	if (!params.input) {
+                exit 1, "Missing input file."
+        }
+	if (!params.genome_size) {
+                exit 1, "Missing genome size parameter."
+        }
+	if (!params.kraken_db) {
+                exit 1, "Missing kraken database path."
+        }
 
+	// Channels
 	Channel
             .fromPath(params.input, checkIfExists: true)
             .splitCsv(header:true, sep:",")

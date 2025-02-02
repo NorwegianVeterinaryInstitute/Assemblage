@@ -1,6 +1,8 @@
-include { MOB_RECON     } from "../modules/MOBSUITE.nf"
-include { BAKTA         } from "../modules/BAKTA.nf"
-include { RESFINDER     } from "../modules/RESFINDER.nf"
+include { MOB_RECON       } from "../modules/MOBSUITE.nf"
+include { BAKTA           } from "../modules/BAKTA.nf"
+include { RESFINDER       } from "../modules/RESFINDER.nf"
+include { VIRULENCEFINDER } from "../modules/VIRFINDER.nf"
+include { PLASMIDFINDER   } from "../modules/PLASMIDFINDER.nf"
 
 workflow ELLIPSIS {
 	take: 
@@ -18,6 +20,8 @@ workflow ELLIPSIS {
 	// Run modules
 	BAKTA(assemblies)
 	RESFINDER(assemblies)
+	VIRULENCEFINDER(assemblies)
+	PLASMIDFINDER(assemblies)
 
 	MOB_RECON(input_ch)
 }

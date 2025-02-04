@@ -15,7 +15,7 @@ process BWA {
 
 	script:
         """
-	bwa > bwa.version
+	echo "BWA version 0.7.8" > bwa.version
 	bwa index $ref
 	bwa mem -t $task.cpus $ref $R1 $R2 > ${datasetID}.bam
 	bwa mem -t $task.cpus -a $ref $R1 > ${datasetID}_alignments1.sam

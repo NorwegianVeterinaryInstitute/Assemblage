@@ -8,8 +8,10 @@ process FASTQC {
         output:
         file("*")
         path "$datasetID/*_fastqc.zip", emit: fastqc_reports
+	path "fastqc.version"
 
         """
+	fastqc --version > fastqc.version
         mkdir $datasetID
         fastqc $R1 $R2 -o $datasetID -t $task.cpus
         """

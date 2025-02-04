@@ -7,16 +7,19 @@ process SAMTOOLS {
 
         output:
 	tuple val(datasetID), path("*mapped_sorted.bam"), env(seqtype), emit: bam_ch
+	path "samtools.version"
 
 	script:
 	if( seq == "illumina" )
 	    """
+	    samtools --version > samtools.version
 	    samtools sort $bam -o ${datasetID}_mapped_sorted.bam
             samtools index ${datasetID}_mapped_sorted.bam
 	    seqtype="illumina"
 	    """
 	else if( seq == "nanopore" )
 	    """
+	    samtools --version > samtools.version
 	    samtools view -b $bam > ${datasetID}.bam
             samtools sort ${datasetID}.bam -o ${datasetID}_np_mapped_sorted.bam
             samtools index ${datasetID}_np_mapped_sorted.bam

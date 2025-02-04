@@ -11,11 +11,13 @@ process UNICYCLER {
         file("*")
         path("*.fasta"), emit: quast_ch
 	tuple val(datasetID), path("*.fasta"), emit: assembly_ch
+	path "unicycler.version"
 
 	script:
 	def args = task.ext.args ?: ''
 
         """
+	unicycler --version > unicycler.version
         unicycler \\
 		--threads $task.cpus \\
 		$args \\
@@ -42,11 +44,13 @@ process UNICYCLER_HYBRID {
         path("*.fasta"), emit: quast_ch
         tuple val(datasetID), path("*.fasta"), emit: assemblies_ch
 	path("*_contig_names.txt"), emit: r_contig_names_ch
+	path "unicycler.version"
 
         script:
         def args = task.ext.args ?: ''
 
         """
+	unicycler --version > unicycler.version
         unicycler \\
                 --threads $task.cpus \\
                 $args \\

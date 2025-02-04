@@ -7,6 +7,7 @@ process BAKTA {
 
         output:
         path "*.gff3", emit: bakta_ch
+	path "bakta.version"
 
         script:
         """

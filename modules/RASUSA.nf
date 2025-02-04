@@ -8,10 +8,12 @@ process RASUSA {
         output:
         file("*")
         tuple val(datasetID), path {"*rasusa_1.fq.gz"}, path {"*rasusa_2.fq.gz"}, emit: subsampled_reads
+	path "rasusa.version"
 
         script:
         """
 	rasusa --version > rasusa.version
 	rasusa --input $R1 $R2 --genome-size $params.genome_size --coverage $params.coverage --output ${datasetID}_rasusa_1.fq.gz ${datasetID}_rasusa_2.fq.gz &> rasusa.log
+	mv rasusa.log ${datasetID}_rasusa.log
         """
 }

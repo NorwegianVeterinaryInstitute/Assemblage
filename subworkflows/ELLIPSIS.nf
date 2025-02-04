@@ -6,22 +6,57 @@ include { PLASMIDFINDER   } from "../modules/PLASMIDFINDER.nf"
 
 workflow ELLIPSIS {
 	take: 
-	assemblies
+	assembly
+	databases
 
 	main:
-	// Set channels
-	Channel
-	    .fromPath(params.mobsuite_db, checkIfExists: true)
-	    .set { mobsuite_db_ch }
 
-	assemblies.combine(mobsuite_db_ch)
-	    .set { input_ch }
+	// Set database channels
+	databases.filter{ it[0] == "bakta" }
+            .flatten()
+            .last()
+            .set { bakta_db }
+
+	databases.filter{ it[0] == "resfinder" }
+	    .flatten()
+	    .last()
+	    .set { resfinder_db }
+
+	databases.filter{ it[0] == "virulencefinder" }
+            .flatten()
+            .last()
+            .set { virfinder_db }
+
+	databases.filter{ it[0] == "plasmidfinder" }
+            .flatten()
+            .last()
+            .set { plasmidfinder_db }
+
+	databases.filter{ it[0] == "mobsuite" }
+            .flatten()
+            .last()
+            .set { mobsuite_db }
+
+	assembly.combine(bakta_db)
+	    .set { bakta_ch }
+	
+	assembly.combine(resfinder_db)
+            .set { resfinder_ch }
+
+	assembly.combine(virfinder_db)
+            .set { virfinder_ch }
+
+	assembly.combine(plasmidfinder_db)
+            .set { plasmidfinder_ch }
+
+	assembly.combine(mobsuite_db)
+            .set { mobsuite_ch }
+
 
 	// Run modules
-	BAKTA(assemblies)
-	RESFINDER(assemblies)
-	VIRULENCEFINDER(assemblies)
-	PLASMIDFINDER(assemblies)
-
-	MOB_RECON(input_ch)
+	BAKTA(bakta_ch)
+	RESFINDER(resfinder_ch)
+	VIRULENCEFINDER(virfinder_ch)
+	PLASMIDFINDER(plasmidfinder_ch)
+	MOB_RECON(mobsuite_ch)
 }

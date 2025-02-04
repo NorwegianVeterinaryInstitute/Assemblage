@@ -7,8 +7,10 @@ process VIRULENCEFINDER {
 	
         output:
         file("*")
+	path "virulencefinder.version"
 
         """
+	echo "Virulencefinder version 2.0.4" > virulencefinder.version
 	virulencefinder.py -o . -l $params.mincov -t $params.identity_threshold -p $db -i $assembly -x
 	"""
 }

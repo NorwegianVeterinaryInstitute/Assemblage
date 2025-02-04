@@ -7,8 +7,10 @@ process PLASMIDFINDER {
 
         output:
         file("*")
+	path "plasmidfinder.version"
 
         """
+	echo "Plasmidfinder version 2.1.6" > plasmidfinder.version
 	plasmidfinder.py -o . -l $params.mincov -t $params.identity_threshold -p $db -i $assembly -x
 	"""
 }

@@ -13,6 +13,6 @@ process RESFINDER {
         """
 	python -m resfinder --version > resfinder.version
 	python -m resfinder -o . -s $params.species -l $params.mincov -t $params.identity_threshold --acquired --db_path_res $db --ignore_missing_species -ifa $assembly
-	mv Resfinder_results_tab.txt ${datasetID}_resfinder_results.tsv
+	mv ResFinder_results_tab.txt ${datasetID}_resfinder_results.tsv
 	"""
 }

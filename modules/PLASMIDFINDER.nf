@@ -8,11 +8,11 @@ process PLASMIDFINDER {
         output:
         file("*")
 	path "plasmidfinder.version"
-	path "${datasetID}_virulencefinder_results.tsv", emit: plasmidfinder_out_ch
+	path "${datasetID}_plasmidfinder_results.tsv", emit: plasmidfinder_out_ch
 
         """
 	echo "Plasmidfinder version 2.1.6" > plasmidfinder.version
 	plasmidfinder.py -o . -l $params.mincov -t $params.identity_threshold -p $db -i $assembly -x
-	mv results_tab.tsv ${datasetID}_virulencefinder_results.tsv
+	mv results_tab.tsv ${datasetID}_plasmidfinder_results.tsv
 	"""
 }

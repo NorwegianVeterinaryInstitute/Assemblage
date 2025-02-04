@@ -3,12 +3,12 @@ process PLASMIDFINDER {
 	container 'quay.io/biocontainers/plasmidfinder:2.1.6--py310hdfd78af_1'
 
         input:
-        tuple val(datasetID), path(assembly)
+        tuple val(datasetID), path(assembly), path(db)
 
         output:
         file("*")
 
         """
-	plasmidfinder.py -o . -l $params.mincov -t $params.identity_threshold -p $params.plasmidfinder_db -i $assembly -x
+	plasmidfinder.py -o . -l $params.mincov -t $params.identity_threshold -p $db -i $assembly -x
 	"""
 }

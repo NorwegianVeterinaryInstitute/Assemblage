@@ -3,12 +3,12 @@ process VIRULENCEFINDER {
 	container 'quay.io/biocontainers/virulencefinder:2.0.4--hdfd78af_1'
 
         input:
-        tuple val(datasetID), path(assembly)
-
+        tuple val(datasetID), path(assembly), path(db)
+	
         output:
         file("*")
 
         """
-	virulencefinder.py -o . -l $params.mincov -t $params.identity_threshold -p $params.virfinder_db -i $assembly -x
+	virulencefinder.py -o . -l $params.mincov -t $params.identity_threshold -p $db -i $assembly -x
 	"""
 }

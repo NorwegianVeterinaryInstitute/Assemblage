@@ -3,12 +3,12 @@ process RESFINDER {
 	container 'quay.io/biocontainers/resfinder:4.6.0--pyhdfd78af_0'
 
         input:
-        tuple val(datasetID), path(assembly)
+        tuple val(datasetID), path(assembly), path(db)
 
         output:
         file("*")
 
         """
-	python -m resfinder -o . -s $params.species -l $params.mincov -t $params.identity_threshold --acquired --db_path_res $params.resfinder_db --ignore_missing_species -ifa $assembly
+	python -m resfinder -o . -s $params.species -l $params.mincov -t $params.identity_threshold --acquired --db_path_res $db --ignore_missing_species -ifa $assembly
 	"""
 }

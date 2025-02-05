@@ -5,7 +5,7 @@ library(dplyr)
 library(readr)
 
 resfinder_reports <- get_data(
-  "C:/Users/vi1511/temp/assemblage/test_reports/",
+  ".",
   pattern = "resfinder_results.tsv",
   delim = "\t",
   col_names = TRUE,
@@ -14,7 +14,7 @@ resfinder_reports <- get_data(
   mutate(ref = sub("_resfinder_results.tsv", "", ref))
 
 virfinder_reports <- get_data(
-  "C:/Users/vi1511/temp/assemblage/test_reports/",
+  ".",
   pattern = "virulencefinder_results.tsv",
   delim = "\t",
   col_names = TRUE,
@@ -23,7 +23,7 @@ virfinder_reports <- get_data(
   mutate(ref = sub("_virulencefinder_results.tsv", "", ref))
 
 plasmidfinder_reports <- get_data(
-  "C:/Users/vi1511/temp/assemblage/test_reports/",
+  ".",
   pattern = "plasmidfinder_results.tsv",
   delim = "\t",
   col_names = TRUE,
@@ -32,7 +32,7 @@ plasmidfinder_reports <- get_data(
   mutate(ref = sub("_plasmidfinder_results.tsv", "", ref))
 
 mobsuite_reports <- get_data(
-  "C:/Users/vi1511/temp/assemblage/test_reports/",
+  ".",
   pattern = "contig_report.txt",
   delim = "\t",
   col_names = TRUE,

@@ -6,7 +6,6 @@ process BEDTOOLS {
         tuple val(datasetID), file(bam), val(seq)
 
         output:
-        file("*")
 	path "*genomecov.txt", emit: cov_report_ch
 	path "bedtools.version"
 

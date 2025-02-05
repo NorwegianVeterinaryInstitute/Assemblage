@@ -8,8 +8,10 @@ process POLYPOLISH {
         output:
         file("*")
 	tuple val(datasetID), path {"*_polished.fasta"}, emit: polished_assemblies_ch
+	path "polypolish.version"
 
         """
+	polypolish --version > polypolish.version
 	polypolish filter --in1 $alignment1 --in2 $alignment2 --out1 filtered_1.sam --out2 filtered_2.sam
 	polypolish polish $assembly filtered_1.sam filtered_2.sam | sed 's/ polypolish//' > ${datasetID}_polished.fasta
 	"""

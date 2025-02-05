@@ -20,7 +20,7 @@ if (option == "illumina") {
     files_path <- paste0(path, files)
 
     filenames <- unique(sub(pattern, "", files))
-    df <- data.frame(sample = filenames)
+    df <- data.frame(id = filenames)
     forward <- grep(r1, files_path, value = TRUE)
     reverse <- grep(r2, files_path, value = TRUE)
 

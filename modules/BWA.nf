@@ -11,9 +11,11 @@ process BWA {
         file("*.bam")
         tuple val(datasetID), path("${datasetID}.bam"), val("illumina"), emit: samtools_bwa_ch
 	tuple val(datasetID), path("${datasetID}_alignments1.sam"), path("${datasetID}_alignments2.sam"), emit: bwa_polypolish_ch
+	path "bwa.version"
 
 	script:
         """
+	echo "BWA version 0.7.8" > bwa.version
 	bwa index $ref
 	bwa mem -t $task.cpus $ref $R1 $R2 > ${datasetID}.bam
 	bwa mem -t $task.cpus -a $ref $R1 > ${datasetID}_alignments1.sam

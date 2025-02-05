@@ -10,12 +10,30 @@ nextflow.enable.dsl=2
 include { HYBRID_ASSEMBLY } from "./workflows/HYBRID_ASSEMBLY.nf"
 include { DRAFT_ASSEMBLY  } from "./workflows/DRAFT_ASSEMBLY.nf"
 
+// Subworkflows
+include { ELLIPSIS    } from "./subworkflows/ELLIPSIS.nf"
+include { VALIDATE_DB } from "./subworkflows/VALIDATE.nf"
+
 workflow {
 	if (params.track == "hybrid") {
 		HYBRID_ASSEMBLY()
+		
+	    if (params.ellipsis) {
+
+		VALIDATE_DB(params.databases)
+		ELLIPSIS(HYBRID_ASSEMBLY.out.ellipsis_ch, 
+			 VALIDATE_DB.out.valid_db_ch)
+	    }
 	}
 	if (params.track == "draft") {
 		DRAFT_ASSEMBLY()
+
+	    if (params.ellipsis) {
+
+		VALIDATE_DB(params.databases)
+                ELLIPSIS(DRAFT_ASSEMBLY.out.ellipsis_ch,
+			 VALIDATE_DB.out.valid_db_ch)
+            }
 	}
 }
 

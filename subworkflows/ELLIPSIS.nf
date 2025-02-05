@@ -3,6 +3,7 @@ include { BAKTA           } from "../modules/BAKTA.nf"
 include { RESFINDER       } from "../modules/RESFINDER.nf"
 include { VIRULENCEFINDER } from "../modules/VIRFINDER.nf"
 include { PLASMIDFINDER   } from "../modules/PLASMIDFINDER.nf"
+include { REPORT_ELLIPSIS } from "../modules/REPORT.nf"
 
 workflow ELLIPSIS {
 	take: 
@@ -59,4 +60,9 @@ workflow ELLIPSIS {
 	VIRULENCEFINDER(virfinder_ch)
 	PLASMIDFINDER(plasmidfinder_ch)
 	MOB_RECON(mobsuite_ch)
+
+	REPORT_ELLIPSIS(RESFINDER.out.resfinder_out_ch.collect(),
+			VIRULENCEFINDER.out.virfinder_out_ch.collect(),
+			PLASMIDFINDER.out.plasmidfinder_out_ch.collect(),
+			MOB_RECON.out.mobsuite_out_ch.collect())
 }

@@ -8,9 +8,11 @@ process TRIM {
         output:
         file("*")
         tuple val(datasetID), path {"*val_1.fq.gz"}, path {"*val_2.fq.gz"}, emit: trim_reads
+	path "trim_galore.version"
 
         script:
         """
+	trim_galore --version > trim_galore.version
         trim_galore -o . --paired --quality $params.phred_score -e $params.error_rate --length $params.minlength $R1 $R2 &> ${datasetID}_trimgalore.log
         """
 }

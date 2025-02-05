@@ -7,8 +7,10 @@ process MULTIQC_PRE {
 
         output:
         file("*")
+	path "multiqc.version"
 
         """
+	multiqc --version > multiqc.version
         multiqc *.zip
         """
 }

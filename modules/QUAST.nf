@@ -8,9 +8,11 @@ process QUAST {
         output:
         file("*")
         path "transposed_report.tsv", emit: R_quast
+	path "quast.version"
 
         script:
         """
+	quast --version > quast.version
         quast --threads $task.cpus -o . *.fasta
         """
 }
@@ -25,9 +27,11 @@ process QUAST_COMPARE {
         output:
         file("*")
 	path "${datasetID}_transposed_report.tsv", emit: quast_compare_ch
+	path "quast.version"
 
         script:
         """
+	quast --version > quast.version
         quast --threads $task.cpus -o . --no-icarus --no-html -r $assembly_old $assembly_new
 	mv transposed_report.tsv ${datasetID}_transposed_report.tsv
         """

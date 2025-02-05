@@ -6,7 +6,6 @@ process MERGE_KRAKEN_REPORTS {
         path(reports)
 
         output:
-        path "*"
 	path "kraken_reports.txt", emit: kraken_report
 
         script:
@@ -25,7 +24,6 @@ process MERGE_COV_REPORTS {
         path(reports)
 
         output:
-        path "*"
         path "coverage_reports.txt", emit: coverage_report
 
         script:
@@ -47,7 +45,6 @@ process MERGE_REPORTS {
 	path(kraken_reports)
 
         output:
-        path "*"
 	path "quast_comparison_report.txt", emit: quast_report_ch
 	path "completeness_reports.txt", emit: completeness_report_ch
 	path "il_coverage_reports.txt", emit: il_coverage_report_ch

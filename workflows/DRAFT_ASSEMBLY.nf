@@ -12,6 +12,17 @@ include { MERGE_KRAKEN_REPORTS; MERGE_COV_REPORTS } from "../modules/MERGE.nf"
 include { REPORT_DRAFT                            } from "../modules/REPORT.nf"
 
 workflow DRAFT_ASSEMBLY {
+	// Check input parameters
+	if (!params.input) {
+                exit 1, "Missing input file."
+        }
+	if (!params.kraken_db) {
+                exit 1, "Missing Kraken database path."
+        }
+	if (!params.genome_size) {
+                exit 1, "Missing genome size parameter."
+        }
+
         // Channel
 
 	Channel
@@ -58,4 +69,7 @@ workflow DRAFT_ASSEMBLY {
 	REPORT_DRAFT(QUAST.out.R_quast,
 	             MERGE_KRAKEN_REPORTS.out.kraken_report,
 	             MERGE_COV_REPORTS.out.coverage_report)
+
+	emit:
+	ellipsis_ch = UNICYCLER.out.assembly_ch
 }

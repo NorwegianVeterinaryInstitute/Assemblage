@@ -7,5 +7,8 @@ workflow NPQC {
 
 	main:
 	FASTPLONG(reads)
-	MULTIQC(FASTPLONG.out.fastplong_ch.collect())
+	//MULTIQC(FASTPLONG.out.fastplong_ch.collect())
+
+	emit:
+	reads=FASTPLONG.out.fastplong_ch
 }

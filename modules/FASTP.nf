@@ -6,7 +6,8 @@ process FASTPLONG {
         tuple val(datasetID), path(NP)
 
         output:
-        path "${datasetID}_fastp.json", emit: fastplong_ch
+        path "${datasetID}_fastp.json"
+	tuple val(datasetID), path("${datasetID}_fastp.fastq.gz"), emit: fastplong_ch
 	path "fastplong.version"
 
         """

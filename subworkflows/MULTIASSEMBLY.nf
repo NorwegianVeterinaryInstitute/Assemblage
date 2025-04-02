@@ -15,11 +15,11 @@ workflow MULTIASSEMBLY {
 	// Subset reads
 	AUTOCYCLER_SUBSET(reads)
 
+	// Set assembly channels
 	AUTOCYCLER_SUBSET.out.sub_ch.transpose()
 		.collate( 4 )
 		.set { subset_ch }
 
-	// Set assembly channels
 	sub_ch1 = subset_ch.map { it[0] }
 	sub_ch2 = subset_ch.map { it[1] }
 	sub_ch3 = subset_ch.map { it[2] }

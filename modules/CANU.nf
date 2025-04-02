@@ -1,6 +1,6 @@
 process CANU {
-	conda (params.enable_conda ? 'bioconda::canu=2.3' : null)
-	container 'quay.io/biocontainers/canu:2.3--h3fb4750_0'
+	conda (params.enable_conda ? 'bioconda::canu=2.2' : null)
+	container 'quay.io/biocontainers/canu:2.2--ha47f30e_0'
 
 	label 'process_high_memory_time'
 

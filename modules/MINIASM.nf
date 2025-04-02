@@ -13,7 +13,7 @@ process MINIASM {
 
 	script:
         """
-	miniasm --version > miniasm.version
+	miniasm -V > miniasm.version
 	miniasm -f $NP $paf > ${datasetID}_unpolished.gfa
 	"""
 }

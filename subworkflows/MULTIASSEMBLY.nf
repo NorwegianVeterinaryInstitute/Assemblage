@@ -13,15 +13,23 @@ workflow MULTIASSEMBLY {
 
 	main:
 	// Subset reads
-	AUTOCYCLER_SUBSET(FILTLONG.out.filtlong_ch)
+	AUTOCYCLER_SUBSET(reads)
 
-	// Set subset channels
+	AUTOCYCLER_SUBSET.out.sub_ch.transpose()
+		.collate( 4 )
+		.set { subset_ch }
+
+	// Set assembly channels
+	sub_ch1 = subset_ch.map { it[0] }
+	sub_ch2 = subset_ch.map { it[1] }
+	sub_ch3 = subset_ch.map { it[2] }
+	sub_ch4 = subset_ch.map { it[3] }
 
 	// Run assemblers
-	CANU()
-	FLYE()
-	RAVEN()
-	MINIMAP2_OVERLAP()
+	CANU(sub_ch1)
+	FLYE(sub_ch2)
+	RAVEN(sub_ch3)
+	MINIMAP2_OVERLAP(sub_ch4)
 	MINIASM(MINIMAP2_OVERLAP.out.minimap_overlap_ch)
 	MINIPOLISH(MINIASM.out.miniasm_gfa_ch)
 	ANY2FASTA(MINIPOLISH.out.miniasm_polished_ch)

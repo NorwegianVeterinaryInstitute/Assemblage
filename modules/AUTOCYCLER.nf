@@ -2,10 +2,10 @@ process AUTOCYCLER_SUBSET {
 	conda (params.enable_conda ? 'bioconda::autocycler=0.2.1' : null)
 	container 'evezeyl/autocycler:0.2.1'
 
-        input:
-        tuple val(datasetID), file(reads)
+    input:
+    tuple val(datasetID), file(reads)
 
-        output:
+    output:
 	path "autocycler.version"
 	tuple val(datasetID), path("sample_*"), emit: sub_ch
 

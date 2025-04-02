@@ -4,10 +4,10 @@ process CANU {
 
 	label 'process_high_memory_time'
 
-        input:
-        tuple val(datasetID), path(reads)
+    input:
+    tuple val(datasetID), path(reads)
 
-        output:
+    output:
 	tuple val(datasetID), path("*.fasta"), emit: canu_assembly_ch
 	path "canu.version"
 

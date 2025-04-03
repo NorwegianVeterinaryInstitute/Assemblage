@@ -4,16 +4,17 @@ process RAVEN {
 
 	label 'process_high_memory_time'
 
-        input:
-        tuple val(datasetID), path(reads)
+    input:
+    tuple val(datasetID), path(reads)
 
-        output:
+    output:
 	tuple val(datasetID), path("*.fasta"), emit: raven_assembly_ch
 	path "raven.version"
 
 	script:
-        """
+	"""
+	fastaname=\$(basename ${reads} | cut -d. -f1)
 	raven --version > raven.version
-	raven --threads $task.cpus --disable-checkpoints $reads > ${datasetID}_raven.fasta
+	raven --threads $task.cpus --disable-checkpoints $reads > \${fastaname}_raven.fasta
 	"""
 }

@@ -12,9 +12,10 @@ process CANU {
 	path "canu.version"
 
 	script:
-        """
+    """
+	fastaname=\$(basename ${reads} | cut -d. -f1)
 	canu --version > canu.version
-	canu -p ${datasetID}_canu -d canu genomeSize=$params.genome_size useGrid=false maxThreads=$task.cpus -nanopore $reads
+	canu -p \${fastaname}_canu -d canu genomeSize=$params.genome_size useGrid=false maxThreads=$task.cpus -nanopore $reads
 	mv canu/*contigs.fasta .
 	"""
 }

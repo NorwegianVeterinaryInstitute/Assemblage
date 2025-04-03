@@ -4,17 +4,18 @@ process FLYE {
 
 	label 'process_high_memory_time'
 
-        input:
-        tuple val(datasetID), path(reads)
+    input:
+    tuple val(datasetID), path(reads)
 
-        output:
+    output:
 	tuple val(datasetID), path("*.fasta"), emit: flye_assembly_ch
 	path "flye.version"
 
 	script:
-        """
+    """
+	fastaname=\$(basename ${reads} | cut -d. -f1)
 	flye --version > flye.version
 	flye --nano-hq $reads --threads $task.cpus --out-dir flye
-	cp flye/assembly.fasta ${datasetID}_flye.fasta
+	cp flye/assembly.fasta \${fastaname}_flye.fasta
 	"""
 }

@@ -4,16 +4,17 @@ process ANY2FASTA {
 
 	label 'process_high_memory_time'
 
-        input:
-        tuple val(datasetID), path(gfa)
+    input:
+    tuple val(datasetID), path(gfa)
 
-        output:
-	tuple val(datasetID), path("${datasetID}_miniasm.fasta"), emit: miniasm_assembly_ch
+    output:
+	tuple val(datasetID), path("*_miniasm.fasta"), emit: miniasm_assembly_ch
 	path "any2fasta.version"
 
 	script:
-        """
+    """
+	fastaname=\$(basename ${gfa} | cut -d. -f1)
 	any2fasta -v > any2fasta.version
-	any2fasta $gfa > ${datasetID}_miniasm.fasta
+	any2fasta $gfa > \${fastaname}_miniasm.fasta
 	"""
 }

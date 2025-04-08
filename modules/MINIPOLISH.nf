@@ -4,16 +4,17 @@ process MINIPOLISH {
 
 	label 'process_high_memory_time'
 
-        input:
-        tuple val(datasetID), path(NP), path(gfa)
+    input:
+    tuple val(datasetID), path(NP), path(gfa)
 
-        output:
+    output:
 	tuple val(datasetID), path("*.gfa"), emit: miniasm_polished_ch
 	path "minipolish.version"
 
 	script:
-        """
+    """
+	fastaname=\$(basename ${gfa} | cut -d. -f1)
 	minipolish --version > minipolish.version
-        minipolish --threads $task.cpus $NP $gfa > ${datasetID}_assembly.gfa
+    minipolish --threads $task.cpus $NP $gfa > \${fastaname}_assembly.gfa
 	"""
 }

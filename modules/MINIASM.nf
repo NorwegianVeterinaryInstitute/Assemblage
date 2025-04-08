@@ -4,16 +4,17 @@ process MINIASM {
 
 	label 'process_high_memory_time'
 
-        input:
-        tuple val(datasetID), path(NP), path(paf)
+    input:
+    tuple val(datasetID), path(NP), path(paf)
 
-        output:
+    output:
 	tuple val(datasetID), path(NP), path("*.gfa"), emit: miniasm_gfa_ch
 	path "miniasm.version"
 
 	script:
-        """
+    """
+	fastaname=\$(basename ${NP} | cut -d. -f1)
 	miniasm -V > miniasm.version
-	miniasm -f $NP $paf > ${datasetID}_unpolished.gfa
+	miniasm -f $NP $paf > \${fastaname}_unpolished.gfa
 	"""
 }

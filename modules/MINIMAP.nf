@@ -30,12 +30,13 @@ process MINIMAP2_OVERLAP {
 
         output:
         file("*")
-        tuple val(datasetID), path(NP), path("${datasetID}_overlap.paf"), emit: minimap_overlap_ch
+        tuple val(datasetID), path(NP), path("*_overlap.paf"), emit: minimap_overlap_ch
         path "minimap2.version"
 
         script:
         """
+        fastaname=\$(basename ${NP} | cut -d. -f1)
         minimap2 --version > minimap2.version
-        minimap2 -x ava-ont -t $task.cpus $NP $NP > ${datasetID}_overlap.paf
+        minimap2 -x ava-ont -t $task.cpus $NP $NP > \${fastaname}_overlap.paf
         """
 }

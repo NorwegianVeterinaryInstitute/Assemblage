@@ -1,11 +1,12 @@
-include { AUTOCYCLER_SUBSET } from "../modules/AUTOCYCLER.nf"
-include { CANU              } from "../modules/CANU.nf"
-include { FLYE              } from "../modules/FLYE.nf"
-include { RAVEN             } from "../modules/RAVEN.nf"
-include { MINIMAP2_OVERLAP  } from "../modules/MINIMAP.nf"
-include { MINIASM           } from "../modules/MINIASM.nf"
-include { MINIPOLISH        } from "../modules/MINIPOLISH.nf"
-include { ANY2FASTA         } from "../modules/ANY2FASTA.nf"
+include { AUTOCYCLER_SUBSET   } from "../modules/AUTOCYCLER.nf"
+include { CANU                } from "../modules/CANU.nf"
+include { FLYE                } from "../modules/FLYE.nf"
+include { RAVEN               } from "../modules/RAVEN.nf"
+include { MINIMAP2_OVERLAP    } from "../modules/MINIMAP.nf"
+include { MINIASM             } from "../modules/MINIASM.nf"
+include { MINIPOLISH          } from "../modules/MINIPOLISH.nf"
+include { ANY2FASTA           } from "../modules/ANY2FASTA.nf"
+include { AUTOCYCLER_COMPRESS } from "../modules/AUTOCYCLER.nf"
 
 workflow MULTIASSEMBLY {
 	take: 
@@ -34,18 +35,30 @@ workflow MULTIASSEMBLY {
 	MINIPOLISH(MINIASM.out.miniasm_gfa_ch)
 	ANY2FASTA(MINIPOLISH.out.miniasm_polished_ch)
 
-	// Collect into channel
-	canu_ch = CANU.out.canu_assembly_ch.collect()
-	flye_ch = FLYE.out.flye_assembly_ch.collect()
-	raven_ch = RAVEN.out.raven_assembly_ch.collect()
-	miniasm_ch = ANY2FASTA.out.miniasm_assembly_ch.collect()
+	// Merge channels
+	canu_ch = CANU.out.canu_assembly_ch
+		.groupTuple()
+		.map { meta, paths -> tuple(meta, paths.flatten()) }
 
-	// Set final output channel
-	all_assemblies = canu_ch
-            .join(flye_ch, by: 0)
-            .join(raven_ch, by: 0)
-            .join(miniasm_ch, by: 0)
+	flye_ch = FLYE.out.flye_assembly_ch
+		.groupTuple()
+		.map { meta, paths -> tuple(meta, paths.flatten()) }
+
+    raven_ch = RAVEN.out.raven_assembly_ch
+		.groupTuple()
+		.map { meta, paths -> tuple(meta, paths.flatten()) }
+
+	miniasm_ch = ANY2FASTA.out.miniasm_assembly_ch
+		.groupTuple()
+		.map { meta, paths -> tuple(meta, paths.flatten()) }
+
+	all_assemblies = canu_ch.join(flye_ch)
+		.join(raven_ch)
+		.join(miniasm_ch)
+	
+	// Run autocycler compress
+	AUTOCYCLER_COMPRESS(all_assemblies)
 
 	emit:
-	all_assemblies
+	AUTOCYCLER_COMPRESS.out.compress_ch
 }

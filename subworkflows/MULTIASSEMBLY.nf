@@ -60,5 +60,5 @@ workflow MULTIASSEMBLY {
 	AUTOCYCLER_COMPRESS(all_assemblies)
 
 	emit:
-	AUTOCYCLER_COMPRESS.out.compress_ch
+	graphs=AUTOCYCLER_COMPRESS.out.compress_ch
 }

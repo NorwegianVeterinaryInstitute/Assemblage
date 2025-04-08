@@ -7,11 +7,13 @@ process AUTOCYCLER_SUBSET {
 
     output:
 	path "autocycler.version"
-	tuple val(datasetID), path("sample_*"), emit: sub_ch
+	tuple val(datasetID), path("*sample_*"), emit: sub_ch
 
+	script:
 	"""
 	autocycler --version > autocycler.version
 	autocycler subsample --reads $reads --out_dir . --genome_size $params.genome_size --count 12 --min_read_depth $params.min_read_depth
+	ls sample_*.fastq | xargs -I {} mv {} ${datasetID}_{}
 	"""
 }
 

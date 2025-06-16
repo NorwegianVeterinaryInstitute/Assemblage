@@ -1,6 +1,6 @@
 process AUTOCYCLER_SUBSET {
-	conda (params.enable_conda ? 'bioconda::autocycler=0.2.1' : null)
-	container 'evezeyl/autocycler:0.2.1'
+	conda (params.enable_conda ? 'bioconda::autocycler=0.4.0' : null)
+	container 'quay.io/biocontainers/autocycler:0.4.0--h3ab6199_0'
 
     input:
     tuple val(datasetID), path(reads)
@@ -18,8 +18,8 @@ process AUTOCYCLER_SUBSET {
 }
 
 process AUTOCYCLER_COMPRESS {
-	conda (params.enable_conda ? 'bioconda::autocycler=0.2.1' : null)
-	container 'evezeyl/autocycler:0.2.1'
+	conda (params.enable_conda ? 'bioconda::autocycler=0.4.0' : null)
+	container 'quay.io/biocontainers/autocycler:0.4.0--h3ab6199_0'
 
     input:
     tuple val(datasetID), path(canu_asmbl), path(flye_asmbl), path(raven_asmbl), path(miniasm_asmbl)
@@ -34,8 +34,8 @@ process AUTOCYCLER_COMPRESS {
 }
 
 process AUTOCYCLER_CLUSTER {
-	conda (params.enable_conda ? 'bioconda::autocycler=0.2.1' : null)
-	container 'evezeyl/autocycler:0.2.1'
+	conda (params.enable_conda ? 'bioconda::autocycler=0.4.0' : null)
+	container 'quay.io/biocontainers/autocycler:0.4.0--h3ab6199_0'
 
 	label 'process_high_memory_time'
 
@@ -50,8 +50,8 @@ process AUTOCYCLER_CLUSTER {
 }
 
 process AUTOCYCLER_TRIM {
-	conda (params.enable_conda ? 'bioconda::autocycler=0.2.1' : null)
-	container 'evezeyl/autocycler:0.2.1'
+	conda (params.enable_conda ? 'bioconda::autocycler=0.4.0' : null)
+	container 'quay.io/biocontainers/autocycler:0.4.0--h3ab6199_0'
 
     input:
     tuple val(datasetID), path(gfa)

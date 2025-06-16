@@ -43,6 +43,7 @@ process AUTOCYCLER_CLUSTER {
     tuple val(datasetID), path(gfa)
 
     output:
+	tuple val(datasetID), path("clustering/qc_pass/cluster*", type: 'dir'), emit: cluster_ch
 
 	"""
 	autocycler cluster --cutoff $params.autocycler_cutoff --max_contigs $params.autocycler_n_contigs --min_assemblies $params.autocycler_min_assemblies -a . 
@@ -54,11 +55,26 @@ process AUTOCYCLER_TRIM {
 	container 'quay.io/biocontainers/autocycler:0.4.0--h3ab6199_0'
 
     input:
-    tuple val(datasetID), path(gfa)
+    tuple val(datasetID), path(dir)
+
+    output:
+	tuple val(datasetID), path("./cluster_*", type: 'dir'), emit: trim_ch
+
+	"""
+	autocycler trim --min_identity $params.autocycler_identity --max_unitigs $params.autocycler_max_unitigs --mad $params.autocycler_mad --threads $task.cpus -c $dir 
+	"""
+}
+
+process AUTOCYCLER_RESOLVE {
+	conda (params.enable_conda ? 'bioconda::autocycler=0.4.0' : null)
+	container 'quay.io/biocontainers/autocycler:0.4.0--h3ab6199_0'
+
+    input:
+    tuple val(datasetID), path(dir)
 
     output:
 
 	"""
-	autocycler trim --min_identity $params.autocycler_identity --max_unitigs $params.autocycler_max_unitigs --mad $params.autocycler_mad --threads $task.cpus -a . 
+	autocycler resolve -c $dir 
 	"""
 }

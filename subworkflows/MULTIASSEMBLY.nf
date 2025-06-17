@@ -61,4 +61,6 @@ workflow MULTIASSEMBLY {
 
 	emit:
 	graphs=AUTOCYCLER_COMPRESS.out.compress_ch
+	subset_yaml=AUTOCYCLER_SUBSET.out.subsample_yaml_ch
+	compress_yaml=AUTOCYCLER_COMPRESS.out.compress_yaml_ch
 }

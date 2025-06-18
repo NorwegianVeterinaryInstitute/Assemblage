@@ -7,8 +7,9 @@ log.info "=================================================="
 nextflow.enable.dsl=2
 
 // Workflows
-include { HYBRID_ASSEMBLY } from "./workflows/HYBRID_ASSEMBLY.nf"
-include { DRAFT_ASSEMBLY  } from "./workflows/DRAFT_ASSEMBLY.nf"
+include { HYBRID_ASSEMBLY    } from "./workflows/HYBRID_ASSEMBLY.nf"
+include { DRAFT_ASSEMBLY     } from "./workflows/DRAFT_ASSEMBLY.nf"
+include { LONG_READ_ASSEMBLY } from "./workflows/LONG_READ_ASSEMBLY.nf"
 
 // Subworkflows
 include { ELLIPSIS    } from "./subworkflows/ELLIPSIS.nf"
@@ -19,21 +20,29 @@ workflow {
 		HYBRID_ASSEMBLY()
 		
 	    if (params.ellipsis) {
-
 		VALIDATE_DB(params.databases)
 		ELLIPSIS(HYBRID_ASSEMBLY.out.ellipsis_ch, 
-			 VALIDATE_DB.out.valid_db_ch)
+			     VALIDATE_DB.out.valid_db_ch)
 	    }
 	}
 	if (params.track == "draft") {
 		DRAFT_ASSEMBLY()
 
 	    if (params.ellipsis) {
+			VALIDATE_DB(params.databases)
+            ELLIPSIS(DRAFT_ASSEMBLY.out.ellipsis_ch,
+			         VALIDATE_DB.out.valid_db_ch)
+        }
+	}
+	if (params.track == "long_read") {
+		LONG_READ_ASSEMBLY()
 
-		VALIDATE_DB(params.databases)
-                ELLIPSIS(DRAFT_ASSEMBLY.out.ellipsis_ch,
-			 VALIDATE_DB.out.valid_db_ch)
-            }
+		if (params.ellipsis) {
+			VALIDATE_DB(params.databases)
+        	ELLIPSIS(LONG_READ_ASSEMBLY.out.ellipsis_ch,
+			         VALIDATE_DB.out.valid_db_ch)
+        }
+
 	}
 }
 

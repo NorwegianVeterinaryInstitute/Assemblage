@@ -7,9 +7,11 @@ process MEDAKA {
 
     output:
 	path "medaka.version"
+    tuple val(datasetID), path("consensus.fasta"), emit: medaka_consensus_ch
 
     """
 	medaka --version > medaka.version
-	fastplong -i $NP -o ${datasetID}_fastp.fastq.gz --failed_out ${datasetID}_failed.fastq.gz -m $params.fastp_mean_phred -l $params.fastp_minlen --json ${datasetID}_fastp.json --html ${datasetID}_fastp.html --report_title "$datasetID" --thread $task.cpus 
+    medaka consensus -i $assembly -d $np -o . -t ${task.cpus} --bacteria
+    mv consensus.fasta ${datasetID}_consensus.fasta
     """
 }

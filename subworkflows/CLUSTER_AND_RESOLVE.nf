@@ -47,5 +47,5 @@ workflow CLUSTER_AND_RESOLVE {
     AUTOCYCLER_TABLE(table_ch)
 
     emit: 
-    assemblies_ch=AUTOCYCLER_COMBINE.out.assemblies_ch.collect()
+    assemblies_ch=AUTOCYCLER_COMBINE.out.assemblies_ch
 }

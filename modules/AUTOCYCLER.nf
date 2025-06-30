@@ -113,7 +113,7 @@ process AUTOCYCLER_COMBINE {
     tuple val(datasetID), path(gfa)
 
     output:
-	path("${datasetID}_consensus_assembly.fasta"), emit: assemblies_ch
+	tuple val(datasetID), path("${datasetID}_consensus_assembly.fasta"), emit: assemblies_ch
 	tuple val(datasetID), path("consensus_assembly.yaml"), emit: combine_yaml_ch
 
 	"""

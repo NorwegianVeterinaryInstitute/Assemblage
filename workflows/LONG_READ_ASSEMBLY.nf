@@ -1,6 +1,7 @@
 include { NPQC                } from "../subworkflows/NPQC.nf"
 include { MULTIASSEMBLY       } from "../subworkflows/MULTIASSEMBLY.nf"
 include { CLUSTER_AND_RESOLVE } from "../subworkflows/CLUSTER_AND_RESOLVE.nf"
+include { POLISHING           } from "../subworkflows/POLISHING.nf"
 
 workflow LONG_READ_ASSEMBLY {
 
@@ -15,12 +16,25 @@ workflow LONG_READ_ASSEMBLY {
         .map { tuple(it.id, file(it.np, checkIfExists: true)) }
         .set { input_ch }
 
+    Channel
+        .fromPath(params.input, checkIfExists: true)
+        .splitCsv(header:true, sep:",")
+        .map { tuple(it.id, file(it.R1, checkIfExists: true), file(it.R2, checkIfExists: true)) }
+        .set { illumina_ch }
+
 	NPQC(input_ch)
 	MULTIASSEMBLY(NPQC.out.reads)
     CLUSTER_AND_RESOLVE(MULTIASSEMBLY.out.graphs,
                         MULTIASSEMBLY.out.subset_yaml,
                         MULTIASSEMBLY.out.compress_yaml)
+
+    CLUSTER_AND_RESOLVE.out.assemblies_ch
+        .join(illumina_ch, by: 0)
+        .set { POLISHING_input_ch }
+
+    POLISHING(POLISHING_input_ch,
+              illumina_ch)
 	
 	emit:
-	ellipsis_ch=CLUSTER_AND_RESOLVE.out.assemblies_ch
+	ellipsis_ch=POLISHING.out.polish_out.collect()
 }

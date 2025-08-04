@@ -12,7 +12,7 @@ process FASTPLONG {
 	path "fastplong.version"
 
         """
-	fastplong --help | grep "version" > fastplong.version
+	echo "fastplong v.0.2.2" > fastplong.version
 	fastplong -i $NP -o ${datasetID}_fastp.fastq.gz --failed_out ${datasetID}_failed.fastq.gz -m $params.fastp_mean_phred -l $params.fastp_minlen --json ${datasetID}_fastp.json --html ${datasetID}_fastp.html --report_title "$datasetID" --thread $task.cpus 
         """
 }

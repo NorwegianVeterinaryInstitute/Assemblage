@@ -2,7 +2,6 @@ include { AUTOCYCLER_CLUSTER } from "../modules/AUTOCYCLER.nf"
 include { AUTOCYCLER_TRIM    } from "../modules/AUTOCYCLER.nf"
 include { AUTOCYCLER_RESOLVE } from "../modules/AUTOCYCLER.nf"
 include { AUTOCYCLER_COMBINE } from "../modules/AUTOCYCLER.nf"
-include { AUTOCYCLER_DOTPLOT } from "../modules/AUTOCYCLER.nf"
 include { AUTOCYCLER_TABLE   } from "../modules/AUTOCYCLER.nf"
 
 workflow CLUSTER_AND_RESOLVE {
@@ -27,7 +26,6 @@ workflow CLUSTER_AND_RESOLVE {
         .set {trim_input_ch}
 
     AUTOCYCLER_TRIM(trim_input_ch)
-    AUTOCYCLER_DOTPLOT(AUTOCYCLER_TRIM.out.dotplot_ch)
     AUTOCYCLER_RESOLVE(AUTOCYCLER_TRIM.out.trim_ch)
 
     AUTOCYCLER_RESOLVE.out.resolve_ch

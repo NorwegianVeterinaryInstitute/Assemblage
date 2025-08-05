@@ -64,28 +64,11 @@ process AUTOCYCLER_TRIM {
 
     output:
 	tuple val(datasetID), val(cluster), path("2_*"), emit: trim_ch
-	tuple val(datasetID), val(cluster), path("1_untrimmed.gfa"), path("2_trimmed.gfa"), emit: dotplot_ch
 	tuple val(datasetID), path("${cluster}_2_trimmed.yaml"), emit: trimming_yaml_ch
 
 	"""
 	autocycler trim --min_identity $params.autocycler_identity --max_unitigs $params.autocycler_max_unitigs --mad $params.autocycler_mad --threads $task.cpus -c .
 	cp 2_trimmed.yaml ${cluster}_2_trimmed.yaml
-	"""
-}
-
-process AUTOCYCLER_DOTPLOT {
-	conda (params.enable_conda ? 'bioconda::autocycler=0.4.0' : null)
-	container 'quay.io/biocontainers/autocycler:0.4.0--h3ab6199_0'
-
-    input:
-    tuple val(datasetID), val(cluster), path(untrimmed), path(trimmed)
-
-    output:
-	path("*.png")
-
-	"""
-	autocycler dotplot -i $untrimmed -o ${datasetID}_${cluster}_untrimmed.png
-	autocycler dotplot -i $trimmed -o ${datasetID}_${cluster}_trimmed.png
 	"""
 }
 

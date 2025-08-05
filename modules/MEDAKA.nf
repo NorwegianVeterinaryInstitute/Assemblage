@@ -7,11 +7,11 @@ process MEDAKA {
 
     output:
 	path "medaka.version"
-    tuple val(datasetID), path("consensus.fasta"), emit: medaka_consensus_ch
+    tuple val(datasetID), path("*_medaka_consensus.fasta"), emit: medaka_consensus_ch
 
     """
 	medaka --version > medaka.version
-    medaka consensus -i $assembly -d $np -o . -t ${task.cpus} --bacteria
-    mv consensus.fasta ${datasetID}_consensus.fasta
+    medaka_consensus -i $assembly -d $np -o results -t ${task.cpus} --bacteria
+    mv results/consensus.fasta ${datasetID}_medaka_consensus.fasta
     """
 }

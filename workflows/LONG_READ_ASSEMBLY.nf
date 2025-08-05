@@ -28,12 +28,11 @@ workflow LONG_READ_ASSEMBLY {
                         MULTIASSEMBLY.out.subset_yaml,
                         MULTIASSEMBLY.out.compress_yaml)
 
-    CLUSTER_AND_RESOLVE.out.assemblies_ch
-        .join(illumina_ch, by: 0)
+    illumina_ch
+        .join(CLUSTER_AND_RESOLVE.out.assemblies_ch, by: 0)
         .set { POLISHING_input_ch }
 
-    POLISHING(POLISHING_input_ch,
-              illumina_ch)
+    POLISHING(POLISHING_input_ch)
 	
 	emit:
 	ellipsis_ch=POLISHING.out.polish_out.collect()

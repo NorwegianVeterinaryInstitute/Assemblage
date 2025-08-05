@@ -1,22 +1,15 @@
 include { BWA        } from "../modules/BWA.nf"
 include { POLYPOLISH } from "../modules/POLYPOLISH.nf"
-include { MEDAKA     } from "../modules/MEDAKA.nf"
 
 workflow POLISHING {
 	take: 
-	assemblies_np
-	illumina_reads
+	assemblies_reads
 
 	main:
-	MEDAKA(assemblies_np)
 
-	illumina_reads
-		.join(MEDAKA.out.medaka_consensus_ch, by: 0)
-		.set { bwa_input_ch }
+	BWA(assemblies_reads)
 
-	BWA(bwa_input_ch)
-
-    MEDAKA.out.medaka_consensus_ch
+	assemblies_reads.map { tuple -> [tuple[0], tuple[-1]] }
 		.join(BWA.out.bwa_polypolish_ch, by: 0)
 		.set { polypolish_ch }
 

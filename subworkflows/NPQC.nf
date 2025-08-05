@@ -1,14 +1,12 @@
-include { FASTPLONG } from "../modules/FASTP.nf"
-include { MULTIQC   } from "../modules/MULTIQC.nf"
+include { FILTLONG } from "../modules/FILTLONG.nf"
 
 workflow NPQC {
 	take: 
 	reads
 
 	main:
-	FASTPLONG(reads)
-	//MULTIQC(FASTPLONG.out.fastplong_ch.collect())
+	FILTLONG(reads)
 
 	emit:
-	reads=FASTPLONG.out.fastplong_ch
+	reads=FILTLONG.out.filtlong_ch
 }

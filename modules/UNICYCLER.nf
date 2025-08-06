@@ -1,6 +1,6 @@
 process UNICYCLER {
-	conda (params.enable_conda ? 'bioconda::unicycler=0.5.0' : null)
-	container 'quay.io/biocontainers/unicycler:0.5.0--py310h6cc9453_3'
+	conda (params.enable_conda ? 'bioconda::unicycler=0.5.1' : null)
+	container 'quay.io/biocontainers/unicycler:0.5.1--py311hc84137b_4'
 
 	label 'process_high_memory_time'
 
@@ -31,8 +31,8 @@ process UNICYCLER {
 }
 
 process UNICYCLER_HYBRID {
-        conda (params.enable_conda ? 'bioconda::unicycler=0.5.0' : null)
-        container 'quay.io/biocontainers/unicycler:0.5.0--py310h6cc9453_3'
+        conda (params.enable_conda ? 'bioconda::unicycler=0.5.1' : null)
+        container 'quay.io/biocontainers/unicycler:0.5.1--py311hc84137b_4'
 
         label 'process_high_memory_time'
 

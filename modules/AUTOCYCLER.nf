@@ -48,10 +48,12 @@ process AUTOCYCLER_CLUSTER {
     output:
 	tuple val(datasetID), path("clustering/qc_pass/cluster*", type: 'dir'), emit: cluster_ch
 	tuple val(datasetID), path("clustering.yaml"), emit: clustering_yaml_ch
+	path "*_clustering.newick"
 
 	"""
 	autocycler cluster --cutoff $params.autocycler_cutoff --max_contigs $params.autocycler_n_contigs --min_assemblies $params.autocycler_min_assemblies -a . 
 	cp clustering/clustering.yaml .
+	cp clustering/clustering.newick ${datasetID}_clustering.newick
 	"""
 }
 
@@ -96,12 +98,12 @@ process AUTOCYCLER_COMBINE {
     tuple val(datasetID), path(gfa)
 
     output:
-	tuple val(datasetID), path("${datasetID}_consensus_assembly.fasta"), emit: assemblies_ch
+	tuple val(datasetID), path("${datasetID}_consensus_assembly.gfa"), emit: assemblies_gfa_ch
 	tuple val(datasetID), path("consensus_assembly.yaml"), emit: combine_yaml_ch
 
 	"""
 	autocycler combine --autocycler_dir . --in_gfas $gfa
-	mv consensus_assembly.fasta ${datasetID}_consensus_assembly.fasta
+	mv consensus_assembly.gfa ${datasetID}_consensus_assembly.gfa
 	"""
 }
 
@@ -118,5 +120,20 @@ process AUTOCYCLER_TABLE {
 	"""
 	autocycler table > ${datasetID}_metrics.tsv
 	autocycler table --autocycler_dir . -n $datasetID >> ${datasetID}_metrics.tsv
+	"""
+}
+
+process AUTOCYCLER_GFA2FASTA {
+	conda (params.enable_conda ? 'bioconda::autocycler=0.4.0' : null)
+	container 'quay.io/biocontainers/autocycler:0.4.0--h3ab6199_0'
+
+    input:
+    tuple val(datasetID), path(gfa)
+
+    output:
+	tuple val(datasetID), path("${datasetID}_consensus_assembly.fasta"), emit: consensus_assembly_ch
+
+	"""
+	autocycler gfa2fasta -i $gfa -o ${datasetID}_consensus_assembly.fasta
 	"""
 }

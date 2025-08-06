@@ -35,5 +35,5 @@ workflow LONG_READ_ASSEMBLY {
     POLISHING(POLISHING_input_ch)
 	
 	emit:
-	ellipsis_ch=POLISHING.out.polish_out.collect()
+	ellipsis_ch=POLISHING.out.polish_out
 }

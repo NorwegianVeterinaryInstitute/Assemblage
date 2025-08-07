@@ -5,12 +5,15 @@
 # Load libraries
 library(impoRt)
 library(dplyr)
+library(tibble)
 library(formattable)
 library(kableExtra)
 library(tidyr)
 library(sparkline)
 
 # COMPLETENESS
+cols <- c(circular = NA_real_, non_circular = NA_real_)
+
 completeness_report <- get_data(
   filepath = ".",
   pattern = "contig_names.txt",
@@ -28,6 +31,9 @@ completeness_report <- get_data(
     values_from = "n",
     values_fill = 0
   ) %>%
+  add_column(!!!cols[!names(cols) %in% names(.)]) %>%
+  mutate_at(c("circular","non_circular"),
+            ~replace_na(., 0)) %>%
   mutate(
     total = circular + non_circular,
     percent = round(circular/total*100, 2),

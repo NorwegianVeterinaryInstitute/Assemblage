@@ -56,3 +56,25 @@ process MERGE_REPORTS {
         Rscript $baseDir/bin/merge_reports.R
         """
 }
+
+process MERGE_QUAST_REPORTS {
+    input:
+    path files
+
+    output:
+    path "quast_comparison_report.txt"
+
+    script:
+    """
+    set +u
+    files=( $files )
+    if [ \${#files[@]} -eq 0 ]; then
+        echo "No files to merge!" >&2
+        exit 1
+    fi
+    head -n 1 "\${files[0]}" > quast_comparison_report.txt
+    for f in "\${files[@]}"; do
+        tail -n +2 "\$f" >> quast_comparison_report.txt
+    done
+    """
+}

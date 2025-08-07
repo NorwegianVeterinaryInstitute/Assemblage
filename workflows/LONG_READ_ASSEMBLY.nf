@@ -1,35 +1,39 @@
-include { FILTLONG   }	from "../modules/FILTLONG.nf"
-include { FLYE       }	from "../modules/FLYE.nf"
-include { QUAST      }	from "../modules/QUAST.nf"
-include { MEDAKA     }  from "../modules/MEDAKA.nf"
-include { POLYPOLISH }	from "../modules/POLYPOLISH.nf"
-include { POLCA      }  from "../modules/POLCA.nf"
+include { NPQC                } from "../subworkflows/NPQC.nf"
+include { MULTIASSEMBLY       } from "../subworkflows/MULTIASSEMBLY.nf"
+include { CLUSTER_AND_RESOLVE } from "../subworkflows/CLUSTER_AND_RESOLVE.nf"
+include { POLISHING           } from "../subworkflows/POLISHING.nf"
 
 workflow LONG_READ_ASSEMBLY {
-        // Channel
-	nanopore_ch = Channel
-		.fromPath(params.input, checkIfExists: true)
-		.splitCsv(header:true, sep:",")
-		.map { [it.sample, file(it.NP, checkIfExists: true)] }
 
-	// Long read filtering
-	FILTLONG(nanopore_ch)
+	// Check input parameters
+	if (!params.input) {
+        exit 1, "Missing input file."
+    }
 
-	// Assembly
-	FLYE(FILTLONG.out.filtered_reads_ch)
+	Channel
+        .fromPath(params.input, checkIfExists: true)
+        .splitCsv(header:true, sep:",")
+        .map { tuple(it.id, file(it.np, checkIfExists: true)) }
+        .set { input_ch }
 
-	// QC
-	QUAST(FLYE.out.quast_ch.collect())
+    Channel
+        .fromPath(params.input, checkIfExists: true)
+        .splitCsv(header:true, sep:",")
+        .map { tuple(it.id, file(it.R1, checkIfExists: true), file(it.R2, checkIfExists: true)) }
+        .set { illumina_ch }
 
-	// Polishing
-	nanopore_ch.join(FLYE.assembly_ch, by: 0)
-		.set { medaka_ch }
+	NPQC(input_ch)
+	MULTIASSEMBLY(NPQC.out.reads)
+    CLUSTER_AND_RESOLVE(MULTIASSEMBLY.out.graphs,
+                        MULTIASSEMBLY.out.subset_yaml,
+                        MULTIASSEMBLY.out.compress_yaml)
 
-	MEDAKA(medaka_ch)
-	MEDAKA.medaka_output_ch
-		.join(BWA.out.bwa_polypolish_ch, by: 0)
-		.set { polypolish_ch }
+    illumina_ch
+        .join(CLUSTER_AND_RESOLVE.out.assemblies_ch, by: 0)
+        .set { POLISHING_input_ch }
 
-	POLYPOLISH(polypolish_ch)
-	POLCA()
+    POLISHING(POLISHING_input_ch)
+	
+	emit:
+	ellipsis_ch=POLISHING.out.polish_out
 }

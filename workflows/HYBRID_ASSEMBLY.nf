@@ -1,5 +1,5 @@
 include { FASTQC           } from "../modules/FASTQC.nf"
-include { MULTIQC_PRE      } from "../modules/MULTIQC.nf"
+include { MULTIQC          } from "../modules/MULTIQC.nf"
 include { KRAKEN           } from "../modules/KRAKEN.nf"
 include { RASUSA           } from "../modules/RASUSA.nf"
 include { FILTLONG         } from "../modules/FILTLONG.nf"
@@ -53,7 +53,7 @@ workflow HYBRID_ASSEMBLY {
 
 	// Quality control
 	FASTQC(illumina_ch)
-        MULTIQC_PRE(FASTQC.out.fastqc_reports.collect())
+        MULTIQC(FASTQC.out.fastqc_reports.collect())
         KRAKEN(kraken2_input_ch)
         RASUSA(illumina_ch)
 

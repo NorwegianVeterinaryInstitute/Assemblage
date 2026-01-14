@@ -8,7 +8,7 @@ process MOB_RECON {
         output:
         path "*contig_report.txt", emit: mobsuite_out_ch
 	path "*plasmid*.fasta", optional: true
-	path "*mge_report.txt"
+	path "*mge_report.txt", optional: true
 	path "*chromosome.fasta"
 	path "mobsuite.version"
 

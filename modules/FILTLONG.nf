@@ -8,6 +8,7 @@ process FILTLONG {
     output:
     file("*")
 	tuple val(datasetID), file("*_filtered.fastq.gz"), emit: filtlong_ch
+	path "filtlong.version"
 
 	script:
 	"""

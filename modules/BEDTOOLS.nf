@@ -3,13 +3,21 @@ process BEDTOOLS {
 	container 'quay.io/biocontainers/bedtools:2.31.0--h468198e_0'
 
         input:
-        tuple val(datasetID), file(bam)
+        tuple val(datasetID), file(bam), val(seq)
 
         output:
-        file("*")
+	path "*genomecov.txt", emit: cov_report_ch
+	path "bedtools.version"
 
-        """
-	bedtools genomecov -ibam $bam -d > ${datasetID}_genomecov.txt
-        """
+	script:
+	if( seq == "illumina" )
+	    """
+	    bedtools --version > bedtools.version
+	    bedtools genomecov -ibam $bam -d > ${datasetID}_il_genomecov.txt
+	    """
+	else if( seq == "nanopore")
+	    """
+	    bedtools --version > bedtools.version
+	    bedtools genomecov -ibam $bam -d > ${datasetID}_np_genomecov.txt
+	    """
 }
-

@@ -46,8 +46,9 @@ workflow CLUSTER_AND_RESOLVE {
         .join(compress, by: 0)
         .join(AUTOCYCLER_CLUSTER.out.clustering_yaml_ch, by: 0)
         .join(AUTOCYCLER_TRIM.out.trimming_yaml_ch, by: 0)
+        .join(AUTOCYCLER_TRIM.out.untrimmed_yaml_ch, by: 0)
         .join(AUTOCYCLER_COMBINE.out.combine_yaml_ch, by: 0)
-        .map { id, yaml1, yaml2, yaml3, yaml4, yaml5 -> tuple(id, [yaml1, yaml2, yaml3, yaml4, yaml5]) }
+        .map { id, yaml1, yaml2, yaml3, yaml4, yaml5, yaml6 -> tuple(id, [yaml1, yaml2, yaml3, yaml4, yaml5, yaml6]) }
         .set { table_ch }
 
     AUTOCYCLER_TABLE(table_ch)

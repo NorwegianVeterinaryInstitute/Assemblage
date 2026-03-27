@@ -66,11 +66,12 @@ process AUTOCYCLER_TRIM {
 
     output:
 	tuple val(datasetID), val(cluster), path("2_*"), emit: trim_ch
-	tuple val(datasetID), path("${cluster}_2_trimmed.yaml"), emit: trimming_yaml_ch
+	tuple val(datasetID), path("2_trimmed.yaml"), emit: trimming_yaml_ch
+	tuple val(datasetID), path("1_untrimmed.yaml"), emit: untrimmed_yaml_ch
 
 	"""
 	autocycler trim --min_identity $params.autocycler_identity --max_unitigs $params.autocycler_max_unitigs --mad $params.autocycler_mad --threads $task.cpus -c .
-	cp 2_trimmed.yaml ${cluster}_2_trimmed.yaml
+
 	"""
 }
 

@@ -71,7 +71,6 @@ process AUTOCYCLER_TRIM {
 
 	"""
 	autocycler trim --min_identity $params.autocycler_identity --max_unitigs $params.autocycler_max_unitigs --mad $params.autocycler_mad --threads $task.cpus -c .
-
 	"""
 }
 

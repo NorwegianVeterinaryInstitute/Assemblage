@@ -40,8 +40,8 @@ workflow HYBRID_ASSEMBLY {
 
     POLISHING(DOWNSAMPLE_AND_HYBRID_ASSEMBLY.out.polishing_ch)
 
-    ASSEMBLY_QC(POLISHING.out.polish_out, 
-                DOWNSAMPLE_AND_HYBRID_ASSEMBLY.out.subsampled_reads, 
+    ASSEMBLY_QC(DOWNSAMPLE_AND_HYBRID_ASSEMBLY.out.subsampled_reads,
+                POLISHING.out.polish_out,  
                 DOWNSAMPLE_AND_HYBRID_ASSEMBLY.out.quast_ch)
 
     // Merge reports
@@ -53,10 +53,8 @@ workflow HYBRID_ASSEMBLY {
     // Reporting
     REPORT_HYBRID(
         MERGE_REPORTS.out.quast_report_ch,
-        MERGE_REPORTS.out.completeness_report_ch,
         MERGE_REPORTS.out.il_coverage_report_ch,
-        MERGE_REPORTS.out.np_coverage_report_ch,
-        MERGE_REPORTS.out.kraken_report_ch
+        MERGE_REPORTS.out.np_coverage_report_ch
     )
 
     emit:

@@ -43,7 +43,6 @@ process UNICYCLER_HYBRID {
         file("*")
         path("*.fasta"), emit: quast_ch
         tuple val(datasetID), path("*.fasta"), emit: assemblies_ch
-	path("*_contig_names.txt"), emit: r_contig_names_ch
 	path "unicycler.version"
 
         script:
@@ -61,6 +60,5 @@ process UNICYCLER_HYBRID {
         mv assembly.fasta ${datasetID}.fasta
         sed -i 's/ /_/g' ${datasetID}.fasta
         mv unicycler.log ${datasetID}_unicycler.log
-	grep ">" ${datasetID}.fasta > ${datasetID}_contig_names.txt
         """
 }

@@ -11,8 +11,6 @@ output:
 params:
   quast_report:
     value: x
-  completeness_report:
-    value: x
   coverage_report:
     value: x
   np_coverage_report:
@@ -134,27 +132,6 @@ p_a <- ggarrange(p1, p2, p3, p4, nrow = 2, ncol = 2)
 # Finally, combine both plots into one
 ggarrange(p, p_a, nrow = 1, labels = c("A","B"))
 ```
-
-<br>
-
-<br>
-
-## Genome completeness
-Genome completeness is estimated from the number of contigs tagget with `circular = TRUE` by Unicycler. 
-
-```{r, message=FALSE, warning=FALSE}
-read_delim(
-  params$completeness_report,
-  delim = "\t",
-  col_names = TRUE
-  ) %>%
-  kbl(escape = FALSE, caption = "Completeness of each genome.") %>%
-  # Specify the look of the table
-  kable_paper("hover", full_width = TRUE) %>%
-  # Add a scroll box
-  scroll_box(height = "400px")
-```
-
 
 <br>
 

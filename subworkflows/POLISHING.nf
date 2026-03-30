@@ -30,4 +30,5 @@ workflow POLISHING {
 
 	emit:
 	polish_out=POLYPOLISH.out.polished_assemblies_ch
+	quast_compare_out=MERGE_QUAST_REPORTS.out.quast_report_ch
 }

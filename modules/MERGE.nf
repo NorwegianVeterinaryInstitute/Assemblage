@@ -42,14 +42,12 @@ process MERGE_REPORTS {
         path(quast_reports)
 	path(completeness_reports)
 	path(coverage_reports)
-	path(kraken_reports)
 
         output:
 	path "quast_comparison_report.txt", emit: quast_report_ch
 	path "completeness_reports.txt", emit: completeness_report_ch
 	path "il_coverage_reports.txt", emit: il_coverage_report_ch
         path "np_coverage_reports.txt", emit: np_coverage_report_ch
-        path "kraken_reports.txt", emit: kraken_report_ch
 
         script:
         """

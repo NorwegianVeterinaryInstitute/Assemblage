@@ -48,6 +48,7 @@ process REPORT_KRAKEN {
 
         input:
         file(kraken_report)
+        val(read_type)
 
         output:
         file("*")
@@ -55,7 +56,7 @@ process REPORT_KRAKEN {
         script:
         """
         cp $baseDir/bin/report_kraken_data.Rmd .
-        Rscript $baseDir/bin/gen_kraken_report.R
+        Rscript $baseDir/bin/gen_kraken_report.R $read_type
         """
 }
 

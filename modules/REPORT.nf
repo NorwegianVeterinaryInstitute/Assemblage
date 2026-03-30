@@ -26,7 +26,6 @@ process REPORT_HYBRID {
 
         input:
         file(quast_report)
-        file(completeness_report)
         file(coverage_report)
 	file(np_coverage_report)
 

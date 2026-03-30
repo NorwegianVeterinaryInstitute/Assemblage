@@ -4,19 +4,18 @@ process KRAKEN {
 
 	label 'process_high_memory'
 
-        input:
-        tuple val(datasetID), path(R1), path(R2), path(db)
+    input:
+    tuple val(datasetID), path(R1), path(R2), path(db)
 
-        output:
-        file("*")
-	path "*kr2.report", emit: report_ch
+    output:
+    path "*kr2.report", emit: report_ch
 	path "kraken2.version"	
 
-        script:
-        """
+    script:
+    """
 	kraken2 --version > kraken2.version
 	kraken2 --db $db --paired $R1 $R2 --threads $task.cpus --output ${datasetID}.kr2.out --report ${datasetID}.kr2.report --use-names
-        """
+    """
 }
 
 process KRAKEN_LONG {
@@ -25,16 +24,16 @@ process KRAKEN_LONG {
 
 	label 'process_high_memory'
 
-        input:
-        tuple val(datasetID), path(np), path(db)
+	input:
+    tuple val(datasetID), path(np), path(db)
 
-        output:
+    output:
 	path "*kr2.report", emit: long_report_ch
 	path "kraken2.version"	
 
-        script:
-        """
+	script:
+    """
 	kraken2 --version > kraken2.version
 	kraken2 --db $db --threads $task.cpus --output ${datasetID}.kr2.out --report ${datasetID}.kr2.report --use-names $np
-        """
+    """
 }

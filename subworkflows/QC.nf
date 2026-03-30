@@ -27,7 +27,7 @@ workflow QC {
 
         KRAKEN(kraken2_input_ch)
         MERGE_KRAKEN_REPORTS(KRAKEN.out.report_ch.collect())
-        REPORT_KRAKEN(MERGE_KRAKEN_REPORTS.out.kraken_report)
+        REPORT_KRAKEN(MERGE_KRAKEN_REPORTS.out.kraken_report, "short")
     }
 
     emit:

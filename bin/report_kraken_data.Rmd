@@ -19,6 +19,10 @@ Kraken2 is a tool that maps reads to a database of a myriad of bacterial species
 
 ```{r, message=FALSE, warning=FALSE, dpi=600, fig.width=10, fig.height=5, fig.cap="Figure 2: Top species hits in the Kraken database (>0.1% of fragments)"}
 
+library(dplyr)
+library(readr)
+library(ggplot2)
+
 kraken_data <- read_delim(
   params$kraken_report,
   delim = "\t",

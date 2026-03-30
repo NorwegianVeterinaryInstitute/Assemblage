@@ -1,13 +1,13 @@
-include { FILTLONG    } from "../modules/FILTLONG.nf"
-include { NANOPLOT    } from "../modules/NANOPLOT.nf"
-include { KRAKEN_LONG } from "../modules/KRAKEN.nf"
+include { FILTLONG             } from "../modules/FILTLONG.nf"
+include { KRAKEN_LONG          } from "../modules/KRAKEN.nf"
+include { MERGE_KRAKEN_REPORTS } from "../modules/MERGE.nf"
+include { REPORT_KRAKEN        } from "../modules/REPORT.nf"
 
 workflow NPQC {
 	take: 
 	reads
 
 	main:
-	NANOPLOT(reads)
 	FILTLONG(reads)
 
 	if (!params.skip_kraken) {

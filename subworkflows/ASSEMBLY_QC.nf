@@ -3,6 +3,7 @@ include { BWA               } from "../modules/BWA.nf"
 include { SAMTOOLS          } from "../modules/SAMTOOLS.nf"
 include { BEDTOOLS          } from "../modules/BEDTOOLS.nf"
 include { MERGE_COV_REPORTS } from "../modules/MERGE.nf"
+include { CHECKM2           } from "../modules/CHECKM2.nf"
 
 workflow ASSEMBLY_QC {
     take:
@@ -23,8 +24,10 @@ workflow ASSEMBLY_QC {
 
 	// QC
 	QUAST(quast_ch.collect())
+	CHECKM2(assembly_ch.collect())
 
     emit:
     quast_report = QUAST.out.R_quast
     coverage_report = MERGE_COV_REPORTS.out.coverage_report
+    completeness_report = CHECKM2.out.checkm2_ch
 }

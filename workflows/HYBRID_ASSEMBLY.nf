@@ -2,7 +2,7 @@ include { QC                             } from "../subworkflows/QC.nf"
 include { NPQC                           } from "../subworkflows/NPQC.nf"
 include { DOWNSAMPLE_AND_HYBRID_ASSEMBLY } from "../subworkflows/DOWNSAMPLE_AND_HYBRID_ASSEMBLY.nf"
 include { POLISHING                      } from "../subworkflows/POLISHING.nf"
-include { ASSEMBLY_QC                    } from "../subworkflows/ASSEMBLY_QC.nf"
+include { HYBRID_ASSEMBLY_QC             } from "../subworkflows/HYBRID_ASSEMBLY_QC.nf"
 include { MERGE_REPORTS                  } from "../modules/MERGE.nf"
 include { REPORT_HYBRID                  } from "../modules/REPORT.nf"
 
@@ -40,14 +40,16 @@ workflow HYBRID_ASSEMBLY {
 
     POLISHING(DOWNSAMPLE_AND_HYBRID_ASSEMBLY.out.polishing_ch)
 
-    ASSEMBLY_QC(DOWNSAMPLE_AND_HYBRID_ASSEMBLY.out.subsampled_reads,
-                POLISHING.out.polish_out,  
-                DOWNSAMPLE_AND_HYBRID_ASSEMBLY.out.quast_ch)
+    HYBRID_ASSEMBLY_QC(DOWNSAMPLE_AND_HYBRID_ASSEMBLY.out.il_subsampled_reads,
+                       DOWNSAMPLE_AND_HYBRID_ASSEMBLY.out.np_subsampled_reads,
+                       POLISHING.out.polish_out,  
+                       DOWNSAMPLE_AND_HYBRID_ASSEMBLY.out.quast_ch)
 
     // Merge reports
     MERGE_REPORTS(
-        POLISHING.out.quast_compare_out,
-        ASSEMBLY_QC.out.coverage_report
+        POLISHING.out.quast_compare_out.collect(),
+        HYBRID_ASSEMBLY_QC.out.il_coverage_report.collect(),
+        HYBRID_ASSEMBLY_QC.out.np_coverage_report.collect()
     )
 
     // Reporting

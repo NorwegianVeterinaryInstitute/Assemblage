@@ -2,10 +2,10 @@ process SAMTOOLS {
 	conda (params.enable_conda ? 'bioconda::samtools=1.3.1' : null)
 	container 'quay.io/biocontainers/samtools:1.3.1--h0cf4675_11'
 
-        input:
-        tuple val(datasetID), file(bam), val(seq)
+    input:
+    tuple val(datasetID), file(bam), val(seq)
 
-        output:
+    output:
 	tuple val(datasetID), path("*mapped_sorted.bam"), env(seqtype), emit: bam_ch
 	path "samtools.version"
 

@@ -21,14 +21,14 @@ workflow ASSEMBLY_QC {
 
 	SAMTOOLS(BWA.out.samtools_bwa_ch)
 	BEDTOOLS(SAMTOOLS.out.bam_ch)
-	MERGE_COV_REPORTS(BEDTOOLS.out.cov_report_ch.collect())
+	MERGE_COV_REPORTS(BEDTOOLS.out.il_cov_report_ch.collect())
 
 	// QC
 	QUAST(quast_ch.collect())
-	CHECKM2(assembly_ch.map { id, fasta -> fasta }.collect())
+	// CHECKM2(assembly_ch.map { id, fasta -> fasta }.collect())
 
     emit:
     quast_report = QUAST.out.R_quast
     coverage_report = MERGE_COV_REPORTS.out.coverage_report
-    completeness_report = CHECKM2.out.checkm2_ch
+    // completeness_report = CHECKM2.out.checkm2_ch
 }

@@ -7,17 +7,18 @@ include { CHECKM2           } from "../modules/CHECKM.nf"
 
 workflow ASSEMBLY_QC {
     take:
-    downsampled_reads
+    il_downsampled_reads
     assembly_ch
     quast_ch
 
     main:
     // Generate channel
-	downsampled_reads.join(assembly_ch, by: 0)
+	il_downsampled_reads.join(assembly_ch, by: 0)
         .set { mapping_ch }
 
     // Coverage calculation
 	BWA(mapping_ch)
+
 	SAMTOOLS(BWA.out.samtools_bwa_ch)
 	BEDTOOLS(SAMTOOLS.out.bam_ch)
 	MERGE_COV_REPORTS(BEDTOOLS.out.cov_report_ch.collect())

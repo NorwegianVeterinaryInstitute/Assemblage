@@ -11,58 +11,34 @@ library(kableExtra)
 library(tidyr)
 library(sparkline)
 
-# COMPLETENESS
-cols <- c(circular = NA_real_, non_circular = NA_real_)
+# Helper function to ensure sample column is always created
+to_named_list <- function(x) {
+  if (is.data.frame(x)) {
+    # Single-file case can come back as a data frame
+    if ("ref" %in% names(x)) {
+      return(split(x, x$ref))
+    }
+    return(list(sample_1 = x))
+  }
 
-completeness_report <- get_data(
-  filepath = ".",
-  pattern = "contig_names.txt",
-  delim = "\t",
-  col_names = FALSE
-) %>%
-  mutate(complete = ifelse(
-    grepl("circular=true",X1), "circular", "non_circular"
-  )) %>%
-  group_by(ref, complete) %>%
-  count() %>%
-  ungroup() %>%
-  pivot_wider(
-    names_from = "complete",
-    values_from = "n",
-    values_fill = 0
-  ) %>%
-  add_column(!!!cols[!names(cols) %in% names(.)]) %>%
-  mutate_at(c("circular","non_circular"),
-            ~replace_na(., 0)) %>%
-  mutate(
-    total = circular + non_circular,
-    percent = round(circular/total*100, 2),
-    completeness = ifelse(percent == 100, "Complete", "Incomplete"),
-    ref = sub("_contig_names.txt", "", ref)
-  ) %>%
-  select(-non_circular) %>%
-  mutate(`Percent circularized contigs` = color_bar(color = "#80b1d3")(percent),
-         `Completeness of genome` = cell_spec(
-           completeness,
-           color = "white",
-           bold = TRUE,
-           background = ifelse(completeness == "Complete", "#b3de69", "#fb8072"
-          )
-  )) %>%
-  rename(
-    "Circularized contigs" = circular,
-    "Total number of contigs" = total,
-    "Sample ID" = ref
-  ) %>%
-  select(-c(percent, completeness))
+  if (!is.list(x)) {
+    return(list(sample_1 = as.data.frame(x)))
+  }
 
-write.table(
-  completeness_report,
-  "completeness_reports.txt",
-  sep = "\t",
-  quote = FALSE,
-  row.names = FALSE
-)
+  # If list has no names, derive from each element's ref if present
+  if (is.null(names(x)) || any(names(x) == "")) {
+    names(x) <- vapply(seq_along(x), function(i) {
+      xi <- x[[i]]
+      if (is.data.frame(xi) && "ref" %in% names(xi)) {
+        as.character(xi$ref[1])
+      } else {
+        paste0("sample_", i)
+      }
+    }, character(1))
+  }
+
+  x
+}
 
 # COVERAGE
 func_paste <- function(x, collapse = ",") paste(unique(x[!is.na(x)]), collapse = collapse)
@@ -93,6 +69,7 @@ coverage_reports <- get_data(
   col_names = FALSE,
   df = FALSE
 ) %>%
+  to_named_list() %>%
   lapply(., calc_cov) %>%
   bind_rows(.id = "sample") %>%
   group_by(sample) %>%
@@ -146,6 +123,7 @@ coverage_reports <- get_data(
   col_names = FALSE,
   df = FALSE
 ) %>%
+  to_named_list() %>%
   lapply(., calc_cov_np) %>%
   bind_rows(.id = "sample") %>%
   group_by(sample) %>%

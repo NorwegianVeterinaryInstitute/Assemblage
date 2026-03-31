@@ -6,7 +6,6 @@ process POLYPOLISH {
     tuple val(datasetID), path(assembly), path(alignment1), path(alignment2)
 
     output:
-    file("*")
 	tuple val(datasetID), path {"*_polished.fasta"}, emit: polished_assemblies_ch
 	path "polypolish.version"
 

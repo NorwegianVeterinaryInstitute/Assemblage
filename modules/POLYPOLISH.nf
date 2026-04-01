@@ -7,7 +7,7 @@ process POLYPOLISH {
 
     output:
 	tuple val(datasetID), path {"*_polished.fasta"}, emit: polished_assemblies_ch
-	path "polypolish.version"
+	path "polypolish.version", emit: polypolish_version
 
 	script:
     """

@@ -10,7 +10,7 @@ process SPADES {
     output:
     path("${datasetID}.fasta"), emit: quast_ch
     tuple val(datasetID), path("${datasetID}.fasta"), emit: assembly_ch
-    path "spades.version"
+    path "spades.version", emit: spades_version
 
     script:
     def args = task.ext.args ?: ''
@@ -45,7 +45,7 @@ process SPADES_HYBRID {
     output:
     path("${datasetID}.fasta"), emit: quast_ch
     tuple val(datasetID), path("${datasetID}.fasta"), emit: assemblies_ch
-    path "spades.version"
+    path "spades.version", emit: spades_version
 
     script:
     def args = task.ext.args ?: ''

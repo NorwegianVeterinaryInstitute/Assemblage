@@ -8,7 +8,7 @@ process BEDTOOLS {
     output:
 	path("${datasetID}_il_genomecov.txt"), emit: il_cov_report_ch, optional: true
 	path("${datasetID}_np_genomecov.txt"), emit: np_cov_report_ch, optional: true
-	path "bedtools.version"
+	path "bedtools.version", emit: bedtools_version
 
 	script:
 	if( seq == "illumina" )

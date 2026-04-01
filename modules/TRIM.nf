@@ -8,7 +8,7 @@ process TRIM {
         output:
         file("*")
         tuple val(datasetID), path {"*val_1.fq.gz"}, path {"*val_2.fq.gz"}, emit: trim_reads
-	path "trim_galore.version"
+	path "trim_galore.version", emit: trim_galore_version
 
         script:
         """

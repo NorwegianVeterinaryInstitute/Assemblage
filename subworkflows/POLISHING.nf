@@ -26,4 +26,8 @@ workflow POLISHING {
 	emit:
 	polish_out=POLYPOLISH.out.polished_assemblies_ch
 	quast_compare_out=QUAST_COMPARE.out.quast_compare_ch
+	versions = BWA.out.bwa_version
+		.mix(POLYPOLISH.out.polypolish_version)
+		.mix(QUAST_COMPARE.out.quast_compare_version)
+		.collect()
 }

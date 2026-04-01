@@ -9,7 +9,7 @@ process ANY2FASTA {
 
     output:
 	tuple val(datasetID), path("*_miniasm.fasta"), emit: miniasm_assembly_ch
-	path "any2fasta.version"
+	path "any2fasta.version", emit: any2fasta_version
 
 	script:
     """

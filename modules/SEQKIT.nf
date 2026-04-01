@@ -6,7 +6,7 @@ process SEQKIT_FILTER {
     tuple val(datasetID), path(assembly)
 	
     output:
-	path "seqkit.version"
+	path "seqkit.version", emit: seqkit_version
 	tuple val(datasetID), path("${datasetID}_filtered.fasta"), emit: seqkit_filtered_ch
 
     """

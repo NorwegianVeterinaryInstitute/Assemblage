@@ -8,7 +8,7 @@ process RASUSA {
         output:
         file("*")
         tuple val(datasetID), path {"*rasusa_1.fq.gz"}, path {"*rasusa_2.fq.gz"}, emit: subsampled_reads
-	path "rasusa.version"
+	path "rasusa.version", emit: rasusa_version
 
         script:
         """
@@ -27,7 +27,7 @@ process RASUSA_LONG {
 
         output:
         tuple val(datasetID), path {"*rasusa.fq.gz"}, emit: subsampled_long_reads
-	path "rasusa.version"
+	path "rasusa.version", emit: rasusa_version
 
         script:
         """

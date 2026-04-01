@@ -9,7 +9,7 @@ process MINIASM {
 
     output:
 	tuple val(datasetID), path(NP), path("*.gfa"), emit: miniasm_gfa_ch
-	path "miniasm.version"
+	path "miniasm.version", emit: miniasm_version
 
 	script:
     """

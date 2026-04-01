@@ -7,7 +7,7 @@ process SAMTOOLS {
 
     output:
 	tuple val(datasetID), path("*mapped_sorted.bam"), env(seqtype), emit: bam_ch
-	path "samtools.version"
+	path "samtools.version", emit: samtools_version
 
 	script:
 	if( seq == "illumina" )

@@ -7,7 +7,7 @@ process DNAAPLER {
 
     output:
     tuple val(datasetID), path("${datasetID}_dnaapler_reoriented.gfa"), emit: dnaapler_reoriented_ch
-    path "dnaapler.version"
+    path "dnaapler.version", emit: dnaapler_version
 
 	"""
     dnaapler --version > dnaapler.version
@@ -28,7 +28,7 @@ process DNAAPLER_FASTA {
     path "*fasta", emit: quast_ch
     tuple val(datasetID), path("${datasetID}_dnaapler_reoriented.fasta"), emit: dnaapler_reoriented_ch
     path("${datasetID}_contig_names.txt"), emit: r_contig_names_ch
-    path "dnaapler.version"
+    path "dnaapler.version", emit: dnaapler_version
 
     script:
     """

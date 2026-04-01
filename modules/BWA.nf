@@ -11,7 +11,7 @@ process BWA {
     file("*.bam")
     tuple val(datasetID), path("${datasetID}.bam"), val("illumina"), emit: samtools_bwa_ch
 	tuple val(datasetID), path("${datasetID}_alignments1.sam"), path("${datasetID}_alignments2.sam"), emit: bwa_polypolish_ch
-	path "bwa.version"
+	path "bwa.version", emit: bwa_version
 
 	script:
     """

@@ -41,4 +41,8 @@ workflow DOWNSAMPLE_AND_HYBRID_ASSEMBLY {
     quast_ch = DNAAPLER_FASTA.out.quast_ch
     il_subsampled_reads = RASUSA.out.subsampled_reads
     np_subsampled_reads = RASUSA_LONG.out.subsampled_long_reads
+    versions = RASUSA.out.rasusa_version
+        .mix(params.spades ? SPADES_HYBRID.out.spades_version : UNICYCLER_HYBRID.out.unicycler_version)
+        .mix(DNAAPLER_FASTA.out.dnaapler_version)
+        .collect()
 }

@@ -10,7 +10,7 @@ process MOB_RECON {
 	path "*plasmid*.fasta", optional: true
 	path "*mge_report.txt", optional: true
 	path "*chromosome.fasta"
-	path "mobsuite.version"
+	path "mobsuite.version", emit: mobsuite_version
 
     script:
     """

@@ -9,7 +9,7 @@ process FASTPLONG {
         path "${datasetID}_fastp.json"
         path "${datasetID}_fastp.html"
 	tuple val(datasetID), path("${datasetID}_fastp.fastq.gz"), emit: fastplong_ch
-	path "fastplong.version"
+	path "fastplong.version", emit: fastplong_version
 
         """
 	echo "fastplong v.0.2.2" > fastplong.version

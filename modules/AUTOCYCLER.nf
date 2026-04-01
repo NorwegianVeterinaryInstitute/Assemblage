@@ -6,7 +6,7 @@ process AUTOCYCLER_SUBSET {
     tuple val(datasetID), path(reads)
 
     output:
-	path "autocycler.version"
+	path "autocycler.version", emit: autocycler_version
 	tuple val(datasetID), path("*sample_*"), emit: sub_ch
 	tuple val(datasetID), path("subsample.yaml"), emit: subsample_yaml_ch
 

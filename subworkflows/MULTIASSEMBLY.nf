@@ -63,4 +63,12 @@ workflow MULTIASSEMBLY {
 	graphs=AUTOCYCLER_COMPRESS.out.compress_ch
 	subset_yaml=AUTOCYCLER_SUBSET.out.subsample_yaml_ch
 	compress_yaml=AUTOCYCLER_COMPRESS.out.compress_yaml_ch
+	versions = CANU.out.canu_version
+		.mix(FLYE.out.flye_version)
+		.mix(RAVEN.out.raven_version)
+		.mix(MINIMAP2_OVERLAP.out.minimap2_version)
+		.mix(MINIASM.out.miniasm_version)
+		.mix(MINIPOLISH.out.minipolish_version)
+		.mix(ANY2FASTA.out.any2fasta_version)
+		.collect()
 }

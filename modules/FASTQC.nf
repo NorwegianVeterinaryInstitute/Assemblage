@@ -8,7 +8,7 @@ process FASTQC {
         output:
         file("*")
         path "$datasetID/*_fastqc.zip", emit: fastqc_reports
-	path "fastqc.version"
+	path "fastqc.version", emit: fastqc_version
 
         """
 	fastqc --version > fastqc.version

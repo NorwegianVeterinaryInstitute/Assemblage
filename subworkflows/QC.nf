@@ -32,4 +32,8 @@ workflow QC {
 
     emit:
     trimmed_ch=TRIM.out.trim_reads
+    versions = FASTQC.out.fastqc_version
+        .mix(TRIM.out.trim_version)
+        .mix(KRAKEN.out.kraken_version)
+        .collect()
 }

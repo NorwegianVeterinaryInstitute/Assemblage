@@ -9,7 +9,7 @@ process KRAKEN {
 
     output:
     path "*kr2.report", emit: report_ch
-	path "kraken2.version"	
+	path "kraken2.version", emit: kraken2_version
 
     script:
     """
@@ -29,7 +29,7 @@ process KRAKEN_LONG {
 
     output:
 	path "*kr2.report", emit: long_report_ch
-	path "kraken2.version"	
+	path "kraken2.version", emit: kraken2_version
 
 	script:
     """

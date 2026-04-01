@@ -6,7 +6,7 @@ process MEDAKA {
     tuple val(datasetID), path(assembly), path(np)
 
     output:
-	path "medaka.version"
+	path "medaka.version", emit: medaka_version
     tuple val(datasetID), path("*_medaka_consensus.fasta"), emit: medaka_consensus_ch
 
     """

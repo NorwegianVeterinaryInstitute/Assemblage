@@ -9,7 +9,7 @@ process CANU {
 
     output:
 	tuple val(datasetID), path("*.fasta"), emit: canu_assembly_ch
-	path "canu.version"
+	path "canu.version", emit: canu_version
 
 	script:
 

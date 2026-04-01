@@ -8,7 +8,7 @@ process FILTLONG {
     output:
     file("*")
 	tuple val(datasetID), file("*_filtered.fastq.gz"), emit: filtlong_ch
-	path "filtlong.version"
+	path "filtlong.version", emit: filtlong_version
 
     """
 	filtlong --version > filtlong.version

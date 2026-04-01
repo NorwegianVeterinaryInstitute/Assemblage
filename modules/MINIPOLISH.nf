@@ -9,7 +9,7 @@ process MINIPOLISH {
 
     output:
 	tuple val(datasetID), path("*.gfa"), emit: miniasm_polished_ch
-	path "minipolish.version"
+	path "minipolish.version", emit: minipolish_version
 
 	script:
     """

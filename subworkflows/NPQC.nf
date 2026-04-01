@@ -30,4 +30,7 @@ workflow NPQC {
 
 	emit:
 	reads=FILTLONG.out.filtlong_ch
+	versions = FILTLONG.out.filtlong_version
+		.mix(KRAKEN_LONG.out.kraken_long_version)
+		.collect()
 }

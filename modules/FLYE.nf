@@ -9,7 +9,7 @@ process FLYE {
 
     output:
 	tuple val(datasetID), path("*.fasta"), emit: flye_assembly_ch
-	path "flye.version"
+	path "flye.version", emit: flye_version
 
 	script:
     """

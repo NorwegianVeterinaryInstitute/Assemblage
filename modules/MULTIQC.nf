@@ -7,7 +7,7 @@ process MULTIQC {
 
         output:
         file("*")
-	path "multiqc.version"
+	path "multiqc.version", emit: multiqc_version
 
         """
 	multiqc --version > multiqc.version

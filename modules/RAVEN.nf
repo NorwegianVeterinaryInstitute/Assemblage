@@ -9,7 +9,7 @@ process RAVEN {
 
     output:
 	tuple val(datasetID), path("*.fasta"), emit: raven_assembly_ch
-	path "raven.version"
+	path "raven.version", emit: raven_version
 
 	script:
 	"""

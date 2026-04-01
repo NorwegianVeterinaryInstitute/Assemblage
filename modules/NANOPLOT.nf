@@ -8,12 +8,12 @@ process NANOPLOT {
     tuple val(datasetID), path(np)
 
     output:
-    path "nanoplot.version"
+    path "nanoplot.version", emit: nanoplot_version
 
     script:
     """
-    nanoplot --version > nanoplot.version
-    nanoplot --fastq $np -o . -t $task.cpus
+    NanoPlot --version > nanoplot.version
+    NanoPlot --fastq $np --no-static -o . -t $task.cpus
     mv nanoplot_report.html ${datasetID}_nanoplot_report.html
     """
 }

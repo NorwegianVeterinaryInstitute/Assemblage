@@ -1,6 +1,6 @@
 process CHECKM2 {
     conda (params.enable_conda ? 'bioconda::checkm2=1.1.0' : null)
-	container 'quay.io/bioconda/checkm2:1.1.0--pyh7e72e81_1'
+	container 'quay.io/staphb/checkm2:1.1.0'
 
     input:
     path("*")

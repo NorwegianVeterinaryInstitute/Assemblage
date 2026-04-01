@@ -7,7 +7,7 @@ process VIRULENCEFINDER {
 	
     output:
     file("*")
-	path "virulencefinder.version"
+	path "virulencefinder.version", emit: virulencefinder_version
 	path "${datasetID}_virulencefinder_results.tsv", emit: virfinder_out_ch
 
     """

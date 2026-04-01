@@ -10,7 +10,7 @@ process MINIMAP2 {
         output:
         file("*")
         tuple val(datasetID), path("${datasetID}_aln.sam"), val("nanopore"), emit: samtools_np_ch
-	path "minimap2.version"
+	path "minimap2.version", emit: minimap2_version
 
 	script:
         """
@@ -31,7 +31,7 @@ process MINIMAP2_OVERLAP {
         output:
         file("*")
         tuple val(datasetID), path(NP), path("*_overlap.paf"), emit: minimap_overlap_ch
-        path "minimap2.version"
+        path "minimap2.version", emit: minimap2_version
 
         script:
         """

@@ -11,7 +11,7 @@ process UNICYCLER {
         file("*")
         path("*.fasta"), emit: quast_ch
 	tuple val(datasetID), path("*.fasta"), emit: assembly_ch
-	path "unicycler.version"
+	path "unicycler.version", emit: unicycler_version
 
 	script:
 	def args = task.ext.args ?: ''
@@ -43,7 +43,7 @@ process UNICYCLER_HYBRID {
         file("*")
         path("*.fasta"), emit: quast_ch
         tuple val(datasetID), path("*.fasta"), emit: assemblies_ch
-	path "unicycler.version"
+	path "unicycler.version", emit: unicycler_version
 
         script:
         def args = task.ext.args ?: ''

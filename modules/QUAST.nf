@@ -8,7 +8,7 @@ process QUAST {
         output:
         file("*")
         path "transposed_report.tsv", emit: R_quast
-	path "quast.version"
+	path "quast.version", emit: quast_version
 
         script:
         """
@@ -27,7 +27,7 @@ process QUAST_COMPARE {
         output:
         file("*")
 	path "${datasetID}_transposed_report.tsv", emit: quast_compare_ch
-	path "quast.version"
+	path "quast.version", emit: quast_version
 
         script:
         """

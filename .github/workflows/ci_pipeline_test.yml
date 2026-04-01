@@ -1,0 +1,20 @@
+name: CI pipeline test
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  lint-and-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: nf-core/setup-nextflow@v2
+      - run: nextflow -version
+      - run: nextflow run . -stub-run -profile test,docker --track draft
+      - run: nextflow run . -stub-run -profile test,docker --track hybrid

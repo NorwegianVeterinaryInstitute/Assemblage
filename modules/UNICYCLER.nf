@@ -28,6 +28,12 @@ process UNICYCLER {
 	sed -i 's/ /_/g' ${datasetID}.fasta
         mv unicycler.log ${datasetID}_unicycler.log
 	"""
+
+        stub:
+        """
+        cp $baseDir/assets/data/test_assembly.fasta ${datasetID}.fasta
+        echo "Unicycler version 0.5.1" > unicycler.version
+        """
 }
 
 process UNICYCLER_HYBRID {
@@ -60,5 +66,11 @@ process UNICYCLER_HYBRID {
         mv assembly.fasta ${datasetID}.fasta
         sed -i 's/ /_/g' ${datasetID}.fasta
         mv unicycler.log ${datasetID}_unicycler.log
+        """
+
+        stub:
+        """
+        cp $baseDir/assets/data/test_assembly.fasta ${datasetID}.fasta
+        echo "Unicycler version 0.5.1" > unicycler.version
         """
 }

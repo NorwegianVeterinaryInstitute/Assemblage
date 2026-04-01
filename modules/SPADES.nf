@@ -31,6 +31,12 @@ process SPADES {
 
     sed -i 's/ /_/g' ${datasetID}.fasta
     """
+
+    stub:
+    """
+    cp $baseDir/assets/data/test_assembly.fasta ${datasetID}.fasta
+    echo "SPAdes version 4.2.0" > spades.version
+    """
 }
 
 process SPADES_HYBRID {
@@ -67,5 +73,11 @@ process SPADES_HYBRID {
 
     sed -i 's/ /_/g' ${datasetID}.fasta
     grep ">" ${datasetID}.fasta > ${datasetID}_contig_names.txt
+    """
+
+    stub:
+    """
+    cp $baseDir/assets/data/test_assembly.fasta ${datasetID}.fasta
+    echo "SPAdes version 4.2.0" > spades.version
     """
 }

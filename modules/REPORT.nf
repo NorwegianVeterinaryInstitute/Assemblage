@@ -7,6 +7,7 @@ process REPORT_DRAFT {
         input:
         file(quast_report)
 	file(coverage_report)
+        file(versions)
 
         output:
         file("*")
@@ -14,7 +15,7 @@ process REPORT_DRAFT {
         script:
         """
         cp $baseDir/bin/report_draft_assembly.Rmd .
-        Rscript $baseDir/bin/gen_report.R "draft" $params.genome_size
+        Rscript $baseDir/bin/gen_report.R "draft" $params.genome_size $versions
         """
 }
 
@@ -28,6 +29,7 @@ process REPORT_HYBRID {
         file(quast_report)
         file(coverage_report)
 	file(np_coverage_report)
+        file(versions)
 
         output:
         file("*")
@@ -35,7 +37,7 @@ process REPORT_HYBRID {
         script:
         """
         cp $baseDir/bin/report_hybrid_assembly.Rmd .
-        Rscript $baseDir/bin/gen_report.R "hybrid" 10
+        Rscript $baseDir/bin/gen_report.R "hybrid" 10 $versions
         """
 }
 

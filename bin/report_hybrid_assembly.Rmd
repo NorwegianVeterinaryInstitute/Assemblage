@@ -15,6 +15,8 @@ params:
     value: x
   np_coverage_report:
     value: x
+  versions:
+    value: x
 ---
 
 ```{r, message=FALSE, warning=FALSE}
@@ -178,4 +180,56 @@ read_delim(
   # Add a scroll box
   scroll_box(height = "400px")
 
+```
+
+# Software Versions
+
+```{r, message=FALSE, warning=FALSE}
+extract_version <- function(lines) {
+  cleaned <- trimws(lines)
+  cleaned <- cleaned[nzchar(cleaned)]
+
+  if (length(cleaned) == 0) {
+    return(list(raw = NA_character_, version = NA_character_))
+  }
+
+  idx <- grep("version|\\bv?[0-9]+(\\.[0-9]+)+", cleaned, ignore.case = TRUE)
+  raw_line <- if (length(idx) > 0) cleaned[idx[1]] else cleaned[1]
+
+  parsed <- sub(
+    ".*?([0-9]+(?:\\.[0-9]+)+(?:[-+._][A-Za-z0-9]+)?)\\b.*",
+    "\\1",
+    raw_line,
+    perl = TRUE
+  )
+
+  if (identical(parsed, raw_line)) {
+    parsed <- raw_line
+  }
+
+  list(raw = raw_line, version = parsed)
+}
+
+version_files <- sort(list.files(".", pattern = "\\.version$", full.names = TRUE))
+
+if (length(version_files) > 0) {
+  version_info <- lapply(version_files, function(file_path) {
+    parsed <- extract_version(readLines(file_path, warn = FALSE))
+    data.frame(
+      Tool = sub("\\.version$", "", basename(file_path)),
+      Version = parsed$version,
+      stringsAsFactors = FALSE
+    )
+  })
+
+  versions_df <- dplyr::bind_rows(version_info)
+
+  kbl(
+    versions_df,
+    escape = FALSE
+  ) %>%
+    kable_paper("hover", full_width = TRUE)
+} else {
+  cat("No version information available")
+}
 ```

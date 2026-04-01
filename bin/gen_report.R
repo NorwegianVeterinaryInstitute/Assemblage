@@ -3,6 +3,7 @@
 args <- commandArgs(trailingOnly = TRUE)
 workflow <- args[1]
 genome_size <- args[2]
+versions_input <- args[3]
 
 # Generate rmarkdown report for the relevant track
 if (workflow == "draft") {
@@ -11,7 +12,8 @@ if (workflow == "draft") {
       params = list(
         quast_report = "transposed_report.tsv",
         coverage_report = "coverage_reports.txt",
-        genome_size_val = genome_size
+        genome_size_val = genome_size,
+        versions = versions_input
       )
     )
 }
@@ -21,7 +23,8 @@ if (workflow == "hybrid") {
       params = list(
         quast_report = "quast_comparison_report.txt",
         coverage_report = "il_coverage_reports.txt",
-	      np_coverage_report = "np_coverage_reports.txt"
+	      np_coverage_report = "np_coverage_reports.txt",
+        versions = versions_input
       )
     )
 }

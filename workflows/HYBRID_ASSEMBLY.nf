@@ -52,11 +52,20 @@ workflow HYBRID_ASSEMBLY {
         HYBRID_ASSEMBLY_QC.out.np_coverage_report.collect()
     )
 
+    // Collect versions
+    all_versions = QC.out.versions
+        .mix(NPQC.out.versions)
+        .mix(DOWNSAMPLE_AND_HYBRID_ASSEMBLY.out.versions)
+        .mix(POLISHING.out.versions)
+        .mix(HYBRID_ASSEMBLY_QC.out.versions)
+        .collect()
+
     // Reporting
     REPORT_HYBRID(
         MERGE_REPORTS.out.quast_report_ch,
         MERGE_REPORTS.out.il_coverage_report_ch,
-        MERGE_REPORTS.out.np_coverage_report_ch
+        MERGE_REPORTS.out.np_coverage_report_ch,
+        all_versions
     )
 
     emit:

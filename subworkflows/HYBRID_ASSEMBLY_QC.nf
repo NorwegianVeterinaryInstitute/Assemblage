@@ -41,10 +41,9 @@ workflow HYBRID_ASSEMBLY_QC {
     il_coverage_report = BEDTOOLS.out.il_cov_report_ch
     np_coverage_report = BEDTOOLS.out.np_cov_report_ch
     //completeness_report = CHECKM2.out.checkm2_ch
-    versions = BWA.out.bwa_version
-        .mix(MINIMAP2.out.minimap2_version)
-        .mix(SAMTOOLS.out.samtools_version)
-        .mix(BEDTOOLS.out.bedtools_version)
-        .mix(QUAST.out.quast_version)
+    versions = BWA.out.bwa_version.first()
+        .mix(MINIMAP2.out.minimap2_version.first())
+        .mix(SAMTOOLS.out.samtools_version.first())
+        .mix(BEDTOOLS.out.bedtools_version.first())
         .collect()
 }

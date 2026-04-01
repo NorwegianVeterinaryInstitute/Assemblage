@@ -34,9 +34,16 @@ workflow DRAFT_ASSEMBLY {
 				DOWNSAMPLE_AND_ASSEMBLE.out.assembly_ch,
 				DOWNSAMPLE_AND_ASSEMBLE.out.quast_ch)
 
+	// Collect versions
+	all_versions = QC.out.versions
+		.mix(DOWNSAMPLE_AND_ASSEMBLE.out.versions)
+		.mix(ASSEMBLY_QC.out.versions)
+		.collect()
+
 	// Merge and report
 	REPORT_DRAFT(ASSEMBLY_QC.out.quast_report,
-	             ASSEMBLY_QC.out.coverage_report)
+	             ASSEMBLY_QC.out.coverage_report,
+				 all_versions)
 
 	emit:
 	ellipsis_ch = DOWNSAMPLE_AND_ASSEMBLE.out.assembly_ch

@@ -71,4 +71,9 @@ workflow MULTIASSEMBLY {
 		.mix(MINIPOLISH.out.minipolish_version)
 		.mix(ANY2FASTA.out.any2fasta_version)
 		.collect()
+		.map { files ->
+            files
+                .groupBy { it.name }
+                .collect { name, group -> group[0] }
+        }
 }

@@ -32,8 +32,13 @@ workflow QC {
 
     emit:
     trimmed_ch=TRIM.out.trim_reads
-    versions = FASTQC.out.fastqc_version.first()
-        .mix(TRIM.out.trim_galore_version.first())
-        .mix(params.skip_kraken ? Channel.empty() : KRAKEN.out.kraken_version.first())
+    versions = FASTQC.out.fastqc_version
+        .mix(TRIM.out.trim_galore_version)
+        .mix(params.skip_kraken ? Channel.empty() : KRAKEN.out.kraken_version)
         .collect()
+        .map { files ->
+            files
+                .groupBy { it.name }
+                .collect { name, group -> group[0] }
+        }
 }

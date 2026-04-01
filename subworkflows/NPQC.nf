@@ -30,7 +30,12 @@ workflow NPQC {
 
 	emit:
 	reads=FILTLONG.out.filtlong_ch
-	versions = FILTLONG.out.filtlong_version.first()
-		.mix(params.skip_kraken ? Channel.empty() : KRAKEN_LONG.out.kraken_long_version.first())
+	versions = FILTLONG.out.filtlong_version
+		.mix(params.skip_kraken ? Channel.empty() : KRAKEN_LONG.out.kraken_long_version)
 		.collect()
+		.map { files ->
+            files
+                .groupBy { it.name }
+                .collect { name, group -> group[0] }
+        }
 }

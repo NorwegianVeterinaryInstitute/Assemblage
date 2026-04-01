@@ -21,7 +21,12 @@ workflow DOWNSAMPLE_AND_ASSEMBLE {
     assembly_ch = params.spades ? SPADES.out.assembly_ch : UNICYCLER.out.assembly_ch
     quast_ch = params.spades ? SPADES.out.quast_ch : UNICYCLER.out.quast_ch
     subsampled_reads = RASUSA.out.subsampled_reads
-    versions = RASUSA.out.rasusa_version.first()
-        .mix(params.spades ? SPADES.out.spades_version.first() : UNICYCLER.out.unicycler_version.first())
+    versions = RASUSA.out.rasusa_version
+        .mix(params.spades ? SPADES.out.spades_version : UNICYCLER.out.unicycler_version)
         .collect()
+        .map { files ->
+            files
+                .groupBy { it.name }
+                .collect { name, group -> group[0] }
+        }
 }

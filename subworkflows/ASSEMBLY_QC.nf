@@ -31,9 +31,14 @@ workflow ASSEMBLY_QC {
     quast_report = QUAST.out.R_quast
     coverage_report = MERGE_COV_REPORTS.out.coverage_report
     // completeness_report = CHECKM2.out.checkm2_ch
-    versions = BWA.out.bwa_version.first()
-        .mix(SAMTOOLS.out.samtools_version.first())
-        .mix(BEDTOOLS.out.bedtools_version.first())
-        .mix(QUAST.out.quast_version.first())
+    versions = BWA.out.bwa_version
+        .mix(SAMTOOLS.out.samtools_version)
+        .mix(BEDTOOLS.out.bedtools_version)
+        .mix(QUAST.out.quast_version)
         .collect()
+        .map { files ->
+            files
+                .groupBy { it.name }
+                .collect { name, group -> group[0] }
+        }
 }

@@ -1,7 +1,7 @@
-include { FILTLONG             } from "../modules/FILTLONG.nf"
-include { KRAKEN_LONG          } from "../modules/KRAKEN.nf"
-include { MERGE_KRAKEN_REPORTS } from "../modules/MERGE.nf"
-include { REPORT_KRAKEN        } from "../modules/REPORT.nf"
+include { FILTLONG                       } from "../modules/FILTLONG.nf"
+include { KRAKEN 	                     } from "../modules/KRAKEN.nf"
+include { KRAKEN_LONG                    } from "../modules/KRAKEN.nf"
+include { MULTIQC as MULTIQC_KRAKEN_LONG } from "../modules/MULTIQC.nf"
 
 workflow NPQC {
 	take: 
@@ -24,8 +24,7 @@ workflow NPQC {
      		.set { kraken2_input_ch }
 
 		KRAKEN_LONG(kraken2_input_ch)
-		MERGE_KRAKEN_REPORTS(KRAKEN_LONG.out.long_report_ch.collect())
-        REPORT_KRAKEN(MERGE_KRAKEN_REPORTS.out.kraken_report, "long_read")
+		MULTIQC_KRAKEN_LONG(KRAKEN_LONG.out.long_report_ch.collect())
 	}
 
 	emit:

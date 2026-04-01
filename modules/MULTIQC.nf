@@ -9,8 +9,11 @@ process MULTIQC {
         file("*")
 	path "multiqc.version", emit: multiqc_version
 
+        script:
+        def args = task.ext.args ?: ""
+
         """
 	multiqc --version > multiqc.version
-        multiqc $files
+        multiqc $args $files
         """
 }

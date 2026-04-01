@@ -1,9 +1,10 @@
-include { FASTQC; FASTQC as FASTQC_POST                   } from "../modules/FASTQC.nf"
-include { MULTIQC as MULTIQC_PRE; MULTIQC as MULTIQC_POST } from "../modules/MULTIQC.nf"
-include { KRAKEN                                          } from "../modules/KRAKEN.nf"
-include { MERGE_KRAKEN_REPORTS                            } from "../modules/MERGE.nf"
-include { TRIM                                            } from "../modules/TRIM.nf"
-include { REPORT_KRAKEN                                   } from "../modules/REPORT.nf"
+include { FASTQC; FASTQC as FASTQC_POST } from "../modules/FASTQC.nf"
+include { MULTIQC as MULTIQC_PRE        } from "../modules/MULTIQC.nf"
+include { MULTIQC as MULTIQC_POST       } from "../modules/MULTIQC.nf"
+include { MULTIQC as MULTIQC_KRAKEN     } from "../modules/MULTIQC.nf"
+include { KRAKEN                        } from "../modules/KRAKEN.nf"
+include { MERGE_KRAKEN_REPORTS          } from "../modules/MERGE.nf"
+include { TRIM                          } from "../modules/TRIM.nf"
 
 workflow QC {
     take:
@@ -26,15 +27,14 @@ workflow QC {
 	        .set { kraken2_input_ch }
 
         KRAKEN(kraken2_input_ch)
-        MERGE_KRAKEN_REPORTS(KRAKEN.out.report_ch.collect())
-        REPORT_KRAKEN(MERGE_KRAKEN_REPORTS.out.kraken_report, "short")
+        MULTIQC_KRAKEN(KRAKEN.out.report_ch.collect())
     }
 
     emit:
     trimmed_ch=TRIM.out.trim_reads
     versions = FASTQC.out.fastqc_version
         .mix(TRIM.out.trim_galore_version)
-        .mix(params.skip_kraken ? Channel.empty() : KRAKEN.out.kraken_version)
+        .mix(params.skip_kraken ? Channel.empty() : KRAKEN.out.kraken2_version)
         .collect()
         .map { files ->
             files

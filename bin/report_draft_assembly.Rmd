@@ -225,7 +225,7 @@ if (length(version_files) > 0) {
     parsed <- extract_version(readLines(file_path, warn = FALSE))
     data.frame(
       Tool = sub("\\.version$", "", basename(file_path)),
-      Version = parsed$version
+      Version = parsed$version,
       stringsAsFactors = FALSE
     )
   })

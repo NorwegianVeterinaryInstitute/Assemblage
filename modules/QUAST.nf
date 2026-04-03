@@ -8,6 +8,7 @@ process QUAST {
         output:
         file("*")
         path "transposed_report.tsv", emit: R_quast
+        path "report.tsv", emit: quast_multiqc_ch
 	path "quast.version", emit: quast_version
 
         script:

@@ -1,7 +1,6 @@
 include { QC                      } from "../subworkflows/QC.nf"
 include { DOWNSAMPLE_AND_ASSEMBLE } from "../subworkflows/DOWNSAMPLE_AND_ASSEMBLE.nf"
 include { ASSEMBLY_QC             } from "../subworkflows/ASSEMBLY_QC.nf"
-include { REPORT_DRAFT            } from "../modules/REPORT.nf"
 
 workflow DRAFT_ASSEMBLY {
 	// Check input parameters
@@ -29,21 +28,23 @@ workflow DRAFT_ASSEMBLY {
 	// Downsample and assembly
 	DOWNSAMPLE_AND_ASSEMBLE(QC.out.trimmed_ch)
 
+	all_versions = QC.out.versions
+        .mix(DOWNSAMPLE_AND_ASSEMBLE.out.versions)
+        .collect()
+
+	// Set multiqc channel
+	QC.out.fastqc_pre_ch
+		.mix(QC.out.fastqc_post_ch)
+		.mix(params.skip_kraken ? Channel.empty() : QC.out.kraken_report_ch)
+		.collect()
+		.set { multiqc_input_ch }
+
 	// Assembly QC
 	ASSEMBLY_QC(DOWNSAMPLE_AND_ASSEMBLE.out.subsampled_reads,
 				DOWNSAMPLE_AND_ASSEMBLE.out.assembly_ch,
-				DOWNSAMPLE_AND_ASSEMBLE.out.quast_ch)
-
-	// Collect versions
-	all_versions = QC.out.versions
-		.mix(DOWNSAMPLE_AND_ASSEMBLE.out.versions)
-		.mix(ASSEMBLY_QC.out.versions)
-		.collect()
-
-	// Merge and report
-	REPORT_DRAFT(ASSEMBLY_QC.out.quast_report,
-	             ASSEMBLY_QC.out.coverage_report,
-				 all_versions)
+				DOWNSAMPLE_AND_ASSEMBLE.out.quast_ch,
+				all_versions,
+				multiqc_input_ch)
 
 	emit:
 	ellipsis_ch = DOWNSAMPLE_AND_ASSEMBLE.out.assembly_ch

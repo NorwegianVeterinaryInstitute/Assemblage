@@ -1,0 +1,47 @@
+skip_versions_section: true
+disable_version_detection: true
+
+module_order:
+  - fastqc:
+      name: "FastQC"
+      anchor: "fastqc"
+      path_filters: "*R*_fastqc.zip"
+  - fastqc:
+      name: "FastQC (trimmed)"
+      anchor: "fastqc_trimmed"
+      path_filters: "*val_*_fastqc.zip"
+
+report_section_order:
+  general_stats:
+    order: 1000
+  fastqc:
+    order: 900
+  fastqc_trimmed:
+    order: 800
+  kraken2:
+    order: 700
+  quast: 
+    order: 600
+  samtools:
+    order: 500
+  custom_content:
+    order: -1000
+  assemblage_software_versions:
+    order: -1000
+
+custom_content:
+  order:
+    - assemblage_software_versions
+
+custom_data:
+  assemblage_software_versions:
+    section_name: "Software Versions"
+    description: "Software versions parsed from pipeline .version files"
+    plot_type: "table"
+    pconfig:
+      id: "assemblage_software_versions_table"
+      title: "Assemblage Software Versions"
+
+sp:
+  assemblage_software_versions:
+    fn: "software_versions_mqc.tsv"

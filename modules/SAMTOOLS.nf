@@ -1,28 +1,20 @@
 process SAMTOOLS {
-	conda (params.enable_conda ? 'bioconda::samtools=1.3.1' : null)
-	container 'quay.io/biocontainers/samtools:1.3.1--h0cf4675_11'
+	conda (params.enable_conda ? 'bioconda::samtools=1.23.1' : null)
+	container 'quay.io/biocontainers/samtools:1.23.1--ha83d96e_0'
 
     input:
-    tuple val(datasetID), file(bam), val(seq)
+    tuple val(datasetID), file(bam)
 
     output:
-	tuple val(datasetID), path("*mapped_sorted.bam"), env(seqtype), emit: bam_ch
+	path "*samtools_stats.txt", emit: samtools_stats_ch
+	path "*samtools_coverage.txt", emit: samtools_cov_ch
 	path "samtools.version", emit: samtools_version
 
 	script:
-	if( seq == "illumina" )
-	    """
-	    samtools --version > samtools.version
-	    samtools sort $bam -o ${datasetID}_mapped_sorted.bam
-            samtools index ${datasetID}_mapped_sorted.bam
-	    seqtype="illumina"
-	    """
-	else if( seq == "nanopore" )
-	    """
-	    samtools --version > samtools.version
-	    samtools view -b $bam > ${datasetID}.bam
-            samtools sort ${datasetID}.bam -o ${datasetID}_np_mapped_sorted.bam
-            samtools index ${datasetID}_np_mapped_sorted.bam
-	    seqtype="nanopore"
-	    """
+	"""
+	samtools --version > samtools.version
+	samtools sort -o ${datasetID}_sorted.bam $bam
+	samtools stats ${datasetID}_sorted.bam > ${datasetID}_samtools_stats.txt
+	samtools coverage ${datasetID}_sorted.bam > ${datasetID}_samtools_coverage.txt
+	"""
 }

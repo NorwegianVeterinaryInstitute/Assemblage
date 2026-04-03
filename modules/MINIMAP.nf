@@ -9,7 +9,7 @@ process MINIMAP2 {
 
         output:
         file("*")
-        tuple val(datasetID), path("${datasetID}_aln.sam"), val("nanopore"), emit: samtools_np_ch
+        tuple val(datasetID), path("${datasetID}_aln.sam"), emit: samtools_np_ch
 	path "minimap2.version", emit: minimap2_version
 
 	script:

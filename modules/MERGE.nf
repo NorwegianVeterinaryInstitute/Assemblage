@@ -75,3 +75,26 @@ process MERGE_QUAST_REPORTS {
         done
         """
 }
+
+process MAKE_MQC_TOOL_VERSIONS {
+    input:
+    path(version_files)
+
+    output:
+    path "software_versions_mqc.tsv", emit: mqc_versions_tsv
+
+    script:
+    """
+    printf "Tool\\tVersion\\n" > software_versions_mqc.tsv
+
+    for vf in ${version_files}; do
+        tool=\$(basename "\$vf" .version)
+        raw=\$(grep -Eim1 'version|[0-9]+\\.[0-9]' "\$vf" 2>/dev/null | head -n1 | xargs || head -n1 "\$vf" | xargs)
+        version=\$(echo "\$raw" | grep -oE '[0-9]+(\\.[0-9]+)+' | head -n1)
+        if [ -z "\$version" ]; then
+            version="\$raw"
+        fi
+        printf "%s\\t%s\\n" "\$tool" "\$version" >> software_versions_mqc.tsv
+    done
+    """
+}

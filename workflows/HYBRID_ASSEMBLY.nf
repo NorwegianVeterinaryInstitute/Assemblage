@@ -3,8 +3,6 @@ include { NPQC                           } from "../subworkflows/NPQC.nf"
 include { DOWNSAMPLE_AND_HYBRID_ASSEMBLY } from "../subworkflows/DOWNSAMPLE_AND_HYBRID_ASSEMBLY.nf"
 include { POLISHING                      } from "../subworkflows/POLISHING.nf"
 include { HYBRID_ASSEMBLY_QC             } from "../subworkflows/HYBRID_ASSEMBLY_QC.nf"
-include { MERGE_REPORTS                  } from "../modules/MERGE.nf"
-include { REPORT_HYBRID                  } from "../modules/REPORT.nf"
 
 workflow HYBRID_ASSEMBLY {
     // Check input parameters
@@ -52,10 +50,10 @@ workflow HYBRID_ASSEMBLY {
 	// Set multiqc channel
 	QC.out.fastqc_pre_ch
 		.mix(QC.out.fastqc_post_ch)
-        .mix(NPQC.out.filtlong_ch)
+        .mix(NPQC.out.reads)
 		.mix(params.skip_kraken ? Channel.empty() : QC.out.kraken_report_ch)
-        .mix(params.skip_kraken ? Channel.empty() : NPQC.out.np_kraken_report_ch)
-        .mix(POLISHING.out.quast_compare_ch)
+        .mix(params.skip_kraken ? Channel.empty() : NPQC.out.kraken_long_report_ch)
+        .mix(POLISHING.out.quast_compare_out)
 		.collect()
 		.set { multiqc_input_ch }
 

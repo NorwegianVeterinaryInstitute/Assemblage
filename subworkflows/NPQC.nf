@@ -1,7 +1,6 @@
 include { FILTLONG                       } from "../modules/FILTLONG.nf"
 include { KRAKEN 	                     } from "../modules/KRAKEN.nf"
 include { KRAKEN_LONG                    } from "../modules/KRAKEN.nf"
-include { MULTIQC as MULTIQC_KRAKEN_LONG } from "../modules/MULTIQC.nf"
 
 workflow NPQC {
 	take: 
@@ -16,7 +15,7 @@ workflow NPQC {
     	}
 
 		Channel
-    	.fromPath(params.kraken_db, checkIfExists: true)
+    		.fromPath(params.kraken_db, checkIfExists: true)
     		.set { db_ch }
 
 		reads
@@ -24,13 +23,13 @@ workflow NPQC {
      		.set { kraken2_input_ch }
 
 		KRAKEN_LONG(kraken2_input_ch)
-		MULTIQC_KRAKEN_LONG(KRAKEN_LONG.out.long_report_ch.collect())
 	}
 
 	emit:
 	reads=FILTLONG.out.filtlong_ch
+	kraken_long_report_ch = params.skip_kraken ? Channel.empty() : KRAKEN_LONG.out.long_report_ch
 	versions = FILTLONG.out.filtlong_version
-		.mix(params.skip_kraken ? Channel.empty() : KRAKEN_LONG.out.kraken_long_version)
+		.mix(params.skip_kraken ? Channel.empty() : KRAKEN_LONG.out.kraken2_version)
 		.collect()
 		.map { files ->
             files

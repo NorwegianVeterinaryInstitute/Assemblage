@@ -17,4 +17,10 @@ process RAVEN {
 	raven --version > raven.version
 	raven --threads $task.cpus --disable-checkpoints $reads > \${fastaname}_raven.fasta
 	"""
+
+	stub:
+	"""
+	cp $baseDir/assets/data/test_assembly.fasta ${datasetID}_raven.fasta
+	echo "Raven version 1.8.3" > raven.version
+	"""
 }

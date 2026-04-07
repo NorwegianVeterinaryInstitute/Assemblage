@@ -17,4 +17,10 @@ process MINIASM {
 	miniasm -V > miniasm.version
 	miniasm -f $NP $paf > \${fastaname}_unpolished.gfa
 	"""
+
+	stub:
+	"""
+	cp $baseDir/assets/data/test_assembly.gfa ${datasetID}_miniasm.gfa
+	echo "Miniasm version 0.3" > miniasm.version
+	"""
 }

@@ -18,4 +18,10 @@ process FLYE {
 	flye --nano-hq $reads --threads $task.cpus --out-dir flye
 	cp flye/assembly.fasta \${fastaname}_flye.fasta
 	"""
+
+	stub:
+	"""
+	cp $baseDir/assets/data/test_assembly.fasta ${datasetID}_flye.fasta
+	echo "Flye version 2.9.5" > flye.version
+	"""
 }

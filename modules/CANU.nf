@@ -21,4 +21,10 @@ process CANU {
 	canu -p \${fastaname}_canu -d canu genomeSize=$params.genome_size useGrid=false maxThreads=$task.cpus -nanopore $reads $args
 	mv canu/*contigs.fasta .
 	"""
+
+	stub:
+	"""
+	cp $baseDir/assets/data/test_assembly.fasta ${datasetID}_canu.fasta
+	echo "Canu version 2.2" > canu.version
+	"""
 }

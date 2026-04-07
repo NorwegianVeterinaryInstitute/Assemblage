@@ -55,8 +55,9 @@ workflow CLUSTER_AND_RESOLVE {
 
     emit: 
     assemblies_ch=SEQKIT_FILTER.out.seqkit_filtered_ch
-    versions = AUTOCYCLER_CLUSTER.out.version_ch
-        .mix(DNAAPLER.out.dnaapler_version)
+    quast_ch=SEQKIT_FILTER.out.seqkit_quast_ch
+    autocycler_table=AUTOCYCLER_TABLE.out.table_ch
+    versions = DNAAPLER.out.dnaapler_version
         .mix(SEQKIT_FILTER.out.seqkit_version)
         .collect()
         .map { files ->

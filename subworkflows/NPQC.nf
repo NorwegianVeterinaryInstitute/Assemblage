@@ -1,6 +1,6 @@
-include { FILTLONG                       } from "../modules/FILTLONG.nf"
-include { KRAKEN 	                     } from "../modules/KRAKEN.nf"
-include { KRAKEN_LONG                    } from "../modules/KRAKEN.nf"
+include { FILTLONG    } from "../modules/FILTLONG.nf"
+include { KRAKEN 	  } from "../modules/KRAKEN.nf"
+include { KRAKEN_LONG } from "../modules/KRAKEN.nf"
 
 workflow NPQC {
 	take: 

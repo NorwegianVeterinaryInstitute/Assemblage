@@ -8,6 +8,7 @@ process SEQKIT_FILTER {
     output:
 	path "seqkit.version", emit: seqkit_version
 	tuple val(datasetID), path("${datasetID}_filtered.fasta"), emit: seqkit_filtered_ch
+    path "${datasetID}_filtered.fasta", emit: seqkit_quast_ch
 
     """
     seqkit version > seqkit.version

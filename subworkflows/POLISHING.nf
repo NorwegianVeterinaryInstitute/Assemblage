@@ -1,7 +1,6 @@
 include { BWA                 } from "../modules/BWA.nf"
 include { POLYPOLISH          } from "../modules/POLYPOLISH.nf"
 include { QUAST_COMPARE       } from "../modules/QUAST.nf"
-include { MERGE_QUAST_REPORTS } from "../modules/MERGE.nf"
 
 workflow POLISHING {
 	take: 

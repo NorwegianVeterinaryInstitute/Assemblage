@@ -12,6 +12,8 @@ workflow HYBRID_ASSEMBLY {
         exit 1, "Missing input file."
     }
 
+    // TODO - Implement multiQC as final reporting step
+
     // Channels
     Channel
         .fromPath(params.input, checkIfExists: true)
@@ -40,33 +42,30 @@ workflow HYBRID_ASSEMBLY {
 
     POLISHING(DOWNSAMPLE_AND_HYBRID_ASSEMBLY.out.polishing_ch)
 
-    HYBRID_ASSEMBLY_QC(DOWNSAMPLE_AND_HYBRID_ASSEMBLY.out.il_subsampled_reads,
-                       DOWNSAMPLE_AND_HYBRID_ASSEMBLY.out.np_subsampled_reads,
-                       POLISHING.out.polish_out,  
-                       DOWNSAMPLE_AND_HYBRID_ASSEMBLY.out.quast_ch)
-
-    // Merge reports
-    MERGE_REPORTS(
-        POLISHING.out.quast_compare_out.collect(),
-        HYBRID_ASSEMBLY_QC.out.il_coverage_report.collect(),
-        HYBRID_ASSEMBLY_QC.out.np_coverage_report.collect()
-    )
-
     // Collect versions
     all_versions = QC.out.versions
         .mix(NPQC.out.versions)
         .mix(DOWNSAMPLE_AND_HYBRID_ASSEMBLY.out.versions)
         .mix(POLISHING.out.versions)
-        .mix(HYBRID_ASSEMBLY_QC.out.versions)
         .collect()
 
-    // Reporting
-    REPORT_HYBRID(
-        MERGE_REPORTS.out.quast_report_ch,
-        MERGE_REPORTS.out.il_coverage_report_ch,
-        MERGE_REPORTS.out.np_coverage_report_ch,
-        all_versions
-    )
+	// Set multiqc channel
+	QC.out.fastqc_pre_ch
+		.mix(QC.out.fastqc_post_ch)
+        .mix(NPQC.out.filtlong_ch)
+		.mix(params.skip_kraken ? Channel.empty() : QC.out.kraken_report_ch)
+        .mix(params.skip_kraken ? Channel.empty() : NPQC.out.np_kraken_report_ch)
+        .mix(POLISHING.out.quast_compare_ch)
+		.collect()
+		.set { multiqc_input_ch }
+
+    HYBRID_ASSEMBLY_QC(DOWNSAMPLE_AND_HYBRID_ASSEMBLY.out.il_subsampled_reads,
+                       DOWNSAMPLE_AND_HYBRID_ASSEMBLY.out.np_subsampled_reads,
+                       POLISHING.out.polish_out,  
+                       DOWNSAMPLE_AND_HYBRID_ASSEMBLY.out.quast_ch,
+                       all_versions,
+                       multiqc_input_ch)
+
 
     emit:
     ellipsis_ch = POLISHING.out.polish_out

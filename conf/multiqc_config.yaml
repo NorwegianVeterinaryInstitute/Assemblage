@@ -6,6 +6,7 @@ module_order:
       name: "FastQC"
       anchor: "fastqc"
       path_filters: "*R*_fastqc.zip"
+      path_filters_exclude: "*val_*_fastqc.zip"
   - fastqc:
       name: "FastQC (trimmed)"
       anchor: "fastqc_trimmed"
@@ -18,7 +19,7 @@ report_section_order:
     order: 900
   fastqc_trimmed:
     order: 800
-  kraken2:
+  kraken:
     order: 700
   quast: 
     order: 600

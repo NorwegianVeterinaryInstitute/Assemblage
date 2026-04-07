@@ -29,14 +29,24 @@ report_section_order:
     order: 400
   custom_content:
     order: -1000
+  autocycler_metrics:
+    order: -500
   assemblage_software_versions:
     order: -1000
 
 custom_content:
   order:
+    - autocycler_metrics
     - assemblage_software_versions
 
 custom_data:
+  autocycler_metrics:
+    section_name: "Autocycler Metrics"
+    description: "Metrics from autocycler table output"
+    plot_type: "table"
+    pconfig:
+      id: "autocycler_metrics_table"
+      title: "Autocycler Metrics"
   assemblage_software_versions:
     section_name: "Software Versions"
     description: "Software versions parsed from pipeline .version files"
@@ -44,9 +54,10 @@ custom_data:
     pconfig:
       id: "assemblage_software_versions_table"
       title: "Assemblage Software Versions"
-      table_options:
-        colColors: false
+      scale: false
 
 sp:
+  autocycler_metrics:
+    fn: "*_metrics.tsv"
   assemblage_software_versions:
     fn: "software_versions_mqc.tsv"

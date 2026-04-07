@@ -44,6 +44,8 @@ custom_data:
     pconfig:
       id: "assemblage_software_versions_table"
       title: "Assemblage Software Versions"
+      table_options:
+        colColors: false
 
 sp:
   assemblage_software_versions:

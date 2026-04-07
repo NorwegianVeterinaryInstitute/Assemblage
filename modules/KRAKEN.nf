@@ -34,6 +34,6 @@ process KRAKEN_LONG {
 	script:
     """
 	kraken2 --version > kraken2.version
-	kraken2 --db $db --threads $task.cpus --output ${datasetID}.kr2.out --report ${datasetID}.kr2.report --use-names $np
+	kraken2 --db $db --threads $task.cpus --output ${datasetID}.kr2.out --report ${datasetID}_long.kr2.report --use-names $np
     """
 }

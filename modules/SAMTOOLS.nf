@@ -3,7 +3,7 @@ process SAMTOOLS {
 	container 'quay.io/biocontainers/samtools:1.23.1--ha83d96e_0'
 
     input:
-    tuple val(datasetID), file(bam)
+    tuple val(datasetID), val(type), file(bam)
 
     output:
 	path "*samtools_stats.txt", emit: samtools_stats_ch
@@ -14,7 +14,7 @@ process SAMTOOLS {
 	"""
 	samtools --version > samtools.version
 	samtools sort -o ${datasetID}_sorted.bam $bam
-	samtools stats ${datasetID}_sorted.bam > ${datasetID}_samtools_stats.txt
-	samtools coverage ${datasetID}_sorted.bam > ${datasetID}_samtools_coverage.txt
+	samtools stats ${datasetID}_sorted.bam > ${datasetID}_${type}_samtools_stats.txt
+	samtools coverage ${datasetID}_sorted.bam > ${datasetID}_${type}_samtools_coverage.txt
 	"""
 }

@@ -115,7 +115,7 @@ process AUTOCYCLER_TABLE {
     tuple val(datasetID), path(yaml)
 
     output:
-	path("${datasetID}_metrics.tsv")
+	path("${datasetID}_metrics.tsv"), emit: table_ch
 
 	"""
 	autocycler table > ${datasetID}_metrics.tsv

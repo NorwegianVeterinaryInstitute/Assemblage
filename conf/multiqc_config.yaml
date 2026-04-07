@@ -24,6 +24,8 @@ report_section_order:
     order: 600
   samtools:
     order: 500
+  checkm2:
+    order: 400
   custom_content:
     order: -1000
   assemblage_software_versions:

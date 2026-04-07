@@ -3,6 +3,7 @@ include { BAKTA           } from "../modules/BAKTA.nf"
 include { RESFINDER       } from "../modules/RESFINDER.nf"
 include { VIRULENCEFINDER } from "../modules/VIRFINDER.nf"
 include { PLASMIDFINDER   } from "../modules/PLASMIDFINDER.nf"
+include { AMRFINDERPLUS   } from "../modules/AMRFINDERPLUS.nf"
 include { REPORT_ELLIPSIS } from "../modules/REPORT.nf"
 
 workflow ELLIPSIS {
@@ -38,6 +39,11 @@ workflow ELLIPSIS {
             .last()
             .set { mobsuite_db }
 
+	databases.filter{ it[0] == "amrfinderplus" }
+            .flatten()
+            .last()
+            .set { amrfinderplus_db }
+
 	assembly.combine(bakta_db)
 	    .set { bakta_ch }
 	
@@ -53,7 +59,6 @@ workflow ELLIPSIS {
 	assembly.combine(mobsuite_db)
             .set { mobsuite_ch }
 
-
 	// Run modules
 	BAKTA(bakta_ch)
 	RESFINDER(resfinder_ch)
@@ -61,8 +66,16 @@ workflow ELLIPSIS {
 	PLASMIDFINDER(plasmidfinder_ch)
 	MOB_RECON(mobsuite_ch)
 
+	assembly.combine(amrfinderplus_db)
+			 .join(BAKTA.out.bakta_aa_ch)
+			 .join(BAKTA.out.bakta_ch)
+			 .set { amrfinderplus_input_ch }
+
+	AMRFINDERPLUS(amrfinderplus_input_ch)
+
 	REPORT_ELLIPSIS(RESFINDER.out.resfinder_out_ch.collect(),
-			VIRULENCEFINDER.out.virfinder_out_ch.collect(),
-			PLASMIDFINDER.out.plasmidfinder_out_ch.collect(),
-			MOB_RECON.out.mobsuite_out_ch.collect())
+			        VIRULENCEFINDER.out.virfinder_out_ch.collect(),
+			        PLASMIDFINDER.out.plasmidfinder_out_ch.collect(),
+			        AMRFINDERPLUS.out.amrfinderplus_out_ch.collect(),
+			        MOB_RECON.out.mobsuite_out_ch.collect())
 }

@@ -40,10 +40,20 @@ mobsuite_reports <- get_data(
 ) %>%
   mutate(ref = sub(".contig_report.txt", "", ref))
 
+amrfinderplus_reports <- get_data(
+  ".",
+  pattern = "amrfinderplus_results.tsv",
+  delim = "\t",
+  col_names = TRUE,
+  convert = TRUE
+) %>%
+  mutate(ref = sub("_amrfinderplus_results.tsv", "", ref))
+
 reports <- mobsuite_reports %>%
   left_join(resfinder_reports, by = c("ref","contig_id" = "Contig")) %>%
   left_join(virfinder_reports, by = c("ref", "contig_id" = "Contig")) %>%
-  left_join(plasmidfinder_reports, by = c("ref","contig_id" = "Contig"))
+  left_join(plasmidfinder_reports, by = c("ref","contig_id" = "Contig")) %>%
+  left_join(amrfinderplus_reports, by = c("ref", "contig_id" = "Contig")) 
 
 write_delim(
   reports,

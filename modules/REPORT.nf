@@ -71,6 +71,7 @@ process REPORT_ELLIPSIS {
         path(resfinder_data)
         path(virfinder_data)
         path(plasmidfinder_data)
+        path(amrfinderplus_data)
 	path(mobsuite_data)
 
         output:

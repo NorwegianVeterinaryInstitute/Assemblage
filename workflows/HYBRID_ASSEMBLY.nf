@@ -10,8 +10,6 @@ workflow HYBRID_ASSEMBLY {
         exit 1, "Missing input file."
     }
 
-    // TODO - Implement multiQC as final reporting step
-
     // Channels
     Channel
         .fromPath(params.input, checkIfExists: true)
@@ -41,16 +39,16 @@ workflow HYBRID_ASSEMBLY {
     POLISHING(DOWNSAMPLE_AND_HYBRID_ASSEMBLY.out.polishing_ch)
 
     // Collect versions
-    all_versions = QC.out.versions
+    QC.out.versions
         .mix(NPQC.out.versions)
         .mix(DOWNSAMPLE_AND_HYBRID_ASSEMBLY.out.versions)
         .mix(POLISHING.out.versions)
         .collect()
+        .set { all_versions }
 
 	// Set multiqc channel
 	QC.out.fastqc_pre_ch
 		.mix(QC.out.fastqc_post_ch)
-        .mix(NPQC.out.reads)
 		.mix(params.skip_kraken ? Channel.empty() : QC.out.kraken_report_ch)
         .mix(params.skip_kraken ? Channel.empty() : NPQC.out.kraken_long_report_ch)
         .mix(POLISHING.out.quast_compare_out)
@@ -63,7 +61,6 @@ workflow HYBRID_ASSEMBLY {
                        DOWNSAMPLE_AND_HYBRID_ASSEMBLY.out.quast_ch,
                        all_versions,
                        multiqc_input_ch)
-
 
     emit:
     ellipsis_ch = POLISHING.out.polish_out

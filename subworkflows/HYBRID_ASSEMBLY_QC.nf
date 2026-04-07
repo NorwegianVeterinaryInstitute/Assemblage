@@ -28,9 +28,15 @@ workflow HYBRID_ASSEMBLY_QC {
 	BWA(il_mapping_ch)
     MINIMAP2(np_mapping_ch)
 
-    BWA.out.samtools_bwa_ch
-		.concat(MINIMAP2.out.samtools_np_ch)
-		.set { samtools_ch }
+    bwa_samtools_ch = BWA.out.samtools_bwa_ch
+        .map { id, bam -> tuple(id, "short", bam) }
+
+    np_samtools_ch = MINIMAP2.out.samtools_np_ch
+        .map { id, bam -> tuple(id, "long", bam) }
+
+    bwa_samtools_ch
+        .concat(np_samtools_ch)
+        .set { samtools_ch }
     
 	SAMTOOLS(samtools_ch)
 

@@ -38,10 +38,8 @@ workflow ASSEMBLY_QC {
             files.groupBy { it.name }.collect { name, group -> group[0] }
         }
 
-    // Convert .version files into MultiQC custom-content inputs
     MAKE_MQC_TOOL_VERSIONS(all_versions_for_mqc)
 
-    // Assemble full MultiQC input: existing QC artefacts + custom versions files
     multiqc_ch
         .mix(QUAST.out.quast_multiqc_ch)
         .mix(SAMTOOLS.out.samtools_cov_ch)

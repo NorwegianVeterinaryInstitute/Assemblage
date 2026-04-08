@@ -27,16 +27,21 @@ report_section_order:
     order: 500
   checkm2:
     order: 400
+  bakta:
+    order: 300
   custom_content:
     order: -1000
   autocycler_metrics:
     order: -500
+  ellipsis_report:
+    order: -600
   assemblage_software_versions:
     order: -1000
 
 custom_content:
   order:
     - autocycler_metrics
+    - ellipsis_report
     - assemblage_software_versions
 
 custom_data:
@@ -47,6 +52,13 @@ custom_data:
     pconfig:
       id: "autocycler_metrics_table"
       title: "Autocycler Metrics"
+  ellipsis_report:
+    section_name: "Ellipsis Report"
+    description: "Summary of Ellipsis results"
+    plot_type: "table"
+    pconfig:
+      id: "ellipsis_report_table"
+      title: "Ellipsis Report"
   assemblage_software_versions:
     section_name: "Software Versions"
     description: "Software versions parsed from pipeline .version files"
@@ -59,5 +71,7 @@ custom_data:
 sp:
   autocycler_metrics:
     fn: "*_metrics.tsv"
+  ellipsis_report:
+    fn: "ellipsis_summary_report.tsv"
   assemblage_software_versions:
     fn: "software_versions_mqc.tsv"

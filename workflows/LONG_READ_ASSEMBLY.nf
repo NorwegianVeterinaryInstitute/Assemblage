@@ -6,11 +6,6 @@ include { HYBRID_ASSEMBLY_QC  } from "../subworkflows/HYBRID_ASSEMBLY_QC.nf"
 
 workflow LONG_READ_ASSEMBLY {
 
-	// Check input parameters
-	if (!params.input) {
-        exit 1, "Missing input file."
-    }
-
 	Channel
         .fromPath(params.input, checkIfExists: true)
         .splitCsv(header:true, sep:",")

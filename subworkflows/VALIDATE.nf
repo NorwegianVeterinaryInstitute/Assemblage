@@ -1,5 +1,5 @@
 // Define the list of valid database names
-def validNames = ['resfinder', 'virulencefinder', 'plasmidfinder', 'mobsuite', 'bakta', "amrfinderplus"]
+def validNames = ['resfinder', 'virulencefinder', 'plasmidfinder', 'mobsuite', 'bakta']
 
 workflow VALIDATE_DB {
     take: 

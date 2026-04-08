@@ -1,7 +1,6 @@
 include { QUAST                  } from "../modules/QUAST.nf"
 include { BWA                    } from "../modules/BWA.nf"
 include { SAMTOOLS               } from "../modules/SAMTOOLS.nf"
-include { MERGE_COV_REPORTS      } from "../modules/MERGE.nf"
 include { CHECKM2                } from "../modules/CHECKM.nf"
 include { MULTIQC                } from "../modules/MULTIQC.nf"
 include { MAKE_MQC_TOOL_VERSIONS } from "../modules/MERGE.nf"

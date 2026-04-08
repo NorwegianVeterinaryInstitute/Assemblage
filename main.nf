@@ -17,6 +17,13 @@ include { VALIDATE_DB } from "./subworkflows/VALIDATE.nf"
 
 workflow {
 
+	def validTracks = ["hybrid", "draft", "long_read"]
+	def track = params.track?.toString()?.trim()
+
+	if (!track || !validTracks.contains(track)) {
+    	exit 1, "Invalid --track value '${params.track}'. Valid options are: ${validTracks.join(', ')}"
+	}
+
 	// Check input parameters
 	if (!params.input) {
         exit 1, "Missing input file."
@@ -59,7 +66,7 @@ workflow {
 				if (!params.databases) {
 					exit 1, "Missing databases file."
 				}
-				
+
 			VALIDATE_DB(params.databases)
         	ELLIPSIS(LONG_READ_ASSEMBLY.out.ellipsis_ch,
 			         VALIDATE_DB.out.valid_db_ch)

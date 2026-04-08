@@ -12,7 +12,8 @@ process REPORT_ELLIPSIS {
 	path(mobsuite_data)
 
         output:
-        path "ellipsis_report.tsv"
+        path "*report.tsv"
+        path "ellipsis_summary_report.tsv", emit: ellipsis_report_ch
 
         script:
         """

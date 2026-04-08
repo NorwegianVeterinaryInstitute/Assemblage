@@ -6,8 +6,8 @@ process BAKTA {
         tuple val(datasetID), path (assembly), path(db)
 
         output:
-        path "*.gff3", emit: bakta_ch
-        path "*.faa", emit: bakta_aa_ch
+        tuple val(datasetID), path("*.gff3"), emit: bakta_ch
+        path("*.txt"), emit: bakta_txt_ch
 	path "bakta.version", emit: bakta_version
 
         script:

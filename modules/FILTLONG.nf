@@ -12,6 +12,7 @@ process FILTLONG {
 
 	script:
 	"""
+	filtlong --version > filtlong.version
 	filtlong --min_length $params.min_read_length --keep_percent $params.keep_percent $reads | gzip > ${datasetID}_filtered.fastq.gz
 	"""
 }

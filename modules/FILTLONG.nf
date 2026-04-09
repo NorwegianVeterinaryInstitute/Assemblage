@@ -10,8 +10,8 @@ process FILTLONG {
 	tuple val(datasetID), file("*_filtered.fastq.gz"), emit: filtlong_ch
 	path "filtlong.version", emit: filtlong_version
 
-    """
-	filtlong --version > filtlong.version
+	script:
+	"""
 	filtlong --min_length $params.min_read_length --keep_percent $params.keep_percent $reads | gzip > ${datasetID}_filtered.fastq.gz
 	"""
 }

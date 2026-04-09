@@ -1,2 +1,2 @@
 id,np,R1,R2
-test01,/cluster/projects/nn9305k/active/hkaspersen/Projects/NEXTFLOW/Assemblage/assets/data/reads.fastq.gz,/cluster/projects/nn9305k/active/hkaspersen/Projects/NEXTFLOW/Assemblage/assets/data/miseq_reads_R1.fastq.gz,/cluster/projects/nn9305k/active/hkaspersen/Projects/NEXTFLOW/Assemblage/assets/data/miseq_reads_R2.fastq.gz
+test01,https://raw.githubusercontent.com/NorwegianVeterinaryInstitute/Assemblage/master/assets/data/reads.fastq.gz,https://raw.githubusercontent.com/NorwegianVeterinaryInstitute/Assemblage/master/assets/data/miseq_reads_R1.fastq.gz,https://raw.githubusercontent.com/NorwegianVeterinaryInstitute/Assemblage/master/assets/data/miseq_reads_R2.fastq.gz

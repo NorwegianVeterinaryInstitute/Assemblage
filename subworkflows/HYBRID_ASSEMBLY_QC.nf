@@ -1,0 +1,70 @@
+include { QUAST                  } from "../modules/QUAST.nf"
+include { BWA                    } from "../modules/BWA.nf"
+include { SAMTOOLS               } from "../modules/SAMTOOLS.nf"
+include { BEDTOOLS               } from "../modules/BEDTOOLS.nf"
+include { MINIMAP2               } from "../modules/MINIMAP.nf"
+include { CHECKM2                } from "../modules/CHECKM.nf"
+include { MULTIQC                } from "../modules/MULTIQC.nf"
+include { MAKE_MQC_TOOL_VERSIONS } from "../modules/MERGE.nf"
+
+workflow HYBRID_ASSEMBLY_QC {
+    take:
+    il_downsampled_reads
+    np_downsampled_reads
+    assembly_ch
+    quast_ch
+    versions_ch
+    multiqc_ch
+
+    main:
+    // Generate channel
+	il_downsampled_reads.join(assembly_ch, by: 0)
+        .set { il_mapping_ch }
+
+    np_downsampled_reads.join(assembly_ch, by: 0)
+        .set { np_mapping_ch }
+
+    // Coverage calculation
+	BWA(il_mapping_ch)
+    MINIMAP2(np_mapping_ch)
+
+    bwa_samtools_ch = BWA.out.samtools_bwa_ch
+        .map { id, bam -> tuple(id, "short", bam) }
+
+    np_samtools_ch = MINIMAP2.out.samtools_np_ch
+        .map { id, bam -> tuple(id, "long", bam) }
+
+    bwa_samtools_ch
+        .concat(np_samtools_ch)
+        .set { samtools_ch }
+    
+	SAMTOOLS(samtools_ch)
+
+	// QC
+	QUAST(quast_ch.collect())
+	CHECKM2(quast_ch.collect())
+
+    all_versions_for_mqc = versions_ch
+        .mix(BWA.out.bwa_version)
+        .mix(MINIMAP2.out.minimap2_version)
+        .mix(SAMTOOLS.out.samtools_version)
+        .mix(QUAST.out.quast_version)
+        .mix(CHECKM2.out.checkm2_version)
+        .collect()
+        .map { files ->
+            files.groupBy { it.name }.collect { name, group -> group[0] }
+        }
+
+    MAKE_MQC_TOOL_VERSIONS(all_versions_for_mqc)
+
+    multiqc_ch
+        .mix(QUAST.out.quast_multiqc_ch)
+        .mix(SAMTOOLS.out.samtools_cov_ch)
+        .mix(SAMTOOLS.out.samtools_stats_ch)
+        .mix(CHECKM2.out.checkm2_ch)
+        .mix(MAKE_MQC_TOOL_VERSIONS.out.mqc_versions_tsv)
+        .collect()
+        .set { multiqc_input }
+
+    MULTIQC(multiqc_input)
+}

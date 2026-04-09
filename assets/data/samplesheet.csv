@@ -1,0 +1,2 @@
+id,np,R1,R2
+test01,https://raw.githubusercontent.com/NorwegianVeterinaryInstitute/Assemblage/main/assets/data/reads.fastq.gz,https://raw.githubusercontent.com/NorwegianVeterinaryInstitute/Assemblage/main/assets/data/miseq_reads_R1.fastq.gz,https://raw.githubusercontent.com/NorwegianVeterinaryInstitute/Assemblage/main/assets/data/miseq_reads_R2.fastq.gz

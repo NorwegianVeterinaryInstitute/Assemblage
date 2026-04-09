@@ -1,0 +1,77 @@
+skip_versions_section: true
+disable_version_detection: true
+
+module_order:
+  - fastqc:
+      name: "FastQC"
+      anchor: "fastqc"
+      path_filters: "*R*_fastqc.zip"
+      path_filters_exclude: "*val_*_fastqc.zip"
+  - fastqc:
+      name: "FastQC (trimmed)"
+      anchor: "fastqc_trimmed"
+      path_filters: "*val_*_fastqc.zip"
+
+report_section_order:
+  general_stats:
+    order: 1000
+  fastqc:
+    order: 900
+  fastqc_trimmed:
+    order: 800
+  kraken:
+    order: 700
+  quast: 
+    order: 600
+  samtools:
+    order: 500
+  checkm2:
+    order: 400
+  bakta:
+    order: 300
+  custom_content:
+    order: -1000
+  autocycler_metrics:
+    order: -500
+  ellipsis_report:
+    order: -600
+  assemblage_software_versions:
+    order: -1000
+
+custom_content:
+  order:
+    - autocycler_metrics
+    - ellipsis_report
+    - assemblage_software_versions
+
+custom_data:
+  autocycler_metrics:
+    section_name: "Autocycler Metrics"
+    description: "Metrics from autocycler table output"
+    plot_type: "table"
+    pconfig:
+      id: "autocycler_metrics_table"
+      title: "Autocycler Metrics"
+  ellipsis_report:
+    section_name: "Ellipsis Report"
+    description: "Summary of Ellipsis results"
+    plot_type: "table"
+    pconfig:
+      id: "ellipsis_report_table"
+      title: "Ellipsis Report"
+  assemblage_software_versions:
+    section_name: "Software Versions"
+    description: "Software versions parsed from pipeline .version files"
+    plot_type: "table"
+    pconfig:
+      id: "assemblage_software_versions_table"
+      title: "Assemblage Software Versions"
+      scale: false
+
+sp:
+  autocycler_metrics:
+    fn: "*_metrics.tsv"
+  ellipsis_report:
+    fn: "ellipsis_summary_report.tsv"
+  assemblage_software_versions:
+    fn: "software_versions_mqc.tsv"

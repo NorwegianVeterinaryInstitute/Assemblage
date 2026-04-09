@@ -1,6 +1,6 @@
 process FILTLONG {
-	conda (params.enable_conda ? 'bioconda::filtlong=0.2.1' : null)
-	container 'quay.io/biocontainers/filtlong:0.2.1--hd03093a_2'
+	conda (params.enable_conda ? 'bioconda::filtlong=0.3.1' : null)
+	container 'quay.io/biocontainers/filtlong:0.3.1--h077b44d_0'
 
     input:
     tuple val(datasetID), file(reads)
@@ -8,7 +8,7 @@ process FILTLONG {
     output:
     file("*")
 	tuple val(datasetID), file("*_filtered.fastq.gz"), emit: filtlong_ch
-	path "filtlong.version"
+	path "filtlong.version", emit: filtlong_version
 
 	script:
 	"""

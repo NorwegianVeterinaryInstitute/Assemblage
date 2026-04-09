@@ -2,12 +2,12 @@ process RESFINDER {
 	conda (params.enable_conda ? 'bioconda::resfinder=4.6.0' : null)
 	container 'quay.io/biocontainers/resfinder:4.6.0--pyhdfd78af_0'
 
-        input:
-        tuple val(datasetID), path(assembly), path(db)
+    input:
+    tuple val(datasetID), path(assembly), path(db)
 
-        output:
-        file("*")
-	path "resfinder.version"
+    output:
+    file("*")
+	path "resfinder.version", emit: resfinder_version
 	path "${datasetID}_resfinder_results.tsv", emit: resfinder_out_ch
 
         """

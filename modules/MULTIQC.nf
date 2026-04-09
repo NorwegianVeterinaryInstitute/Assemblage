@@ -1,31 +1,19 @@
-process MULTIQC_PRE {
-	conda (params.enable_conda ? 'bioconda::multiqc=1.14' : null)
-	container 'quay.io/biocontainers/multiqc:1.14--pyhdfd78af_0'
+process MULTIQC {
+	conda (params.enable_conda ? 'bioconda::multiqc=1.33' : null)
+	container 'quay.io/biocontainers/multiqc:1.33--pyhdfd78af_0'
 
         input:
-        file("*")
+        path(files)
 
         output:
         file("*")
-	path "multiqc.version"
+	path "multiqc.version", emit: multiqc_version
+
+        script:
+        def args = task.ext.args ?: ""
 
         """
 	multiqc --version > multiqc.version
-        multiqc *.zip
-        """
-}
-
-process MULTIQC_POST {
-	conda (params.enable_conda ? 'bioconda::multiqc=1.14' : null)
-        container 'quay.io/biocontainers/multiqc:1.14--pyhdfd78af_0'
-
-        input:
-        file("*")
-
-        output:
-        file("*")
-
-        """
-        multiqc *.zip
+        multiqc $args $files
         """
 }

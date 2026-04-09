@@ -13,7 +13,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '17'
+          java-version: '21'
       - uses: nf-core/setup-nextflow@v2
       - run: nextflow -version
       - run: nextflow run . -stub-run -profile test,docker --track draft

@@ -21,7 +21,10 @@ workflow ASSEMBLY_QC {
     // Coverage calculation
 	BWA(mapping_ch)
 
-	SAMTOOLS(BWA.out.samtools_bwa_ch)
+    bwa_samtools_ch = BWA.out.samtools_bwa_ch
+        .map { id, bam -> tuple(id, "short", bam) }
+
+	SAMTOOLS(bwa_samtools_ch)
 
 	// QC
 	QUAST(quast_ch.collect())

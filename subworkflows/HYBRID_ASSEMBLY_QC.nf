@@ -42,14 +42,17 @@ workflow HYBRID_ASSEMBLY_QC {
 
 	// QC
 	QUAST(quast_ch.collect())
-	CHECKM2(quast_ch.collect())
+    
+    if (!params.skip_checkm2) {
+        CHECKM2(quast_ch.collect())
+    }
 
     all_versions_for_mqc = versions_ch
         .mix(BWA.out.bwa_version)
         .mix(MINIMAP2.out.minimap2_version)
         .mix(SAMTOOLS.out.samtools_version)
         .mix(QUAST.out.quast_version)
-        .mix(CHECKM2.out.checkm2_version)
+        .mix(params.skip_checkm2 ? Channel.empty() : CHECKM2.out.checkm2_version)
         .collect()
         .map { files ->
             files.groupBy { it.name }.collect { name, group -> group[0] }
@@ -61,7 +64,7 @@ workflow HYBRID_ASSEMBLY_QC {
         .mix(QUAST.out.quast_multiqc_ch)
         .mix(SAMTOOLS.out.samtools_cov_ch)
         .mix(SAMTOOLS.out.samtools_stats_ch)
-        .mix(CHECKM2.out.checkm2_ch)
+        .mix(params.skip_checkm2 ? Channel.empty() : CHECKM2.out.checkm2_ch)
         .mix(MAKE_MQC_TOOL_VERSIONS.out.mqc_versions_tsv)
         .collect()
         .set { multiqc_input }

@@ -58,36 +58,38 @@ process AUTOCYCLER_CLUSTER {
 }
 
 process AUTOCYCLER_TRIM {
-	conda (params.enable_conda ? 'bioconda::autocycler=0.6.1' : null)
-	container 'quay.io/staphb/autocycler:0.6.1'
+    conda (params.enable_conda ? 'bioconda::autocycler=0.6.1' : null)
+    container 'quay.io/staphb/autocycler:0.6.1'
 
     input:
-    tuple val(datasetID), val(cluster), path(files)
+    tuple val(datasetID), val(cluster), path(cluster_dir)
 
     output:
-	tuple val(datasetID), val(cluster), path("2_*"), emit: trim_ch
-	tuple val(datasetID), path("2_trimmed.yaml"), emit: trimming_yaml_ch
-	tuple val(datasetID), path("1_untrimmed.yaml"), emit: untrimmed_yaml_ch
+    tuple val(datasetID), val(cluster), path("${cluster}_trim"), emit: trim_dir_ch
+    tuple val(datasetID), path("${cluster}_trim/2_trimmed.yaml"), emit: trimming_yaml_ch
+    tuple val(datasetID), path("${cluster}_trim/1_untrimmed.yaml"), emit: untrimmed_yaml_ch
 
-	"""
-	autocycler trim --min_identity $params.autocycler_identity --max_unitigs $params.autocycler_max_unitigs --mad $params.autocycler_mad --threads $task.cpus -c .
-	"""
+    """
+    cp -rL "$cluster_dir" "${cluster}_trim"
+    autocycler trim --min_identity $params.autocycler_identity --max_unitigs $params.autocycler_max_unitigs --mad $params.autocycler_mad --threads $task.cpus -c ${cluster}_trim
+    """
 }
 
 process AUTOCYCLER_RESOLVE {
-	conda (params.enable_conda ? 'bioconda::autocycler=0.6.1' : null)
-	container 'quay.io/staphb/autocycler:0.6.1'
+    conda (params.enable_conda ? 'bioconda::autocycler=0.6.1' : null)
+    container 'quay.io/staphb/autocycler:0.6.1'
 
     input:
-    tuple val(datasetID), val(cluster), path(files)
+    tuple val(datasetID), val(cluster), path(cluster_dir)
 
     output:
-	tuple val(datasetID), path("*final.gfa"), emit: resolve_ch
+    tuple val(datasetID), path("${cluster}_resolve/5_${cluster}_final.gfa"), emit: resolve_ch
 
-	"""
-	autocycler resolve -c .
-	mv 5_final.gfa 5_${cluster}_final.gfa
-	"""
+    """
+    cp -rL "$cluster_dir" "${cluster}_resolve"
+    autocycler resolve -c ${cluster}_resolve
+	mv "${cluster}_resolve/5_final.gfa" "${cluster}_resolve/5_${cluster}_final.gfa"
+    """
 }
 
 process AUTOCYCLER_COMBINE {

@@ -3,7 +3,7 @@ process RASUSA {
 	container 'quay.io/biocontainers/rasusa:0.8.0--h031d066_0'
 
         input:
-        tuple val(datasetID), path(R1), path(R2)
+        tuple val(datasetID), path(R1), path(R2), val(genome_size)
 
         output:
         file("*")
@@ -13,7 +13,7 @@ process RASUSA {
         script:
         """
 	rasusa --version > rasusa.version
-	rasusa --input $R1 $R2 --genome-size $params.genome_size --coverage $params.coverage --output ${datasetID}_rasusa_1.fq.gz ${datasetID}_rasusa_2.fq.gz &> rasusa.log
+	rasusa --input $R1 $R2 --genome-size $genome_size --coverage $params.coverage --output ${datasetID}_rasusa_1.fq.gz ${datasetID}_rasusa_2.fq.gz &> rasusa.log
 	mv rasusa.log ${datasetID}_rasusa.log
         """
 }
@@ -23,7 +23,7 @@ process RASUSA_LONG {
 	container 'quay.io/biocontainers/rasusa:0.8.0--h031d066_0'
 
         input:
-        tuple val(datasetID), path(np)
+        tuple val(datasetID), path(np), val(genome_size)
 
         output:
         tuple val(datasetID), path {"*rasusa.fq.gz"}, emit: subsampled_long_reads
@@ -32,7 +32,7 @@ process RASUSA_LONG {
         script:
         """
 	rasusa --version > rasusa.version
-	rasusa --input $np --genome-size $params.genome_size --coverage $params.long_coverage --output ${datasetID}_rasusa.fq.gz &> rasusa.log
+	rasusa --input $np --genome-size $genome_size --coverage $params.long_coverage --output ${datasetID}_rasusa.fq.gz &> rasusa.log
 	mv rasusa.log ${datasetID}_rasusa.log
         """
 }

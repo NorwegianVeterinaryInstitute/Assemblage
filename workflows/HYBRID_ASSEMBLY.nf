@@ -10,31 +10,52 @@ workflow HYBRID_ASSEMBLY {
         exit 1, "Missing input file."
     }
 
+    if (!params.skip_kraken && !params.kraken_db) {
+    	exit 1, "Missing Kraken database path."
+	}
+
+    if (!params.skip_checkm2 && !params.checkm2_db) {
+        exit 1, "Missing CheckM2 database path."
+    }
+
     // Channels
     Channel
         .fromPath(params.input, checkIfExists: true)
         .splitCsv(header:true, sep:",")
-        .map { tuple(it.id, file(it.R1, checkIfExists: true), file(it.R2, checkIfExists: true), file(it.np, checkIfExists: true)) }
+        .map { tuple(it.id, file(it.R1, checkIfExists: true), file(it.R2, checkIfExists: true), file(it.np, checkIfExists: true), it.genome_size) }
         .set { input_ch }
 
     input_ch
-        .map { id, R1, R2, np ->
+        .map { id, R1, R2, np, gs ->
             tuple(id, R1, R2)
         }
         .set { illumina_ch }
 
     input_ch
-        .map { id, R1, R2, np ->
+        .map { id, R1, R2, np, gs ->
             tuple(id, np)
         }
         .set { nanopore_ch }
+
+    input_ch
+        .map { id, R1, R2, np, gs -> 
+            tuple(id, gs) }
+        .set { genome_size_ch }
 
 
     QC(illumina_ch)
     NPQC(nanopore_ch)
 
-    DOWNSAMPLE_AND_HYBRID_ASSEMBLY(QC.out.trimmed_ch, 
-                                   NPQC.out.reads)
+    QC.out.trimmed_ch
+        .join(genome_size_ch)
+        .set { trimmed_with_gs }
+
+    NPQC.out.reads
+        .join(genome_size_ch)
+        .set { np_with_gs }
+
+    DOWNSAMPLE_AND_HYBRID_ASSEMBLY(trimmed_with_gs, 
+                                   np_with_gs)
 
     POLISHING(DOWNSAMPLE_AND_HYBRID_ASSEMBLY.out.polishing_ch)
 

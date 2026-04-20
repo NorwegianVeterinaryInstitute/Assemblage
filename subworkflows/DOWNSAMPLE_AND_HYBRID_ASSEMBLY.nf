@@ -10,9 +10,6 @@ workflow DOWNSAMPLE_AND_HYBRID_ASSEMBLY {
     nanopore_reads
 
     main:
-    if (!params.genome_size) {
-        exit 1, "Missing genome size parameter."
-    }
 
     // Downsample reads
     RASUSA(illumina_reads)

@@ -5,7 +5,7 @@ process CANU {
 	label 'process_high_memory_time'
 
     input:
-    tuple val(datasetID), path(reads)
+    tuple val(datasetID), path(reads), val(genome_size)
 
     output:
 	tuple val(datasetID), path("*.fasta"), emit: canu_assembly_ch
@@ -18,7 +18,7 @@ process CANU {
     """
 	fastaname=\$(basename ${reads} | cut -d. -f1)
 	canu --version > canu.version
-	canu -p \${fastaname}_canu -d canu genomeSize=$params.genome_size useGrid=false maxThreads=$task.cpus -nanopore $reads $args
+	canu -p \${fastaname}_canu -d canu genomeSize=$genome_size useGrid=false maxThreads=$task.cpus -nanopore $reads $args
 	mv canu/*contigs.fasta .
 	"""
 

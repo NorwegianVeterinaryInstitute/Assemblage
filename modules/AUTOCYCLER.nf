@@ -3,7 +3,7 @@ process AUTOCYCLER_SUBSET {
 	container 'quay.io/staphb/autocycler:0.6.1'
 
     input:
-    tuple val(datasetID), path(reads)
+    tuple val(datasetID), path(reads), val(genome_size)
 
     output:
 	path "autocycler.version", emit: autocycler_version
@@ -13,7 +13,7 @@ process AUTOCYCLER_SUBSET {
 	script:
 	"""
 	autocycler --version > autocycler.version
-	autocycler subsample --reads $reads --out_dir . --genome_size $params.genome_size --count 12 --min_read_depth $params.min_read_depth
+	autocycler subsample --reads $reads --out_dir . --genome_size $genome_size --count 12 --min_read_depth $params.min_read_depth
 	ls sample_*.fastq | xargs -I {} mv {} ${datasetID}_{}
 	"""
 }

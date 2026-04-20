@@ -5,11 +5,23 @@ include { POLISHING           } from "../subworkflows/POLISHING.nf"
 include { HYBRID_ASSEMBLY_QC  } from "../subworkflows/HYBRID_ASSEMBLY_QC.nf"
 
 workflow LONG_READ_ASSEMBLY {
+    // Check input parameters
+    if (!params.input) {
+        exit 1, "Missing input file."
+    }
+
+    if (!params.skip_kraken && !params.kraken_db) {
+    	exit 1, "Missing Kraken database path."
+	}
+
+    if (!params.skip_checkm2 && !params.checkm2_db) {
+        exit 1, "Missing CheckM2 database path."
+    }
 
 	Channel
         .fromPath(params.input, checkIfExists: true)
         .splitCsv(header:true, sep:",")
-        .map { tuple(it.id, file(it.np, checkIfExists: true)) }
+        .map { tuple(it.id, file(it.np, checkIfExists: true), it.genome_size) }
         .set { input_ch }
 
     Channel
@@ -18,8 +30,23 @@ workflow LONG_READ_ASSEMBLY {
         .map { tuple(it.id, file(it.R1, checkIfExists: true), file(it.R2, checkIfExists: true)) }
         .set { illumina_ch }
 
-	NPQC(input_ch)
-	MULTIASSEMBLY(NPQC.out.reads)
+    input_ch
+        .map { id, np, gs -> 
+            tuple(id, gs) }
+        .set { genome_size_ch }
+
+    input_ch.map { id, np, gs -> 
+            tuple(id, np) }
+        .set { reads_ch }
+
+	NPQC(reads_ch)
+
+    NPQC.out.reads
+        .join(genome_size_ch)
+        .set { np_with_gs }
+
+	MULTIASSEMBLY(np_with_gs)
+
     CLUSTER_AND_RESOLVE(MULTIASSEMBLY.out.graphs,
                         MULTIASSEMBLY.out.subset_yaml,
                         MULTIASSEMBLY.out.compress_yaml)

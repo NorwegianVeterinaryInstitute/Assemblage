@@ -12,7 +12,6 @@ workflow QC {
 	FASTQC_POST(TRIM.out.trim_reads)
 
     if(!params.skip_kraken) {
-
         Channel
 	        .fromPath(params.kraken_db, checkIfExists: true)
 	        .set { db_ch }

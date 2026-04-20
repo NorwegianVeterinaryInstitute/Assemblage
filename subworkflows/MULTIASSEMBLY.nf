@@ -17,14 +17,20 @@ workflow MULTIASSEMBLY {
 	AUTOCYCLER_SUBSET(reads)
 
 	// Set assembly channels
+	reads.map { id, np, gs -> 
+		tuple(id, gs) }
+		.set { genome_size_from_input }
+	
 	AUTOCYCLER_SUBSET.out.sub_ch.transpose()
-		.collate( 4 )
+    	.map { id, subset -> tuple(id, subset) }
+    	.combine(genome_size_from_input, by: 0)  // -> tuple(id, subset, gs)
+    	.collate(4)
 		.set { subset_ch }
 
-	sub_ch1 = subset_ch.map { it[0] }
-	sub_ch2 = subset_ch.map { it[1] }
-	sub_ch3 = subset_ch.map { it[2] }
-	sub_ch4 = subset_ch.map { it[3] }
+	sub_ch1 = subset_ch.map { it[0] } 
+	sub_ch2 = subset_ch.map { it[1] }.map { id, f, gs -> tuple(id, f) }  
+	sub_ch3 = subset_ch.map { it[2] }.map { id, f, gs -> tuple(id, f) } 
+	sub_ch4 = subset_ch.map { it[3] }.map { id, f, gs -> tuple(id, f) } 
 
 	// Run assemblers
 	CANU(sub_ch1)

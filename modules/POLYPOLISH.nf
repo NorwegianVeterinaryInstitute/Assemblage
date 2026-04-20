@@ -2,6 +2,8 @@ process POLYPOLISH {
 	conda (params.enable_conda ? 'bioconda::polypolish=0.6.0' : null)
 	container 'quay.io/biocontainers/polypolish:0.6.0--h4c94732_1'
 
+	label 'process_high_memory'
+
     input:
     tuple val(datasetID), path(assembly), path(alignment1), path(alignment2)
 

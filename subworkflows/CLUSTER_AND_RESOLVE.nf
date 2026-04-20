@@ -19,17 +19,16 @@ workflow CLUSTER_AND_RESOLVE {
 
     AUTOCYCLER_CLUSTER.out.cluster_ch
         .flatMap { id, dirs ->
-            dirs.collect { dir ->
-                def cluster_name = dir.getBaseName()
-                def base = file(dir).toAbsolutePath()
-                def files = base.list().collect { f -> base.resolve(f) }
-                tuple(id, cluster_name, files)
-            }
+            def clusterDirs = (dirs instanceof List) ? dirs : [dirs]
+            clusterDirs.collect { dir ->
+                tuple(id, dir.getBaseName(), dir)
         }
-        .set {trim_input_ch}
+    }
+    .set { trim_input_ch }
+
 
     AUTOCYCLER_TRIM(trim_input_ch)
-    AUTOCYCLER_RESOLVE(AUTOCYCLER_TRIM.out.trim_ch)
+    AUTOCYCLER_RESOLVE(AUTOCYCLER_TRIM.out.trim_dir_ch)
 
     AUTOCYCLER_RESOLVE.out.resolve_ch
        .groupTuple()

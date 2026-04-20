@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.1](https://github.com/NorwegianVeterinaryInstitute/Assemblage/compare/v0.3.0...v0.3.1) (2026-04-20)
+
+
+### Bug Fixes
+
+* corrected autocycler directory channel error when only one cluster is passed into the process ([f4db1a7](https://github.com/NorwegianVeterinaryInstitute/Assemblage/commit/f4db1a7375f853ee7b8c8449f24ab453c2a1f87b))
+* increased memory specification for polypolish ([d82dec7](https://github.com/NorwegianVeterinaryInstitute/Assemblage/commit/d82dec70a5c6ca5470a0ce99ffa5f8486de869a7))
+
 ## [0.3.0](https://github.com/NorwegianVeterinaryInstitute/Assemblage/compare/v0.2.2...v0.3.0) (2026-04-09)
 
 

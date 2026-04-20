@@ -9,10 +9,6 @@ workflow NPQC {
 	FILTLONG(reads)
 
 	if (!params.skip_kraken) {
-		if (!params.kraken_db) {
-        	exit 1, "Missing kraken database path."
-    	}
-
 		Channel
     		.fromPath(params.kraken_db, checkIfExists: true)
     		.set { db_ch }

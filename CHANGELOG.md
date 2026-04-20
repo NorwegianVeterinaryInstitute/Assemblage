@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.4.0](https://github.com/NorwegianVeterinaryInstitute/Assemblage/compare/v0.3.1...v0.4.0) (2026-04-20)
+
+
+### Features
+
+* added genome size as a samplesheet input ([786be4c](https://github.com/NorwegianVeterinaryInstitute/Assemblage/commit/786be4cc987d4205eea20714051a37c916986502))
+
+
+### Bug Fixes
+
+* corrected input parameter checks ([6c10115](https://github.com/NorwegianVeterinaryInstitute/Assemblage/commit/6c1011530960c4f39e5bd4e1a4680c599d3ba8b2))
+
 ## [0.3.1](https://github.com/NorwegianVeterinaryInstitute/Assemblage/compare/v0.3.0...v0.3.1) (2026-04-20)
 
 

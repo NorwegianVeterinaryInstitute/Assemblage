@@ -9,12 +9,14 @@ process QUAST {
 
         output:
         tuple val(batch_id), path("quast_batch_${batch_id}_out"), emit: quast_multiqc_ch
-	path "quast.version", emit: quast_version
+	path("${batch_id}_quast_report.tsv"), emit: quast_report_ch
+        path "quast.version", emit: quast_version
 
         script:
         """
 	quast --version > quast.version
         quast --threads $task.cpus -o quast_batch_${batch_id}_out ${genomes.join(' ')}
+        cp quast_batch_${batch_id}_out/transposed_report.tsv ${batch_id}_quast_report.tsv
         """
 }
 

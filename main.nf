@@ -15,8 +15,26 @@ include { LONG_READ_ASSEMBLY } from "./workflows/LONG_READ_ASSEMBLY.nf"
 include { ELLIPSIS    } from "./subworkflows/ELLIPSIS.nf"
 include { VALIDATE_DB } from "./subworkflows/VALIDATE.nf"
 
+// Check for samplesheet structure based on track
+def validateSamplesheetColumns(csvPath, requiredCols, trackName) {
+  	def f = file(csvPath, checkIfExists: true)
+   	def lines = f.text.readLines().findAll { it?.trim() }
+
+   	if (!lines) {
+       	exit 1, "Input samplesheet is empty: ${csvPath}"
+   	}
+
+   	def header = lines[0].split(',')*.trim()
+   	def missing = requiredCols.findAll { !header.contains(it) }
+
+   	if (missing) {
+       	exit 1, "Invalid samplesheet for --track ${trackName}. Missing required column(s): ${missing.join(', ')}. Found header: ${header.join(', ')}"
+   	}
+}
+
 workflow {
 
+	// Track check
 	def validTracks = ["hybrid", "draft", "long_read","ellipsis"]
 	def track = params.track?.toString()?.trim()
 
@@ -33,6 +51,8 @@ workflow {
 		if (!params.input) {
 			exit 1, "Missing input file. For --track ellipsis, provide a CSV with columns: id,assembly"
 		}
+
+		validateSamplesheetColumns(params.input, ["id", "assembly"], "ellipsis")
 
 		if (!params.databases) {
 			exit 1, "Missing databases file."
@@ -55,6 +75,8 @@ workflow {
         	exit 1, "Missing input file."
     	}
 
+		validateSamplesheetColumns(params.input, ["id", "R1", "R2", "np", "genome_size"], "hybrid")
+
 		HYBRID_ASSEMBLY()
 		
 	    if (params.ellipsis) {
@@ -72,6 +94,8 @@ workflow {
 		if (!params.input) {
         	exit 1, "Missing input file."
     	}
+
+		validateSamplesheetColumns(params.input, ["id", "R1", "R2", "genome_size"], "draft")
 
 		DRAFT_ASSEMBLY()
 
@@ -91,6 +115,8 @@ workflow {
         	exit 1, "Missing input file."
     	}
 
+		validateSamplesheetColumns(params.input, ["id", "R1", "R2", "np", "genome_size"], "long_read")
+		
 		LONG_READ_ASSEMBLY()
 
 		if (params.ellipsis) {

@@ -10,9 +10,12 @@ process RESFINDER {
 	path "resfinder.version", emit: resfinder_version
 	path "${datasetID}_resfinder_results.tsv", emit: resfinder_out_ch
 
-        """
+	script:
+	def args = task.ext.args ?: ""
+
+    """
 	python -m resfinder --version > resfinder.version
-	python -m resfinder -o . -s $params.species -l $params.mincov -t $params.identity_threshold --acquired --db_path_res $db --ignore_missing_species -ifa $assembly
+	python -m resfinder -o . --acquired --db_path_res $db -ifa $assembly $args
 	mv ResFinder_results_tab.txt ${datasetID}_resfinder_results.tsv
 	"""
 }

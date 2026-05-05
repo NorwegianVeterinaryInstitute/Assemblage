@@ -13,6 +13,10 @@ process AMRFINDERPLUS {
     def args = task.ext.args ?: ""
 
     """
+    mkdir -p tmp
+    export TMPDIR=\$PWD/tmp
+    export TMP=\$PWD/tmp
+
     amrfinder --version > amrfinderplus.version
     amrfinder -o ${datasetID}_amrfinderplus_results.tsv --nucleotide $assembly --threads $task.cpus --name $datasetID $args 
     """

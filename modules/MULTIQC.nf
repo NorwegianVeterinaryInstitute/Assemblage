@@ -6,6 +6,7 @@ process MULTIQC {
         path(files)
 
         output:
+        path "*.html", emit: multiqc_report
 	path "multiqc.version", emit: multiqc_version
 
         script:

@@ -6,7 +6,6 @@ process MULTIQC {
         path(files)
 
         output:
-        file("*")
 	path "multiqc.version", emit: multiqc_version
 
         script:
@@ -14,6 +13,6 @@ process MULTIQC {
 
         """
 	multiqc --version > multiqc.version
-        multiqc $args $files
+        multiqc . $args $files
         """
 }

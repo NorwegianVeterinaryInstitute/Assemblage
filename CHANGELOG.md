@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.5.0](https://github.com/NorwegianVeterinaryInstitute/Assemblage/compare/v0.4.0...v0.5.0) (2026-05-05)
+
+
+### Features
+
+* added different parameters for amrfinderplus species and resfinder species ([5dff62d](https://github.com/NorwegianVeterinaryInstitute/Assemblage/commit/5dff62d9c8fa54486b70ed71a1f657d09b623f0c))
+* added ellipsis as stand-alone track with assemblies as input ([1d005d6](https://github.com/NorwegianVeterinaryInstitute/Assemblage/commit/1d005d65c119de396cf3bd442ef8d0f66f9cfb5d))
+
+
+### Bug Fixes
+
+* added batchwise analysis for checkm and quast ([06cc915](https://github.com/NorwegianVeterinaryInstitute/Assemblage/commit/06cc915aad34cecf427b1242a87032f89dc78691))
+* added error messages for missing data in samplesheet input ([77f9f82](https://github.com/NorwegianVeterinaryInstitute/Assemblage/commit/77f9f821bfa36ede1dcb5e258019a61fc1b1d9e9))
+
 ## [0.4.0](https://github.com/NorwegianVeterinaryInstitute/Assemblage/compare/v0.3.1...v0.4.0) (2026-04-20)
 
 

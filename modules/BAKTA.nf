@@ -12,6 +12,10 @@ process BAKTA {
 
         script:
         """
+        mkdir -p tmp
+        export TMPDIR=\$PWD/tmp
+        export TMP=\$PWD/tmp
+
         bakta --version > bakta.version
         bakta --db $db --skip-plot --prefix $assembly.baseName --threads $task.cpus $assembly
         """

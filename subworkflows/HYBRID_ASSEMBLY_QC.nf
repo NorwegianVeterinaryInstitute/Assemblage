@@ -41,10 +41,28 @@ workflow HYBRID_ASSEMBLY_QC {
 	SAMTOOLS(samtools_ch)
 
 	// QC
-	QUAST(quast_ch.collect())
+    def batchSize = params.batch_size.toString().toInteger()
+    def batchId = 0
+
+    quast_ch
+        .collate(batchSize)
+        .map { batch -> tuple(++batchId, batch) }
+        .set { genome_batches }
+
+	QUAST(genome_batches)
     
     if (!params.skip_checkm2) {
-        CHECKM2(quast_ch.collect())
+        checkm_db_ch = Channel.value( file(params.checkm2_db, checkIfExists: true) )
+
+        genome_batches
+            .combine(checkm_db_ch)
+            .set { checkm_input_ch }
+
+        CHECKM2(checkm_input_ch)
+
+        CHECKM2.out.checkm2_ch
+            .map { batch_id, checkm2_dir -> checkm2_dir }
+            .set { clean_checkm2_ch }
     }
 
     all_versions_for_mqc = versions_ch
@@ -60,11 +78,15 @@ workflow HYBRID_ASSEMBLY_QC {
 
     MAKE_MQC_TOOL_VERSIONS(all_versions_for_mqc)
 
+    QUAST.out.quast_multiqc_ch
+        .map { batch_id, quast_dir -> quast_dir }
+        .set { clean_quast_multiqc_ch }
+
     multiqc_ch
-        .mix(QUAST.out.quast_multiqc_ch)
+        .mix(clean_quast_multiqc_ch)
         .mix(SAMTOOLS.out.samtools_cov_ch)
         .mix(SAMTOOLS.out.samtools_stats_ch)
-        .mix(params.skip_checkm2 ? Channel.empty() : CHECKM2.out.checkm2_ch)
+        .mix(params.skip_checkm2 ? Channel.empty() : clean_checkm2_ch)
         .mix(MAKE_MQC_TOOL_VERSIONS.out.mqc_versions_tsv)
         .collect()
         .set { multiqc_input }

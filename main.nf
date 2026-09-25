@@ -17,19 +17,26 @@ include { VALIDATE_DB } from "./subworkflows/VALIDATE.nf"
 
 // Check for samplesheet structure based on track
 def validateSamplesheetColumns(csvPath, requiredCols, trackName) {
-  	def f = file(csvPath, checkIfExists: true)
-   	def lines = f.text.readLines().findAll { it?.trim() }
+      def f = file(csvPath, checkIfExists: true)
+       def lines = f.text.readLines().findAll { it?.trim() }
 
-   	if (!lines) {
-       	exit 1, "Input samplesheet is empty: ${csvPath}"
-   	}
+       if (!lines) {
+           exit 1, "Input samplesheet is empty: ${csvPath}"
+       }
 
-   	def header = lines[0].split(',')*.trim()
-   	def missing = requiredCols.findAll { !header.contains(it) }
+       def header = lines[0].split(',')*.trim()
+       def missing = requiredCols.findAll { !header.contains(it) }
 
-   	if (missing) {
-       	exit 1, "Invalid samplesheet for --track ${trackName}. Missing required column(s): ${missing.join(', ')}. Found header: ${header.join(', ')}"
-   	}
+       if (missing) {
+           exit 1, "Invalid samplesheet for --track ${trackName}. Missing required column(s): ${missing.join(', ')}. Found header: ${header.join(', ')}"
+       }
+
+    if (!params.no_illumina) {
+        def missingIllumina = ["R1", "R2"].findAll { !header.contains(it) }
+        if (missingIllumina) {
+            exit 1, "Invalid samplesheet for --track ${trackName}. Missing required column(s): ${missingIllumina.join(', ')}. Use --no_illumina if this samplesheet has no Illumina reads."
+        }
+    }
 }
 
 workflow {
@@ -115,7 +122,7 @@ workflow {
         	exit 1, "Missing input file."
     	}
 
-		validateSamplesheetColumns(params.input, ["id", "R1", "R2", "np", "genome_size"], "long_read")
+    	validateSamplesheetColumns(params.input, ["id","np","genome_size"], "long_read")
 		
 		LONG_READ_ASSEMBLY()
 

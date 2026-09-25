@@ -24,11 +24,15 @@ workflow LONG_READ_ASSEMBLY {
         .map { tuple(it.id, file(it.np, checkIfExists: true), it.genome_size) }
         .set { input_ch }
 
-    Channel
-        .fromPath(params.input, checkIfExists: true)
-        .splitCsv(header:true, sep:",")
-        .map { tuple(it.id, file(it.R1, checkIfExists: true), file(it.R2, checkIfExists: true)) }
-        .set { illumina_ch }
+    if (!params.no_illumina) {
+        Channel
+            .fromPath(params.input, checkIfExists: true)
+            .splitCsv(header:true, sep:",")
+            .map { tuple(it.id, file(it.R1, checkIfExists: true), file(it.R2, checkIfExists: true)) }
+            .set { illumina_ch }
+    } else {
+        illumina_ch = Channel.empty()
+    }
 
     input_ch
         .map { id, np, gs -> 
@@ -51,20 +55,31 @@ workflow LONG_READ_ASSEMBLY {
                         MULTIASSEMBLY.out.subset_yaml,
                         MULTIASSEMBLY.out.compress_yaml)
 
-    illumina_ch
-        .join(CLUSTER_AND_RESOLVE.out.assemblies_ch, by: 0)
-        .set { POLISHING_input_ch }
+    if (!params.no_illumina) {
+        illumina_ch
+            .join(CLUSTER_AND_RESOLVE.out.assemblies_ch, by: 0)
+            .set { POLISHING_input_ch }
 
-    POLISHING(POLISHING_input_ch)
+        POLISHING(POLISHING_input_ch)
+
+        polished_assemblies_ch = POLISHING.out.polish_out
+        quast_compare_ch       = POLISHING.out.quast_compare_out
+        polishing_versions_ch  = POLISHING.out.versions
+    } else {
+        // no illumina reads to polish with, pass the resolved long-read assembly straight through
+        polished_assemblies_ch = CLUSTER_AND_RESOLVE.out.assemblies_ch
+        quast_compare_ch       = Channel.empty()
+        polishing_versions_ch  = Channel.empty()
+    }
 
     NPQC.out.versions
         .mix(MULTIASSEMBLY.out.versions)
         .mix(CLUSTER_AND_RESOLVE.out.versions)
-        .mix(POLISHING.out.versions)
+        .mix(polishing_versions_ch)
         .collect()
         .set { all_versions }
 
-    POLISHING.out.quast_compare_out
+    quast_compare_ch
         .mix(CLUSTER_AND_RESOLVE.out.autocycler_table)
         .mix(params.skip_kraken ? Channel.empty() : NPQC.out.kraken_long_report_ch)
         .collect()
@@ -72,11 +87,11 @@ workflow LONG_READ_ASSEMBLY {
 
     HYBRID_ASSEMBLY_QC(illumina_ch,
                        NPQC.out.reads,
-                       POLISHING.out.polish_out,
+                       polished_assemblies_ch,
                        CLUSTER_AND_RESOLVE.out.quast_ch,
                        all_versions,
                        multiqc_input_ch)
 	
 	emit:
-	ellipsis_ch=POLISHING.out.polish_out
+	ellipsis_ch=polished_assemblies_ch
 }

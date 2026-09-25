@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.6.0](https://github.com/NorwegianVeterinaryInstitute/Assemblage/compare/v0.5.0...v0.6.0) (2026-09-25)
+
+
+### Features
+
+* added output from Rasusa long-read subsampling ([593c214](https://github.com/NorwegianVeterinaryInstitute/Assemblage/commit/593c214b6d0521e98cd5b2f586621c8bbced4660))
+* added parameter for no illumina data in long_read track ([84adb10](https://github.com/NorwegianVeterinaryInstitute/Assemblage/commit/84adb10e5c138eb3b08b62b088754b7320d1aa69))
+* added parameter for outputting gene sequences from amrfinderplus ([e16c907](https://github.com/NorwegianVeterinaryInstitute/Assemblage/commit/e16c9075e4983a3ceeb7681fa0e9d25a106ce0b6))
+
 ## [0.5.0](https://github.com/NorwegianVeterinaryInstitute/Assemblage/compare/v0.4.0...v0.5.0) (2026-05-05)
 
 

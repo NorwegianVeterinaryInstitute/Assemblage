@@ -18,26 +18,32 @@ workflow HYBRID_ASSEMBLY_QC {
 
     main:
     // Generate channel
-	il_downsampled_reads.join(assembly_ch, by: 0)
-        .set { il_mapping_ch }
 
     np_downsampled_reads.join(assembly_ch, by: 0)
         .set { np_mapping_ch }
 
     // Coverage calculation
-	BWA(il_mapping_ch)
     MINIMAP2(np_mapping_ch)
-
-    bwa_samtools_ch = BWA.out.samtools_bwa_ch
-        .map { id, bam -> tuple(id, "short", bam) }
 
     np_samtools_ch = MINIMAP2.out.samtools_np_ch
         .map { id, bam -> tuple(id, "long", bam) }
 
-    bwa_samtools_ch
-        .concat(np_samtools_ch)
-        .set { samtools_ch }
-    
+    if (!params.no_illumina) {
+        il_downsampled_reads.join(assembly_ch, by: 0)
+            .set { il_mapping_ch }
+
+        BWA(il_mapping_ch)
+
+        bwa_samtools_ch = BWA.out.samtools_bwa_ch
+            .map { id, bam -> tuple(id, "short", bam) }
+
+        samtools_ch    = bwa_samtools_ch.concat(np_samtools_ch)
+        bwa_version_ch = BWA.out.bwa_version
+    } else {
+        samtools_ch    = np_samtools_ch
+        bwa_version_ch = Channel.empty()
+    }
+
 	SAMTOOLS(samtools_ch)
 
 	// QC
@@ -66,7 +72,7 @@ workflow HYBRID_ASSEMBLY_QC {
     }
 
     all_versions_for_mqc = versions_ch
-        .mix(BWA.out.bwa_version)
+        .mix(bwa_version_ch)
         .mix(MINIMAP2.out.minimap2_version)
         .mix(SAMTOOLS.out.samtools_version)
         .mix(QUAST.out.quast_version)

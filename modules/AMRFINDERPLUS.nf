@@ -8,9 +8,14 @@ process AMRFINDERPLUS {
     output:
 	path "amrfinderplus.version", emit: amrfinderplus_version
 	path "${datasetID}_amrfinderplus_results.tsv", emit: amrfinderplus_out_ch
+	path "${datasetID}_genes.fasta", optional: true, emit: amrfinderplus_nucl_ch
 
     script:
     def args = task.ext.args ?: ""
+
+    if (params.afp_nucl_output) {
+        args += " --nucleotide_output ${datasetID}_genes.fasta"
+    }
 
     """
     mkdir -p tmp

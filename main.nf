@@ -16,7 +16,7 @@ include { ELLIPSIS    } from "./subworkflows/ELLIPSIS.nf"
 include { VALIDATE_DB } from "./subworkflows/VALIDATE.nf"
 
 // Check for samplesheet structure based on track
-def validateSamplesheetColumns(csvPath, requiredCols, trackName) {
+def validateSamplesheetColumns(csvPath, requiredCols, trackName, checkIllumina = true) {
       def f = file(csvPath, checkIfExists: true)
        def lines = f.text.readLines().findAll { it?.trim() }
 
@@ -31,7 +31,7 @@ def validateSamplesheetColumns(csvPath, requiredCols, trackName) {
            exit 1, "Invalid samplesheet for --track ${trackName}. Missing required column(s): ${missing.join(', ')}. Found header: ${header.join(', ')}"
        }
 
-    if (!params.no_illumina) {
+    if (checkIllumina && !params.no_illumina) {
         def missingIllumina = ["R1", "R2"].findAll { !header.contains(it) }
         if (missingIllumina) {
             exit 1, "Invalid samplesheet for --track ${trackName}. Missing required column(s): ${missingIllumina.join(', ')}. Use --no_illumina if this samplesheet has no Illumina reads."
@@ -59,7 +59,7 @@ workflow {
 			exit 1, "Missing input file. For --track ellipsis, provide a CSV with columns: id,assembly"
 		}
 
-		validateSamplesheetColumns(params.input, ["id", "assembly"], "ellipsis")
+		validateSamplesheetColumns(params.input, ["id", "assembly"], "ellipsis", false)
 
 		if (!params.databases) {
 			exit 1, "Missing databases file."

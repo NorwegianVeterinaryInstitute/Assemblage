@@ -19,11 +19,14 @@ bibliography: paper.bib
 ---
 
 # Summary
-Generating prokaryotic assemblies has become standard procedure for many scientists and labs. However, generating the optimal assembly from the data at hand can be challenging and time consuming. Currently there are several pipelines available for prokaryotic assembly, where most of them only operate with draft and/or hybrid assembly, or only long-read assembly. Assemblage is a Nextflow pipeline designed to generate optimal assemblies by allowing the user to select the best track based on the data available. The pipeline has three assembly tracks; draft assembly, hybrid assembly, and long-read assembly. The draft track utilize Illumina short reads to generate regular draft assemblies with either Unicycler or SPAdes. The hybrid track utilize both short reads and long reads to generate hybrid assemblies. The long-read assembly track is designed around Autocycler, and utilize the power of consensus assembly for optimization of assemblies without requiring large amounts of manual work. Lastly, the optional Ellipsis subworkflow provides information on plasmids and resistance/virulence genes in the generated assemblies, essentially providing an all-in-one tool for assembly and genome characterization. Assemblage is available at https://github.com/NorwegianVeterinaryInstitute/Assemblage. 
+Microbial genomics is a rapidly developing field, and relies on accurate and high-quality genome assemblies. Generating these genomes may be challenging, as new tools and pipelines for assembly are increasing both in numbers and complexity. Currently, generating optimal assemblies is normally a tedious task which requires a lot of manual steps. Assemblage is a Nextflow pipeline desgined to make it easier to generate optimal assemblies, where the user can select tracks based on the data at hand. The pipeline consists of three assembly tracks, one for short-read data, one for short- and long-read data, and one for long-read data. The long-read assembly track is used for assembling high-quality long reads, and generates genomes based on consensus assembly with Autocycler without manual intervention. The pipeline also have a subworkflow for genome characterization and plasmid detection. The pipeline is available on GitHub at github.com/NorwegianVeterinaryInstitute/Assemblage. 
 
 # Statement of need
+Generating optimal assemblies have previously been a relatively manual process, with tools such as Trycycler [@Wick:2021] and later Autocycler [@Wick:2025]. While Autocycler was generated to be more automatic compared to Trycycler, it still requires manual steps before the tool can run, such as generating assemblies from read subsets using different assemblers. Assemblage utilize Nextflow [@DiTommaso:2017] to make this process automated, essentially allowing the user to do all steps required in the Autocycler process with one command. Further, the draft- and hybrid assembly tracks are easily available within the same framework, making it easy to generate assemblies with different methods for comparison, which may be crucial when assembling genomes with plasmids present. 
 
 # State of the field
+Several prokaryotic assembly pipelines exist, some of which are hosted by nf-core [@Ewels:2020]. These include genomeassembler [@genomeassembler] and bacass [@bacass]. The genomeassembler pipeline is created to assemble only long-reads. The bacass pipeline allows for different assembly strategies similar to Assemblage, however, it only includes simple genome annotation. Assemblage includes both general genome annotation with Bakta and more specific annotation and characterization tools such as MOB-suite, AMRFinderPlus, VirulenceFinder, and others, within the optional Ellipsis subworkflow.
+This provides an all-in-one package for complete genome reconstruction and characterization.
 
 # Software design
 The pipeline consists of three assembly tracks, and one subworkflow, namely draft assembly, hybrid assembly, long-read assembly (\autoref{fig:figure1}), and Ellipsis. 
@@ -39,7 +42,7 @@ The last assembly track utilize the power of long reads to generate complete ass
 
 
 # Research impact statement
-
+Assemblage has become the standard method for generating prokaryotic genome assemblies within research at the Norwegian Veterinary Institute. Since its creation, it has been used in several research projects, as well as for outbreak investigations and surveillance. 
 
 # AI usage disclosure
 Generative AI have been used for code generation on small parts of the code, as well as general debugging, using GPT-5.3-Codex 0.9x. No generative AI was used to write this manuscript. The authors declare that human authors reviewed, edited, and validated all AI-assisted outputs and made the core design decisions. 

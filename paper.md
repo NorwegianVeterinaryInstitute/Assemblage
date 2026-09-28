@@ -26,7 +26,7 @@ Generating prokaryotic assemblies has become standard procedure for many scienti
 # State of the field
 
 # Software design
-The pipeline consists of three assembly tracks, and one subworkflow, namely draft assembly, hybrid assembly, long-read assembly, and Ellipsis. 
+The pipeline consists of three assembly tracks, and one subworkflow, namely draft assembly, hybrid assembly, long-read assembly (\autoref{fig:figure1}), and Ellipsis. 
 
 The draft genome track is used if the user only have Illumina short reads, and runs read quality control with FastQC before and after trimming with Trim-Galore, followed by an optional contamination check with Kraken2. Quality controlled reads are then downsampled with RaSuSa to a given coverage, before being assembled with either Unicycler or SPAdes and reorientation with DNAApler. The assembly is quality controlled with Quast and CheckM2, and actual coverage is calculated with BWA and Samtools. Lastly, MultiQC provides a useful report for all assemblies and quality control steps.
 
@@ -35,9 +35,11 @@ The hybrid assembly track is similar to the draft assembly track, but here Filtl
 The last assembly track utilize the power of long reads to generate complete assemblies. This track is useful if the user have high-quality long reads. 
 
 
-# Conclusion
+![Overview of the assembly tracks in Assemblage.\label{fig:figure1}](pipeline_overview.png)
 
-# Figures
+
+# Research impact statement
+
 
 # AI usage disclosure
 Generative AI have been used for code generation on small parts of the code, as well as general debugging, using GPT-5.3-Codex 0.9x. No generative AI was used to write this manuscript. The authors declare that human authors reviewed, edited, and validated all AI-assisted outputs and made the core design decisions. 
